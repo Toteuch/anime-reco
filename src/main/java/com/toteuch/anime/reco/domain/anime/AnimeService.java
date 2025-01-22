@@ -151,12 +151,14 @@ public class AnimeService {
             existingGenreMap.put(genre.getId(), genre);
         }
         genres.clear();
-        for (Map.Entry<Long, String> entry : rawDetails.getGenres().entrySet()) {
-            Genre genre = existingGenreMap.get(entry.getKey());
-            if (genre == null) {
-                genre = new Genre(entry.getKey(), entry.getValue());
+        if (rawDetails.getGenres() != null) {
+            for (Map.Entry<Long, String> entry : rawDetails.getGenres().entrySet()) {
+                Genre genre = existingGenreMap.get(entry.getKey());
+                if (genre == null) {
+                    genre = new Genre(entry.getKey(), entry.getValue());
+                }
+                genres.add(genreRepository.save(genre));
             }
-            genres.add(genreRepository.save(genre));
         }
         anime.setGenres(genres);
         // ALTERNATIVE TITLES
