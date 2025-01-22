@@ -32,7 +32,7 @@ public class MalUserScoreService {
     private AnimeService animeService;
 
     public void collectUserScores() {
-        log.trace("collectUserScores starting...");
+        log.debug("collectUserScores starting...");
         List<String> usernames = userService.getNewUsers();
         log.trace("{} users to process", usernames.size());
         for (String username : usernames) {
@@ -55,11 +55,11 @@ public class MalUserScoreService {
             }
             refreshUserScores(username, rawScores, isFound, isListVisible);
         }
-        log.trace("collectUserScores completed");
+        log.debug("collectUserScores completed");
     }
 
     public void refreshUpdatedUserScores() {
-        log.trace("refreshUpdatedUserScores starting...");
+        log.debug("refreshUpdatedUserScores starting...");
         List<String> usernames = userService.getUpdatedUsers();
         log.trace("{} users to process", usernames.size());
         for (String username : usernames) {
@@ -82,11 +82,11 @@ public class MalUserScoreService {
             }
             refreshUserScores(username, rawScores, isFound, isListVisible);
         }
-        log.trace("refreshUpdatedUserScores completed");
+        log.debug("refreshUpdatedUserScores completed");
     }
 
     public void refreshOldUserScores() {
-        log.trace("refreshOldUserScores starting...");
+        log.debug("refreshOldUserScores starting...");
         List<String> usernames = userService.getOldUsers();
         log.trace("{} users to process", usernames.size());
         for (String username : usernames) {
@@ -109,14 +109,16 @@ public class MalUserScoreService {
             }
             refreshUserScores(username, rawScores, isFound, isListVisible);
         }
-        log.trace("refreshOldUserScores completed");
+        log.debug("refreshOldUserScores completed");
     }
 
 
     private void refreshUserScores(String username, List<UserAnimeScoreRaw> rawScores, boolean isFound,
                                    boolean isListVisible) {
+        log.debug("Starting refreshing user scores for user {} ...", username);
         if (!isFound) {
             userService.delete(username);
+            log.trace("User scores refresh for user {} is complete", username);
             return;
         }
         MalUser user = userService.findByUsername(username);
@@ -127,6 +129,7 @@ public class MalUserScoreService {
             user.setListVisible(false);
             user.setScores(null);
             userService.save(user);
+            log.trace("User scores refresh for user {} is complete", username);
             return;
         }
         user.setListVisible(true);
@@ -154,5 +157,6 @@ public class MalUserScoreService {
         user.setScores(scores);
         user.setAnimeRatedCount(scores.size());
         userService.save(user);
+        log.trace("User scores refresh for user {} is complete", username);
     }
 }

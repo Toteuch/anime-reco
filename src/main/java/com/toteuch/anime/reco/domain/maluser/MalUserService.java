@@ -31,13 +31,13 @@ public class MalUserService {
     private int refreshIntervalInDays;
 
     public void scrapLastSeenUsers() {
-        log.trace("Scrap MAL's last seen usernames starting...");
+        log.debug("Scrap MAL's last seen usernames starting...");
         List<String> usernameList = scrapLastSeenUsers.getUsernamesFromMAL();
-        log.trace("Found {} usernames from MAL's last seen user page", usernameList.size());
+        log.debug("Found {} usernames from MAL's last seen user page", usernameList.size());
         for (String username : usernameList) {
             refreshMalUserLastSeen(username);
         }
-        log.trace("Scrap MAL's last seen usernames completed");
+        log.debug("Scrap MAL's last seen usernames completed");
     }
 
     public List<String> getNewUsers() {

@@ -78,7 +78,7 @@ public class AnimeService {
     }
 
     public void collectAnimeDetails() {
-        log.trace("collectAnimeDetails starting...");
+        log.debug("collectAnimeDetails starting...");
         List<Long> animeIds = getNewAnimes();
         log.trace("{} anime to process", animeIds.size());
         for (Long animeId : animeIds) {
@@ -97,11 +97,11 @@ public class AnimeService {
             }
             refreshAnimeDetails(animeId, rawDetails, isFound);
         }
-        log.trace("collectAnimeDetails completed");
+        log.debug("collectAnimeDetails completed");
     }
 
     public void refreshOldAnimeDetails() {
-        log.trace("refreshOldAnimeDetails starting...");
+        log.debug("refreshOldAnimeDetails starting...");
         List<Long> animeIds = getOldAnimes();
         log.trace("{} anime to process", animeIds.size());
         for (Long animeId : animeIds) {
@@ -120,10 +120,11 @@ public class AnimeService {
             }
             refreshAnimeDetails(animeId, rawDetails, isFound);
         }
-        log.trace("refreshOldAnimeDetails completed...");
+        log.debug("refreshOldAnimeDetails completed");
     }
 
     private void refreshAnimeDetails(Long animeId, AnimeDetailsRaw rawDetails, boolean isFound) {
+        log.debug("Starting refreshing anime details for anime {} ...", animeId);
         if (!isFound) {
             delete(animeId);
             return;
