@@ -36,7 +36,7 @@ public class MalUserScoreService {
         List<String> usernames = userService.getNewUsers();
         log.trace("{} users to process", usernames.size());
         for (String username : usernames) {
-            List<UserAnimeScoreRaw> rawScores = null;
+            Map<Long, UserAnimeScoreRaw> rawScores = null;
             boolean isListVisible = true;
             boolean isFound = true;
             try {
@@ -63,7 +63,7 @@ public class MalUserScoreService {
         List<String> usernames = userService.getUpdatedUsers();
         log.trace("{} users to process", usernames.size());
         for (String username : usernames) {
-            List<UserAnimeScoreRaw> rawScores = null;
+            Map<Long, UserAnimeScoreRaw> rawScores = null;
             boolean isListVisible = true;
             boolean isFound = true;
             try {
@@ -90,7 +90,7 @@ public class MalUserScoreService {
         List<String> usernames = userService.getOldUsers();
         log.trace("{} users to process", usernames.size());
         for (String username : usernames) {
-            List<UserAnimeScoreRaw> rawScores = null;
+            Map<Long, UserAnimeScoreRaw> rawScores = null;
             boolean isListVisible = true;
             boolean isFound = true;
             try {
@@ -113,7 +113,7 @@ public class MalUserScoreService {
     }
 
 
-    private void refreshUserScores(String username, List<UserAnimeScoreRaw> rawScores, boolean isFound,
+    private void refreshUserScores(String username, Map<Long, UserAnimeScoreRaw> rawScores, boolean isFound,
                                    boolean isListVisible) {
         log.debug("Starting refreshing user scores for user {} ...", username);
         if (!isFound) {
@@ -143,7 +143,7 @@ public class MalUserScoreService {
             existingScoreMap.put(score.getAnime().getId(), score);
         }
         scores.clear();
-        for (UserAnimeScoreRaw rawScore : rawScores) {
+        for (UserAnimeScoreRaw rawScore : rawScores.values()) {
             MalUserScore score = existingScoreMap.get(rawScore.getAnimeId());
             if (score == null) {
                 Anime anime = animeService.getById(rawScore.getAnimeId());

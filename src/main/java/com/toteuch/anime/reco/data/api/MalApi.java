@@ -78,8 +78,8 @@ public class MalApi {
         lastCall.set(System.currentTimeMillis());
     }
 
-    public List<UserAnimeScoreRaw> getUserAnimeListScore(String username) throws MalApiException {
-        List<UserAnimeScoreRaw> retVal = new ArrayList<>();
+    public Map<Long, UserAnimeScoreRaw> getUserAnimeListScore(String username) throws MalApiException {
+        Map<Long, UserAnimeScoreRaw> retVal = new HashMap<>();
         int page = 1;
 
         try {
@@ -97,8 +97,7 @@ public class MalApi {
                     }
                 }
             }
-
-            retVal.addAll(parseAnimeListUserResponse(animelistUserResponse, username));
+            retVal.putAll(parseAnimeListUserResponse(animelistUserResponse, username));
 
             while (animelistUserResponse != null && animelistUserResponse.getPaging() != null
                     && animelistUserResponse.getPaging().getNext() != null) {
@@ -117,7 +116,7 @@ public class MalApi {
                         }
                     }
                 }
-                retVal.addAll(parseAnimeListUserResponse(animelistUserResponse, username));
+                retVal.putAll(parseAnimeListUserResponse(animelistUserResponse, username));
             }
         } catch (WebClientResponseException e) {
             if (e.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
@@ -220,18 +219,18 @@ public class MalApi {
                         .doOnError(t -> animeDetailsCache.invalidate(requestAsKey)));
     }
 
-    private List<UserAnimeScoreRaw> parseAnimeListUserResponse(AnimeListUserResponse animelistUserResponse, String username) {
-        List<UserAnimeScoreRaw> retVal = new ArrayList<>();
+    private Map<Long, UserAnimeScoreRaw> parseAnimeListUserResponse(AnimeListUserResponse animelistUserResponse,
+                                                                    String username) {
+        Map<Long, UserAnimeScoreRaw> retVal = new HashMap<>();
 
         for (Data data : animelistUserResponse.getData()) {
-            retVal.add(new UserAnimeScoreRaw(
+            retVal.put(data.getNode().getId(), new UserAnimeScoreRaw(
                     username,
                     data.getNode().getId(),
                     data.getNode().getTitle(),
                     data.getListStatus().getScore()
             ));
         }
-
         return retVal;
     }
 
