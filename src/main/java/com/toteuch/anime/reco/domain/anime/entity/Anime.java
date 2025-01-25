@@ -43,7 +43,7 @@ public class Anime {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "anime_id")
     private List<MalUserScore> userScores;
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "anime_id")
     private List<Favorite> favorites;
 

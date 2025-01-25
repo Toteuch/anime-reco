@@ -200,7 +200,9 @@ public class MalUserScoreService {
                     score.setScore(rawScore.getUserScore());
                     repo.save(score);
                 }
-                favoriteAnime(rawScore, previousScore, profile, existingScoresMap);
+                if (favoriteAnime(rawScore, previousScore, profile, existingScoresMap, anime)) {
+                    favoriteService.favoriteRelatedAnime(profile, anime, existingScoresMap);
+                }
             }
         }
         for (MalUserScore score : scores) {
@@ -214,17 +216,20 @@ public class MalUserScoreService {
         log.trace("User scores refresh for user {} is complete", username);
     }
 
-    private void favoriteAnime(UserAnimeScoreRaw rawScore, double previousScore, Profile profile, Map<Long, MalUserScore> existingScoresMap) {
+    private boolean favoriteAnime(UserAnimeScoreRaw rawScore, double previousScore, Profile profile, Map<Long,
+            MalUserScore> existingScoresMap, Anime anime) {
         if (rawScore.getUserScore() >= FAVORITE_ANIME_SCORE_THRESHOLD && profile != null) {
-            Long animeId = rawScore.getAnimeId();
+            Long animeId = anime.getId();
             if (previousScore < FAVORITE_ANIME_SCORE_THRESHOLD || !existingScoresMap.containsKey(animeId)) {
                 try {
                     favoriteService.create(profile.getSub(), animeId, Author.SYSTEM);
+                    return true;
                 } catch (AnimeRecoException e) {
                     log.error("Failed to create favorite for Profile {} (Anime: {}) WITH author SYSTEM: {}",
                             profile.getSub(), animeId, e.getMessage());
                 }
             }
         }
+        return false;
     }
 }

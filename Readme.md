@@ -7,6 +7,8 @@
 * Create and Delete a favorite anime for a Profile
 * Automatically create a favorite anime:
   * When retrieving a user's scores list from MyAnimeList.net, if a score is at least 7 and the score isn't already exisiting in DB, creates a favorite anime for the linked profile
+    * Also, if the new favorite Anime got related anime (prequel/sequel), favorite them and their related animes
+  * When refreshing anime details, if the anime got a new sequel, all profiles that have this anime in favorite got the sequel as favorite too
 * Delete all favorite animes for a Profile
 
 #### Version 0.1.0

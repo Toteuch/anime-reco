@@ -6,7 +6,12 @@ import com.toteuch.anime.reco.data.api.exception.MalApiException;
 import com.toteuch.anime.reco.data.api.exception.MalApiGatewayTimeoutException;
 import com.toteuch.anime.reco.data.api.exception.MalApiListNotFoundException;
 import com.toteuch.anime.reco.data.repository.*;
+import com.toteuch.anime.reco.domain.AnimeRecoException;
+import com.toteuch.anime.reco.domain.Author;
 import com.toteuch.anime.reco.domain.anime.entity.*;
+import com.toteuch.anime.reco.domain.profile.FavoriteService;
+import com.toteuch.anime.reco.domain.profile.entities.Favorite;
+import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +42,8 @@ public class AnimeService {
     private AlternativeTitleRepository alternativeTitleRepository;
     @Autowired
     private PictureLinkRepository pictureLinkRepository;
+    @Autowired
+    private FavoriteService favoriteService;
 
     @Autowired
     private MalApi malApi;
@@ -130,6 +137,7 @@ public class AnimeService {
             return;
         }
         Anime anime = findById(animeId).orElse(null);
+        Long previousSequelId = anime.getSequelAnimeId();
         anime.setTitle(rawDetails.getTitle());
         anime.setMediaType(rawDetails.getMediaType());
         anime.setNumEpisodes(rawDetails.getNumEpisodes());
@@ -217,7 +225,19 @@ public class AnimeService {
             pictureLinks.add(pictureLinkRepository.save(pl));
         }
         anime.setPictureLinks(pictureLinks);
-        repo.save(anime);
+        anime = repo.save(anime);
+        List<Favorite> favorites = anime.getFavorites();
+        if (anime.getSequelAnimeId() != null && previousSequelId == null && !anime.getFavorites().isEmpty()) {
+            for (Favorite favorite : anime.getFavorites()) {
+                Profile profile = favorite.getProfile();
+                try {
+                    favoriteService.create(profile.getSub(), anime.getSequelAnimeId(), Author.SYSTEM);
+                } catch (AnimeRecoException e) {
+                    log.error("Failed to create favorite for Profile {} (Anime: {}) WITH author SYSTEM: {}",
+                            profile.getSub(), anime.getSequelAnimeId(), e.getMessage());
+                }
+            }
+        }
     }
 
     private Date parseRawDate(String sDate) {
