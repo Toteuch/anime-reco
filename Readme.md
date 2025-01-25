@@ -5,6 +5,9 @@
 * Create a Profile from a Subject, email and Avatar URL: the Subject and the Email mustn't exist already
 * Link a Profile to a MalUser: the MalUser mustn't be linked to a Profile already
 * Create and Delete a favorite anime for a Profile
+* Automatically create a favorite anime:
+  * When retrieving a user's scores list from MyAnimeList.net, if a score is at least 7 and the score isn't already exisiting in DB, creates a favorite anime for the linked profile
+* Delete all favorite animes for a Profile
 
 #### Version 0.1.0
 
