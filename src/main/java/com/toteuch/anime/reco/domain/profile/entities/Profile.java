@@ -4,6 +4,7 @@ import com.toteuch.anime.reco.domain.maluser.entity.MalUser;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Profile {
@@ -21,6 +22,9 @@ public class Profile {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private MalUser user;
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "profile_id")
+    private List<Favorite> favorites;
 
     public Profile(String sub, String email, String avatarUrl) {
         this.sub = sub;
@@ -78,5 +82,13 @@ public class Profile {
 
     public void setUser(MalUser user) {
         this.user = user;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<Favorite> favorites) {
+        this.favorites = favorites;
     }
 }

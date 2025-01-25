@@ -4,6 +4,7 @@
 
 * Create a Profile from a Subject, email and Avatar URL: the Subject and the Email mustn't exist already
 * Link a Profile to a MalUser: the MalUser mustn't be linked to a Profile already
+* Create and Delete a favorite anime for a Profile
 
 #### Version 0.1.0
 

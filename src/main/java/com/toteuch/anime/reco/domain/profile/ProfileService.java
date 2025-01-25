@@ -57,4 +57,8 @@ public class ProfileService {
         log.debug("Profile {} linked to user {}", sub, username);
         return repo.save(profile);
     }
+
+    public Profile findBySub(String sub) {
+        return repo.findBySub(sub);
+    }
 }

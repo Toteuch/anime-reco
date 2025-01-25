@@ -1,6 +1,7 @@
 package com.toteuch.anime.reco.domain.anime.entity;
 
 import com.toteuch.anime.reco.domain.maluser.entity.MalUserScore;
+import com.toteuch.anime.reco.domain.profile.entities.Favorite;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -42,6 +43,9 @@ public class Anime {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "anime_id")
     private List<MalUserScore> userScores;
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "anime_id")
+    private List<Favorite> favorites;
 
     public Anime() {
     }
@@ -205,5 +209,13 @@ public class Anime {
 
     public void setUserScores(List<MalUserScore> userScores) {
         this.userScores = userScores;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<Favorite> favorites) {
+        this.favorites = favorites;
     }
 }
