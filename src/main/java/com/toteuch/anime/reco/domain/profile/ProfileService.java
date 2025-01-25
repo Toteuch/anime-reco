@@ -4,6 +4,7 @@ import com.toteuch.anime.reco.data.repository.ProfileRepository;
 import com.toteuch.anime.reco.domain.AnimeRecoException;
 import com.toteuch.anime.reco.domain.maluser.MalUserService;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUser;
+import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

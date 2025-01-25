@@ -1,4 +1,4 @@
-package com.toteuch.anime.reco.domain.profile;
+package com.toteuch.anime.reco.domain.profile.entities;
 
 import com.toteuch.anime.reco.domain.maluser.entity.MalUser;
 import jakarta.persistence.*;

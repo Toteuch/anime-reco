@@ -1,6 +1,6 @@
 package com.toteuch.anime.reco.domain.maluser.entity;
 
-import com.toteuch.anime.reco.domain.profile.Profile;
+import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import jakarta.persistence.*;
 
 import java.util.Date;
