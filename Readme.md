@@ -1,6 +1,13 @@
 # Anime-Reco
 
+#### Next Version
+
+* Create a Profile from a Subject, email and Avatar URL: the Subject and the Email mustn't exist already
+* Link a Profile to a MalUser: the MalUser mustn't be linked to a Profile already
+
 #### Version 0.1.0
+
+New features:
 
 - Scrap last seen usernames from MyAnimeList.net (min freq is configurable, 10s default)
 - Retrieve user's scores list from MyAnimeList.net's API for new users
