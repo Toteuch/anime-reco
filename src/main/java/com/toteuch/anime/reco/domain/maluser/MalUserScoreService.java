@@ -16,7 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class MalUserScoreService {
@@ -112,6 +115,29 @@ public class MalUserScoreService {
         log.debug("refreshOldUserScores completed");
     }
 
+    public void refreshUserScores(String username) {
+        log.debug("refreshUserScores for user {} starting...", username);
+        Map<Long, UserAnimeScoreRaw> rawScores = null;
+        boolean isListVisible = true;
+        boolean isFound = true;
+        try {
+            rawScores = malApi.getUserAnimeListScore(username);
+        } catch (MalApiListVisibilityException e) {
+            log.debug(e.getMessage());
+            isListVisible = false;
+        } catch (MalApiListNotFoundException e) {
+            log.debug(e.getMessage());
+            isFound = false;
+        } catch (MalApiGatewayTimeoutException e) {
+            return;
+        } catch (MalApiException e) {
+            log.error(e.getMessage());
+            return;
+        }
+        refreshUserScores(username, rawScores, isFound, isListVisible);
+        log.debug("refreshUserScores for user {} completed", username);
+    }
+
 
     private void refreshUserScores(String username, Map<Long, UserAnimeScoreRaw> rawScores, boolean isFound,
                                    boolean isListVisible) {
@@ -137,24 +163,46 @@ public class MalUserScoreService {
         user.setLastUpdate(new Date());
 
         List<MalUserScore> scores = repo.findByUser(user);
-        if (scores == null) scores = new ArrayList<>();
-        Map<Long, MalUserScore> existingScoreMap = new HashMap<>();
+
+        // Create a map of existing scores for quick lookup
+        Map<Long, MalUserScore> existingScoresMap = new HashMap<>();
         for (MalUserScore score : scores) {
-            existingScoreMap.put(score.getAnime().getId(), score);
+            existingScoresMap.put(score.getAnime().getId(), score);
         }
-        scores.clear();
-        for (UserAnimeScoreRaw rawScore : rawScores.values()) {
-            MalUserScore score = existingScoreMap.get(rawScore.getAnimeId());
-            if (score == null) {
-                Anime anime = animeService.getById(rawScore.getAnimeId());
-                score = new MalUserScore(user, anime);
-            }
-            score.setScore(rawScore.getUserScore());
-            if (score.getScore() > 0) {
-                scores.add(repo.save(score));
+        // Update or create scores based on rawScores
+        for (Map.Entry<Long, UserAnimeScoreRaw> entry : rawScores.entrySet()) {
+            Long animeId = entry.getKey();
+            UserAnimeScoreRaw rawScore = entry.getValue();
+
+            if (rawScore.getUserScore() > 0) {
+                // Fetch or create the Anime entity
+                Anime anime = animeService.findById(animeId).orElseGet(() -> {
+                    Anime newAnime = new Anime(animeId);
+                    animeService.save(newAnime);
+                    return newAnime;
+                });
+                MalUserScore score = existingScoresMap.get(animeId);
+                if (score == null) {
+                    // Create a new score if it doesn't exist
+                    score = new MalUserScore();
+                    score.setUser(user);
+                    score.setAnime(anime);
+                    score.setScore(rawScore.getUserScore());
+                    repo.save(score);
+                } else {
+                    // Update the existing score
+                    score.setScore(rawScore.getUserScore());
+                    repo.save(score);
+                }
             }
         }
-        user.setScores(scores);
+        // Remove scores that are no longer in rawScores
+        for (MalUserScore score : scores) {
+            if (!rawScores.containsKey(score.getAnime().getId()) || rawScores.get(score.getAnime().getId()).getUserScore() == 0) {
+                repo.delete(score);
+            }
+        }
+
         user.setAnimeRatedCount(scores.size());
         userService.save(user);
         log.trace("User scores refresh for user {} is complete", username);

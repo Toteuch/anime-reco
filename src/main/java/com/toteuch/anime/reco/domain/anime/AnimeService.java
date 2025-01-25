@@ -54,12 +54,12 @@ public class AnimeService {
         return anime;
     }
 
-    public Anime findById(Long id) {
-        return repo.findById(id).orElse(null);
+    public Optional<Anime> findById(Long id) {
+        return repo.findById(id);
     }
 
     public void delete(Long animeId) {
-        Anime anime = findById(animeId);
+        Anime anime = findById(animeId).orElse(null);
         if (anime != null) {
             repo.delete(anime);
             log.trace("Anime {} deleted", animeId);
@@ -129,7 +129,7 @@ public class AnimeService {
             delete(animeId);
             return;
         }
-        Anime anime = findById(animeId);
+        Anime anime = findById(animeId).orElse(null);
         anime.setTitle(rawDetails.getTitle());
         anime.setMediaType(rawDetails.getMediaType());
         anime.setNumEpisodes(rawDetails.getNumEpisodes());
@@ -236,5 +236,9 @@ public class AnimeService {
             log.error("Couldn't parse date {}", sDate);
             return null;
         }
+    }
+
+    public void save(Anime newAnime) {
+        repo.save(newAnime);
     }
 }
