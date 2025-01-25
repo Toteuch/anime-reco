@@ -1,0 +1,53 @@
+package com.toteuch.anime.reco.domain.profile;
+
+import com.toteuch.anime.reco.data.repository.ProfileRepository;
+import com.toteuch.anime.reco.domain.AnimeRecoException;
+import com.toteuch.anime.reco.domain.maluser.MalUserService;
+import com.toteuch.anime.reco.domain.maluser.entity.MalUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+@Service
+public class ProfileService {
+    private static final Logger log = LoggerFactory.getLogger(ProfileService.class);
+
+    @Autowired
+    private ProfileRepository repo;
+    @Autowired
+    private MalUserService userService;
+
+
+    public Profile create(String sub, String email, String avatarUrl) throws AnimeRecoException {
+        if (!StringUtils.hasText(sub) || !StringUtils.hasText(email) || !StringUtils.hasText(avatarUrl)) {
+            throw new AnimeRecoException("createProfile failed, required field to create a Profile is missing");
+        }
+        Profile profileSub = repo.findBySub(sub);
+        if (profileSub != null) throw new AnimeRecoException("createProfile failed, this sub already exists");
+        Profile profileEmail = repo.findByEmail(email);
+        if (profileEmail != null) throw new AnimeRecoException("createProfile failed, this email already exists");
+        log.debug("Profile {} created", sub);
+        return repo.save(new Profile(sub, email, avatarUrl));
+    }
+
+    public Profile linkMalUser(String sub, String username) throws AnimeRecoException {
+        Profile profile = repo.findBySub(sub);
+        if (profile == null) throw new AnimeRecoException("linkMalUser failed, profile doesn't exist");
+        if (profile.getUser() != null && !username.equals(profile.getUser().getUsername())) return profile;
+        Profile profileUser = repo.findByUserUsername(username);
+        if (profileUser != null)
+            throw new AnimeRecoException("linkMalUser failed, the user is already link to a profile");
+        MalUser user = userService.findByUsername(username);
+        if (user == null) {
+            user = new MalUser(username);
+            user.setProfile(profile);
+            log.debug("User {} created", username);
+            userService.save(user);
+        }
+        profile.setUser(user);
+        log.debug("Profile {} linked to user {}", sub, username);
+        return repo.save(profile);
+    }
+}

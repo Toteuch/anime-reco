@@ -58,6 +58,9 @@ public class MalUserService {
     public void delete(String username) {
         MalUser user = findByUsername(username);
         if (user != null) {
+            if (user.getProfile() != null) {
+                user.getProfile().setUser(null);
+            }
             repo.delete(user);
             log.trace("User {} deleted", username);
         }

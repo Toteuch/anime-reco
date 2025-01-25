@@ -1,5 +1,6 @@
 package com.toteuch.anime.reco.domain.maluser.entity;
 
+import com.toteuch.anime.reco.domain.profile.Profile;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -25,12 +26,16 @@ public class MalUser {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private List<MalUserScore> scores;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     public MalUser() {
     }
 
     public MalUser(String username) {
         this.username = username;
+        this.lastSeen = new Date();
     }
 
     public Long getId() {
@@ -95,5 +100,13 @@ public class MalUser {
 
     public void setScores(List<MalUserScore> scores) {
         this.scores = scores;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }
