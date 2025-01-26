@@ -27,7 +27,6 @@ public class FavoriteService {
     @Autowired
     private AnimeService animeService;
 
-
     public Favorite create(String sub, Long animeId, Author author) throws AnimeRecoException {
         Anime anime = animeService.findById(animeId).orElseGet(() -> {
                     Anime newAnime = new Anime(animeId);
@@ -48,6 +47,8 @@ public class FavoriteService {
     public void delete(String sub, Long animeId) {
         Favorite favorite = repo.findByProfileSubAndAnimeId(sub, animeId);
         if (favorite != null) {
+            favorite.getProfile().getFavorites().remove(favorite);
+            favorite.getAnime().getFavorites().remove(favorite);
             log.debug("Favorite deleted for Profile {} (Anime: {})", sub, animeId);
             repo.delete(favorite);
         }
@@ -56,8 +57,12 @@ public class FavoriteService {
     public void deleteAll(String sub) {
         List<Favorite> favorites = repo.findByProfileSub(sub);
         if (favorites != null && !favorites.isEmpty()) {
-            log.debug("All favorites deleted for Profile {}", sub);
+            for (Favorite favorite : favorites) {
+                favorite.getAnime().getFavorites().remove(favorite);
+                favorite.getProfile().getFavorites().remove(favorite);
+            }
             repo.deleteAll(favorites);
+            log.debug("All favorites deleted for Profile {}", sub);
         }
     }
 
