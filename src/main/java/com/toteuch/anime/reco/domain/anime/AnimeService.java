@@ -10,6 +10,8 @@ import com.toteuch.anime.reco.domain.AnimeRecoException;
 import com.toteuch.anime.reco.domain.Author;
 import com.toteuch.anime.reco.domain.anime.entity.*;
 import com.toteuch.anime.reco.domain.profile.FavoriteService;
+import com.toteuch.anime.reco.domain.profile.NotificationService;
+import com.toteuch.anime.reco.domain.profile.NotificationType;
 import com.toteuch.anime.reco.domain.profile.entities.Favorite;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import org.slf4j.Logger;
@@ -44,6 +46,8 @@ public class AnimeService {
     private PictureLinkRepository pictureLinkRepository;
     @Autowired
     private FavoriteService favoriteService;
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private MalApi malApi;
@@ -138,6 +142,7 @@ public class AnimeService {
         }
         Anime anime = findById(animeId).orElse(null);
         Long previousSequelId = anime.getSequelAnimeId();
+        String previousStatus = anime.getStatus();
         anime.setTitle(rawDetails.getTitle());
         anime.setMediaType(rawDetails.getMediaType());
         anime.setNumEpisodes(rawDetails.getNumEpisodes());
@@ -226,6 +231,7 @@ public class AnimeService {
         }
         anime.setPictureLinks(pictureLinks);
         anime = repo.save(anime);
+        // FAVORITE
         List<Favorite> favorites = anime.getFavorites();
         if (anime.getSequelAnimeId() != null && previousSequelId == null && !anime.getFavorites().isEmpty()) {
             for (Favorite favorite : anime.getFavorites()) {
@@ -235,6 +241,17 @@ public class AnimeService {
                 } catch (AnimeRecoException e) {
                     log.error("Failed to create favorite for Profile {} (Anime: {}) WITH author SYSTEM: {}",
                             profile.getSub(), anime.getSequelAnimeId(), e.getMessage());
+                }
+            }
+        }
+        // NOTIFICATION
+        if (previousStatus != null && !previousStatus.equals(anime.getStatus()) && anime.getFavorites() != null) {
+            for (Favorite favorite : anime.getFavorites()) {
+                try {
+                    notificationService.create(favorite.getProfile().getSub(), animeId,
+                            NotificationType.FAVORITE_ANIME_STATUS_CHANGED);
+                } catch (AnimeRecoException e) {
+                    log.error(e.getMessage());
                 }
             }
         }
