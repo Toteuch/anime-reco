@@ -26,7 +26,9 @@ public class FavoriteService {
     private ProfileService profileService;
     @Autowired
     private AnimeService animeService;
-
+    @Autowired
+    private NotificationService notificationService;
+    
     public Favorite create(String sub, Long animeId, Author author) throws AnimeRecoException {
         Anime anime = animeService.findById(animeId).orElseGet(() -> {
                     Anime newAnime = new Anime(animeId);
@@ -40,6 +42,7 @@ public class FavoriteService {
         if (favorite == null) {
             log.debug("Favorite created for Profile {} (Anime: {}) with AUTHOR {}", sub, animeId, author.name());
             favorite = repo.save(new Favorite(profile, anime, author));
+            notificationService.create(sub, animeId, NotificationType.NEW_FAVORITE);
         }
         return favorite;
     }
