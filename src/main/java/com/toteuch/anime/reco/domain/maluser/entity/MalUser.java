@@ -1,6 +1,7 @@
 package com.toteuch.anime.reco.domain.maluser.entity;
 
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
+import com.toteuch.anime.reco.domain.profile.entities.UserSimilarity;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -29,6 +30,9 @@ public class MalUser {
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "profile_id")
     private Profile profile;
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<UserSimilarity> similarities;
 
     public MalUser() {
     }
@@ -108,5 +112,13 @@ public class MalUser {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public List<UserSimilarity> getSimilarities() {
+        return similarities;
+    }
+
+    public void setSimilarities(List<UserSimilarity> similarities) {
+        this.similarities = similarities;
     }
 }

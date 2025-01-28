@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Limit;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -82,6 +84,10 @@ public class MalUserService {
         user.setLastSeen(new Date());
         log.trace("User {} {}", username, user.getId() != null ? "updated" : "created");
         repo.save(user);
+    }
+
+    public Page<MalUser> getUserListToProcess(Long profileId, Date startDate, Pageable pageable) {
+        return repo.getUserListToProcess(profileId, startDate, pageable);
     }
 
 

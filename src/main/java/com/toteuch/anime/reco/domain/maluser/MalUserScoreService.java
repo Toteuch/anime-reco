@@ -42,6 +42,10 @@ public class MalUserScoreService {
     @Autowired
     private FavoriteService favoriteService;
 
+    public List<MalUserScore> getByUser(MalUser user) {
+        return repo.findByUser(user);
+    }
+
     public void collectUserScores() {
         log.debug("collectUserScores starting...");
         List<String> usernames = userService.getNewUsers();
@@ -170,6 +174,8 @@ public class MalUserScoreService {
         user.setAnimeListSize(rawScores.size());
         user.setLastUpdate(new Date());
 
+        int countRatedAnime = 0;
+
         List<MalUserScore> scores = repo.findByUser(user);
         Map<Long, MalUserScore> existingScoresMap = new HashMap<>();
         for (MalUserScore score : scores) {
@@ -195,10 +201,12 @@ public class MalUserScoreService {
                     score.setAnime(anime);
                     score.setScore(rawScore.getUserScore());
                     repo.save(score);
+                    countRatedAnime++;
                 } else {
                     previousScore = score.getScore();
                     score.setScore(rawScore.getUserScore());
                     repo.save(score);
+                    countRatedAnime++;
                 }
                 if (favoriteAnime(rawScore, previousScore, profile, existingScoresMap, anime)) {
                     favoriteService.favoriteRelatedAnime(profile, anime, existingScoresMap);
@@ -211,7 +219,7 @@ public class MalUserScoreService {
             }
         }
 
-        user.setAnimeRatedCount(scores.size());
+        user.setAnimeRatedCount(countRatedAnime);
         userService.save(user);
         log.trace("User scores refresh for user {} is complete", username);
     }

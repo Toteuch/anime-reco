@@ -28,6 +28,9 @@ public class Profile {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "profile_id")
     private List<Notification> notifications;
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "profile_id")
+    private List<UserSimilarity> similarities;
 
     public Profile(String sub, String email, String avatarUrl) {
         this.sub = sub;
@@ -101,5 +104,13 @@ public class Profile {
 
     public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
+    }
+
+    public List<UserSimilarity> getSimilarities() {
+        return similarities;
+    }
+
+    public void setSimilarities(List<UserSimilarity> similarities) {
+        this.similarities = similarities;
     }
 }

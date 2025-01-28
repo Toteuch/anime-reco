@@ -1,5 +1,11 @@
 # Anime-Reco
 
+#### Next Version
+
+* Create a JobTask to plan an asynchronous task
+* Abandon a JobTask that is not finished (in STARTED or QUEUED state)
+* Process user's similarity for a Profile (and a required linked user)
+
 #### Version 0.2.0
 
 * Create a Profile from a Subject, email and Avatar URL: the Subject and the Email mustn't exist already

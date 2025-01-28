@@ -18,4 +18,10 @@ public class JobConfig {
     public ScheduledJob scheduledJob() {
         return new ScheduledJob(refreshDataFromMalJob);
     }
+
+    @Bean
+    @ConditionalOnProperty(value = "app.presentation.scheduled.enabled", matchIfMissing = true, havingValue = "false")
+    public ScheduledJob scheduledJobWithoutRefresh() {
+        return new ScheduledJob(null);
+    }
 }
