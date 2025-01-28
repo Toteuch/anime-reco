@@ -2,6 +2,7 @@ package com.toteuch.anime.reco.presentation.job;
 
 import com.toteuch.anime.reco.ApplicationContextHolder;
 import com.toteuch.anime.reco.domain.job.JobTaskService;
+import com.toteuch.anime.reco.domain.job.ProcessAnimeRecommendationJob;
 import com.toteuch.anime.reco.domain.job.ProcessUserSimilarityJob;
 import com.toteuch.anime.reco.domain.job.entities.JobTask;
 import org.slf4j.Logger;
@@ -32,9 +33,15 @@ public class ScheduledJob {
     private void start(JobTask jobTask) {
         try {
             switch (jobTask.getName()) {
+
                 case PROCESS_USER_SIMILARITY:
-                    ProcessUserSimilarityJob job = new ProcessUserSimilarityJob(jobTask);
-                    job.start();
+                    ProcessUserSimilarityJob jobPUS = new ProcessUserSimilarityJob(jobTask);
+                    jobPUS.start();
+                    break;
+                case PROCESS_ANIME_RECOMMENDATION:
+                    ProcessAnimeRecommendationJob jobPAR = new ProcessAnimeRecommendationJob(jobTask);
+                    jobPAR.start();
+
                     break;
                 default:
                     log.warn("Job {} not implemented yet", jobTask.getName());

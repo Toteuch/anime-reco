@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Limit;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -63,6 +65,10 @@ public class AnimeService {
             log.trace("Anime {} created", id);
         }
         return anime;
+    }
+
+    public Page<Anime> getAnimeListToProcess(Pageable pageable) {
+        return repo.findAll(pageable);
     }
 
     public Optional<Anime> findById(Long id) {

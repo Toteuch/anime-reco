@@ -66,7 +66,6 @@ public class ProcessUserSimilarityJob {
         Date startDate = jobTask.getStartedAt();
 
         // READER
-
         Page<MalUser> userToProcessPage = userService.getUserListToProcess(profile.getId(), startDate,
                 PageRequest.of(0, pageSize, Sort.by("id").ascending()));
         log.debug("{} similarities to process", userToProcessPage.getTotalElements());
@@ -144,17 +143,17 @@ public class ProcessUserSimilarityJob {
 
     private class ProcessUserSimilarityRunnable implements Runnable {
         private final int pageNumber;
-        private final List<MalUser> userProfileListToProcess;
+        private final List<MalUser> userListToProcess;
 
-        ProcessUserSimilarityRunnable(int pageNumber, List<MalUser> userProfileListToProcess) {
+        ProcessUserSimilarityRunnable(int pageNumber, List<MalUser> userListToProcess) {
             this.pageNumber = pageNumber;
-            this.userProfileListToProcess = userProfileListToProcess;
+            this.userListToProcess = userListToProcess;
         }
 
         @Override
         public void run() {
             log.debug("Processing page {}...", pageNumber);
-            for (MalUser userToProcess : userProfileListToProcess) {
+            for (MalUser userToProcess : userListToProcess) {
                 log.trace("Processing similarity between Profile {} ({}) and User {}", profile.getSub(),
                         profile.getId(), userToProcess.getUsername());
                 Double similarity = userSimilarityService.processSimilarity(userToProcess, referenceUserMeanCenteredScores);
@@ -171,7 +170,7 @@ public class ProcessUserSimilarityJob {
                 userSimilarityService.save(userSimilarity);
             }
             try {
-                jobTaskService.appendWriteItemCount(jobTask.getId(), userProfileListToProcess.size());
+                jobTaskService.appendWriteItemCount(jobTask.getId(), userListToProcess.size());
                 log.trace("Page {} process completed", pageNumber);
             } catch (AnimeRecoException e) {
                 log.error("Page {} failed processing items", pageNumber, e);

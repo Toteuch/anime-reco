@@ -3,6 +3,7 @@ package com.toteuch.anime.reco.domain.anime.entity;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUserScore;
 import com.toteuch.anime.reco.domain.profile.entities.Favorite;
 import com.toteuch.anime.reco.domain.profile.entities.Notification;
+import com.toteuch.anime.reco.domain.profile.entities.Recommendation;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -50,6 +51,9 @@ public class Anime {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "anime_id")
     private List<Notification> notifications;
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<Recommendation> recommendations;
 
     public Anime() {
     }

@@ -11,6 +11,8 @@ import com.toteuch.anime.reco.domain.profile.entities.UserSimilarity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Limit;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -29,8 +31,16 @@ public class UserSimilarityService {
     @Autowired
     private MalUserScoreService userScoreService;
 
+    public List<MalUser> getMostSimilarUsers(String sub, Limit limit) {
+        return repo.getMostSimilarUsers(sub, Sort.by(Sort.Direction.DESC, "us.score"), limit);
+    }
+
     public UserSimilarity getUserSimilarity(Profile profile, MalUser user) {
         return repo.findByProfileSubAndUserUsername(profile.getSub(), user.getUsername());
+    }
+
+    public List<UserSimilarity> getUserSimilarities(String sub) {
+        return repo.findByProfileSub(sub);
     }
 
     public UserSimilarity save(UserSimilarity userSimilarity) {

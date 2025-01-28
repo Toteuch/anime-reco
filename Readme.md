@@ -5,6 +5,8 @@
 * Create a JobTask to plan an asynchronous task
 * Abandon a JobTask that is not finished (in STARTED or QUEUED state)
 * Process user's similarity for a Profile (and a required linked user)
+* Process anime recommendation for a Profile (requires similarities for the profile)
+* Modify some columns definition on existing tables (execute V0001__alter_tables_0.3.0.sql if previous version was installed)
 
 #### Version 0.2.0
 

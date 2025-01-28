@@ -17,8 +17,9 @@ public class MalUser {
     private Long id;
     @Column(nullable = false)
     private String username;
-    @Column(nullable = false)
+    @Column(columnDefinition = "DATETIME (3)", nullable = false)
     private Date lastSeen;
+    @Column(columnDefinition = "DATETIME (3)")
     private Date lastUpdate;
     private int animeListSize;
     private int animeRatedCount;

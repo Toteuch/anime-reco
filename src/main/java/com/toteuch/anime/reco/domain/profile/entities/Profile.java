@@ -17,7 +17,7 @@ public class Profile {
     private String email;
     @Column(nullable = false)
     private String avatarUrl;
-    @Column(columnDefinition = "DATETIME (3)")
+    @Column(columnDefinition = "DATETIME (3)", nullable = false)
     private Date createdAt;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -31,6 +31,9 @@ public class Profile {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "profile_id")
     private List<UserSimilarity> similarities;
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "profile_id")
+    private List<Recommendation> recommendations;
 
     public Profile(String sub, String email, String avatarUrl) {
         this.sub = sub;
@@ -112,5 +115,13 @@ public class Profile {
 
     public void setSimilarities(List<UserSimilarity> similarities) {
         this.similarities = similarities;
+    }
+
+    public List<Recommendation> getRecommendations() {
+        return recommendations;
+    }
+
+    public void setRecommendations(List<Recommendation> recommendations) {
+        this.recommendations = recommendations;
     }
 }

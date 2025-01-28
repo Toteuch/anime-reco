@@ -26,6 +26,7 @@ public class JobTask {
     private Date startedAt;
     @Column(columnDefinition = "DATETIME (3)", nullable = false)
     private Date updatedAt;
+    @Column(columnDefinition = "DATETIME (3)")
     private Date endedAt;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

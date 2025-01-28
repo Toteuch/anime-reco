@@ -20,9 +20,10 @@ public class Favorite {
     @ManyToOne
     @JoinColumn(name = "anime_id")
     private Anime anime;
-    @Column(columnDefinition = "DATETIME (3)")
+    @Column(columnDefinition = "DATETIME (3)", nullable = false)
     private Date createdAt;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Author author;
 
     public Favorite(Profile profile, Anime anime, Author author) {

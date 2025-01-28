@@ -1,36 +1,35 @@
 package com.toteuch.anime.reco.domain.profile.entities;
 
-import com.toteuch.anime.reco.domain.maluser.entity.MalUser;
+import com.toteuch.anime.reco.domain.anime.entity.Anime;
 import jakarta.persistence.*;
 
 import java.util.Date;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(name = "unique_profile_user_similarity", columnNames = {"profile_id", "user_id"})
+        @UniqueConstraint(name = "unique_profile_anime_recommendation", columnNames = {"profile_id", "anime_id"})
 })
-public class UserSimilarity {
+public class Recommendation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "profile_id")
     private Profile profile;
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private MalUser user;
+    @JoinColumn(name = "anime_id")
+    private Anime anime;
     private Double score;
     @Column(columnDefinition = "DATETIME (3)", nullable = false)
-    private Date lastUpdate;
+    private Date updatedAt;
 
-    public UserSimilarity(Profile profile, MalUser user, Double score) {
+    public Recommendation(Profile profile, Anime anime) {
         this.profile = profile;
-        this.user = user;
-        this.score = score;
-        this.lastUpdate = new Date();
+        this.anime = anime;
+        this.updatedAt = new Date();
     }
 
-    public UserSimilarity() {
+    public Recommendation() {
     }
 
     public Long getId() {
@@ -49,12 +48,12 @@ public class UserSimilarity {
         this.profile = profile;
     }
 
-    public MalUser getUser() {
-        return user;
+    public Anime getAnime() {
+        return anime;
     }
 
-    public void setUser(MalUser user) {
-        this.user = user;
+    public void setAnime(Anime anime) {
+        this.anime = anime;
     }
 
     public Double getScore() {
@@ -65,11 +64,11 @@ public class UserSimilarity {
         this.score = score;
     }
 
-    public Date getLastUpdate() {
-        return lastUpdate;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setLastUpdate(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
