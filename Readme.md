@@ -1,6 +1,6 @@
 # Anime-Reco
 
-#### Next Version
+#### Version 0.3.0
 
 * Create a JobTask to plan an asynchronous task
 * Abandon a JobTask that is not finished (in STARTED or QUEUED state)
