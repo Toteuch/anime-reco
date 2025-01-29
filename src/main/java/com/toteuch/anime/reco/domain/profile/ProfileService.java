@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Service
 public class ProfileService {
     private static final Logger log = LoggerFactory.getLogger(ProfileService.class);
@@ -20,6 +22,10 @@ public class ProfileService {
     @Autowired
     private MalUserService userService;
 
+
+    public List<Profile> getAll() {
+        return repo.findAll();
+    }
 
     public Profile create(String sub, String email, String avatarUrl) throws AnimeRecoException {
         if (!StringUtils.hasText(sub) || !StringUtils.hasText(email) || !StringUtils.hasText(avatarUrl)) {

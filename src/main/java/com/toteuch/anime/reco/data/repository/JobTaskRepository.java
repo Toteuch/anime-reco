@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 public interface JobTaskRepository extends JpaRepository<JobTask, Long> {
     JobTask findByProfileSubAndNameAndStatus(String sub, JobName name, JobStatus status);
 
+    JobTask findByProfileSubAndNameAndStatus(String sub, JobName name, JobStatus status, Sort sort, Limit limit);
+
     JobTask findByStatus(JobStatus status, Sort sort, Limit limit);
 
     JobTask findByProfileSubAndId(String sub, Long jobTaskId);

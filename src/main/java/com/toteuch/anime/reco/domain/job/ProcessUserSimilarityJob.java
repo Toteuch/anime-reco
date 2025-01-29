@@ -79,7 +79,7 @@ public class ProcessUserSimilarityJob {
 
         List<MalUser> userToProcessList = userToProcessPage.getContent();
         log.debug("Number of pages to process {}", userToProcessPage.getTotalPages());
-        while (userToProcessList != null && !hasFailed && !jobTaskService.isAbanonned(jobTask)) {
+        while (userToProcessList != null && !hasFailed && !jobTaskService.isAbandonned(jobTask)) {
             if (taskExecutor.getThreadPoolExecutor().getQueue().size() < taskExecutor.getMaxPoolSize() &&
                     taskExecutor.getActiveCount() < taskExecutor.getMaxPoolSize()) {
                 // asynchronous processors -> update the task
@@ -121,7 +121,7 @@ public class ProcessUserSimilarityJob {
         }
 
         // Complete the task
-        if (jobTaskService.isAbanonned(jobTask)) {
+        if (jobTaskService.isAbandonned(jobTask)) {
             jobTaskService.end(jobTask);
         } else if (userToProcessList == null) {
             jobTaskService.complete(jobTask.getId());

@@ -7,6 +7,10 @@
 * Process user's similarity for a Profile (and a required linked user)
 * Process anime recommendation for a Profile (requires similarities for the profile)
 * Modify some columns definition on existing tables (execute V0001__alter_tables_0.3.0.sql if previous version was installed)
+* Automatically trigger once a day (4AM) a refresh job that
+  * Clear old data for eligible profiles (delete the configured amount of similarities, for Profiles that already completed ProcessUserSimilarityJob at least once)
+  * Call ProcessUserSimilarityJob for the profiles
+  * Call ProcessAnimeRecommendationJob for the profiles
 
 #### Version 0.2.0
 

@@ -87,7 +87,7 @@ public class ProcessAnimeRecommendationJob {
         log.info("Starting to process recommendations for Profile {} ({})...", profile.getSub(), profile.getId());
         List<Anime> animeToProcessList = animeToProcessPage.getContent();
         log.debug("Number of pages to process {}", animeToProcessPage.getTotalPages());
-        while (animeToProcessList != null && !hasFailed && !jobTaskService.isAbanonned(jobTask)) {
+        while (animeToProcessList != null && !hasFailed && !jobTaskService.isAbandonned(jobTask)) {
             if (taskExecutor.getThreadPoolExecutor().getQueue().size() < taskExecutor.getMaxPoolSize() &&
                     taskExecutor.getActiveCount() < taskExecutor.getMaxPoolSize()) {
                 taskExecutor.execute(new ProcessAnimeRecommendationRunnable(
@@ -124,11 +124,11 @@ public class ProcessAnimeRecommendationJob {
         }
 
         // Complete the task
-        if (jobTaskService.isAbanonned(jobTask)) {
+        if (jobTaskService.isAbandonned(jobTask)) {
             jobTaskService.end(jobTask);
         } else if (animeToProcessList == null) {
             jobTaskService.complete(jobTask.getId());
-            log.info("Similarities processed for Profile {} ({})", profile.getSub(), profile.getId());
+            log.info("Recommendations processed for Profile {} ({})", profile.getSub(), profile.getId());
         } else {
             jobTaskService.fail(jobTask);
         }

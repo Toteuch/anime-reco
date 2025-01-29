@@ -15,6 +15,7 @@ import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,46 @@ public class JobTaskService {
     @Autowired
     private UserSimilarityService userSimilarityService;
 
+    public void requestClearOldData(Author author) {
+        List<Profile> profiles = profileService.getAll();
+        for (Profile profile : profiles) {
+            boolean startTask = profile.getUser() != null;
+            // Reject if the profile is not linked to a user
+            JobTask lastClearOldDataForProfile = getLastCompletedJobTaskExecution(profile.getSub(),
+                    JobName.CLEAR_OLD_DATA);
+            Calendar limitDateForCOD = Calendar.getInstance();
+            limitDateForCOD.add(Calendar.DAY_OF_MONTH, -1);
+            if (startTask && lastClearOldDataForProfile == null) {
+                JobTask lastProcessUserSimilarity = getLastCompletedJobTaskExecution(profile.getSub(),
+                        JobName.PROCESS_USER_SIMILARITY);
+                if (lastProcessUserSimilarity == null) {
+                    // Reject if profile never completed processUserSimilarity
+                    startTask = false;
+                }
+            } else if (startTask && lastClearOldDataForProfile.getCreatedAt().after(limitDateForCOD.getTime())) {
+                // Reject if the last run for this profile is lesser than 1 day
+                startTask = false;
+            }
+            if (startTask) {
+                Calendar creationDate = Calendar.getInstance();
+                try {
+                    create(profile.getSub(), JobName.CLEAR_OLD_DATA, author, creationDate.getTime());
+                    creationDate.add(Calendar.SECOND, 1);
+                    create(profile.getSub(), JobName.PROCESS_USER_SIMILARITY, author, creationDate.getTime());
+                    creationDate.add(Calendar.SECOND, 1);
+                    create(profile.getSub(), JobName.PROCESS_ANIME_RECOMMENDATION, author, creationDate.getTime());
+                } catch (AnimeRecoException e) {
+                    log.error("Couldn't create refresh profile data tasks", e);
+                }
+            }
+        }
+    }
+
     public JobTask create(String sub, JobName name, Author author) throws AnimeRecoException {
+        return create(sub, name, author, new Date());
+    }
+
+    private JobTask create(String sub, JobName name, Author author, Date createAt) throws AnimeRecoException {
         Profile profile = profileService.findBySub(sub);
         if (null == profile) throw new AnimeRecoException("createJobTask failed, Profile notFound");
         switch (name) {
@@ -42,6 +82,8 @@ public class JobTaskService {
                 List<UserSimilarity> similarities = userSimilarityService.getUserSimilarities(profile.getSub());
                 if (similarities == null || similarities.size() < 10)
                     throw new AnimeRecoException("createJobTask failed, Profile must have at least 10 similarities");
+                break;
+            case CLEAR_OLD_DATA:
                 break;
             default:
                 throw new AnimeRecoException("createJobTask failed, Job not implemented yet");
@@ -56,28 +98,25 @@ public class JobTaskService {
                 abandon(sub, jobTask.getId());
             }
         }
-        jobTask = repo.save(new JobTask(profile, name, author));
+        jobTask = new JobTask(profile, name, author);
+        jobTask.setCreatedAt(createAt);
+        jobTask = repo.save(jobTask);
         log.debug("JobTask {} ({}) created by {} for Profile {}", name.name(), jobTask.getId(), author.name(), sub);
         return jobTask;
     }
 
-    public void end(JobTask jobTask) {
-        jobTask = repo.findById(jobTask.getId()).orElse(null);
-        jobTask.setEndedAt(new Date());
-        repo.save(jobTask);
+    private JobTask getLastCompletedJobTaskExecution(String sub, JobName jobName) {
+        return repo.findByProfileSubAndNameAndStatus(sub, jobName, JobStatus.COMPLETED,
+                Sort.by(Sort.Direction.DESC, "createdAt"), Limit.of(1));
     }
 
-    public boolean isAbanonned(JobTask jobTask) {
+    private boolean isAbandonnable(JobStatus status) {
+        return status.ordinal() < JobStatus.COMPLETED.ordinal();
+    }
+
+    public boolean isAbandonned(JobTask jobTask) {
         jobTask = repo.findById(jobTask.getId()).orElse(null);
         return jobTask.getStatus() == JobStatus.ABANDONED;
-    }
-
-    public void abandon(String sub, Long jobTaskId) throws AnimeRecoException {
-        JobTask jobTask = repo.findByProfileSubAndId(sub, jobTaskId);
-        if (!isAbandonnable(jobTask.getStatus())) throw new AnimeRecoException("JobTask can't be abandoned");
-        jobTask.setStatus(JobStatus.ABANDONED);
-        repo.save(jobTask);
-        log.debug("JobTask {} ({}) has been abandoned", jobTask.getName().name(), jobTaskId);
     }
 
     public JobTask getNextQueued() {
@@ -97,6 +136,12 @@ public class JobTaskService {
         return repo.save(jobTask);
     }
 
+    public void end(JobTask jobTask) {
+        jobTask = repo.findById(jobTask.getId()).orElse(null);
+        jobTask.setEndedAt(new Date());
+        repo.save(jobTask);
+    }
+
     public void complete(Long jobTaskId) throws AnimeRecoException {
         JobTask jobTask = repo.findById(jobTaskId).orElse(null);
         if (jobTask == null) throw new AnimeRecoException("Completing taskJob failed, jobTask not found");
@@ -107,18 +152,26 @@ public class JobTaskService {
         repo.save(jobTask);
     }
 
-    public JobTask setReadItemCount(JobTask jobTask, long readItemCount) {
-        jobTask.setReadItemCount(readItemCount);
-        jobTask.setUpdatedAt(new Date());
-        return repo.save(jobTask);
-    }
-
     public void fail(JobTask jobTask) {
         jobTask.setStatus(JobStatus.FAILED);
         jobTask.setEndedAt(new Date());
         jobTask.setUpdatedAt(new Date());
         repo.save(jobTask);
         log.debug("JobTask {} ({}) failed", jobTask.getName().name(), jobTask.getId());
+    }
+
+    public void abandon(String sub, Long jobTaskId) throws AnimeRecoException {
+        JobTask jobTask = repo.findByProfileSubAndId(sub, jobTaskId);
+        if (!isAbandonnable(jobTask.getStatus())) throw new AnimeRecoException("JobTask can't be abandoned");
+        jobTask.setStatus(JobStatus.ABANDONED);
+        repo.save(jobTask);
+        log.debug("JobTask {} ({}) has been abandoned", jobTask.getName().name(), jobTaskId);
+    }
+
+    public JobTask setReadItemCount(JobTask jobTask, long readItemCount) {
+        jobTask.setReadItemCount(readItemCount);
+        jobTask.setUpdatedAt(new Date());
+        return repo.save(jobTask);
     }
 
     public synchronized void appendWriteItemCount(Long taskId, long itemCount) throws AnimeRecoException {
@@ -129,9 +182,5 @@ public class JobTaskService {
         jobTask.setProcessItemCount(processItemCount + itemCount);
         jobTask.setUpdatedAt(new Date());
         repo.save(jobTask);
-    }
-
-    private boolean isAbandonnable(JobStatus status) {
-        return status.ordinal() < JobStatus.COMPLETED.ordinal();
     }
 }

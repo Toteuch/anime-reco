@@ -1,6 +1,8 @@
 package com.toteuch.anime.reco.presentation.job;
 
 import com.toteuch.anime.reco.ApplicationContextHolder;
+import com.toteuch.anime.reco.domain.Author;
+import com.toteuch.anime.reco.domain.job.ClearOldDataJob;
 import com.toteuch.anime.reco.domain.job.JobTaskService;
 import com.toteuch.anime.reco.domain.job.ProcessAnimeRecommendationJob;
 import com.toteuch.anime.reco.domain.job.ProcessUserSimilarityJob;
@@ -18,6 +20,12 @@ public class ScheduledJob {
     public ScheduledJob(RefreshDataFromMalJob refreshDataFromMalJob) {
         this.refreshDataFromMalJob = refreshDataFromMalJob;
         this.jobTaskService = ApplicationContextHolder.getBean(JobTaskService.class);
+    }
+
+    @Scheduled(cron = "0 0 4 * * *")
+    public void triggerRefresh() {
+        log.info("TriggerRefresh...");
+        jobTaskService.requestClearOldData(Author.SYSTEM);
     }
 
     @Scheduled(fixedDelay = 100)
@@ -41,7 +49,10 @@ public class ScheduledJob {
                 case PROCESS_ANIME_RECOMMENDATION:
                     ProcessAnimeRecommendationJob jobPAR = new ProcessAnimeRecommendationJob(jobTask);
                     jobPAR.start();
-
+                    break;
+                case CLEAR_OLD_DATA:
+                    ClearOldDataJob jobCOD = new ClearOldDataJob(jobTask);
+                    jobCOD.start();
                     break;
                 default:
                     log.warn("Job {} not implemented yet", jobTask.getName());

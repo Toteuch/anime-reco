@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Limit;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,10 @@ public class UserSimilarityService {
     private MalUserService userService;
     @Autowired
     private MalUserScoreService userScoreService;
+
+    public Page<UserSimilarity> findOldestSimilarity(String sub, Pageable pageable) {
+        return repo.findByProfileSub(sub, pageable);
+    }
 
     public List<MalUser> getMostSimilarUsers(String sub, Limit limit) {
         return repo.getMostSimilarUsers(sub, Sort.by(Sort.Direction.DESC, "us.score"), limit);
