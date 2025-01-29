@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Anime-Reco</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-5.3.3.min.css}">
+    <link rel="stylesheet" th:href="@{/css/anime-reco.css}">
+</head>
+<body>
+<main class="container" role="main">
+    <input id="csrf-token" th:value="${_csrf.token}" type="hidden"/>
+    <div class="mb-3">
+        <label class="form-label" for="subFormInput">Sub</label>
+        <input class="form-control" disabled id="subFormInput" readonly th:value="${sub}" type="text">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="usernameFormInput">Username</label>
+        <input class="form-control" id="usernameFormInput" placeholder="Username" th:value="${username}" type="text">
+    </div>
+    <div class="mb-3">
+        <button onclick="link();">link</button>
+        <button onclick="refresh();">refreshScore</button>
+        <button onclick="similarity();">ProcessUserSimilarity</button>
+        <button onclick="recommendation();">ProcessAnimeRecommendation</button>
+    </div>
+</main>
+<script th:src="@{/js/jquery-3.7.1.js}"></script>
+<script th:src="@{/js/popper-1.14.3.min.js}"></script>
+<script th:src="@{/js/bootstrap-5.3.3.bundle.min.js}"></script>
+<script th:src="@{/js/anime-reco.js}"></script>
+<script>
+    function link() {
+        let username = $('#usernameFormInput').val();
+        $.ajax({
+            type: "POST",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/profile/link/" + username,
+            success: function(){
+                alert("link ok");
+            }
+        });
+    }
+    function refresh() {
+        let username = $('#usernameFormInput').val();
+        $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/scores/" + username,
+            success: function(){
+                alert("refresh scores ok");
+            }
+        });
+    }
+    function similarity() {
+        $.ajax({
+            type: "POST",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/profile/similarity",
+            success: function(){
+                alert("similarity requested");
+            }
+        });
+    }
+    function recommendation() {
+        $.ajax({
+            type: "POST",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/profile/recommendation",
+            success: function(){
+                alert("recommendation requested");
+            }
+        });
+    }
+</script>
+</body>
+</html>

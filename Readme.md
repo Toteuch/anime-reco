@@ -11,6 +11,8 @@
   * Clear old data for eligible profiles (delete the configured amount of similarities, for Profiles that already completed ProcessUserSimilarityJob at least once)
   * Call ProcessUserSimilarityJob for the profiles
   * Call ProcessAnimeRecommendationJob for the profiles
+* Add a home page (required authent through Google OAuth2)
+  * Display temporary page with basic actions to setup a Profile
 
 #### Version 0.2.0
 

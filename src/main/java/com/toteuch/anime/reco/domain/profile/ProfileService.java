@@ -27,6 +27,10 @@ public class ProfileService {
         return repo.findAll();
     }
 
+    public Profile save(Profile profile) {
+        return repo.save(profile);
+    }
+
     public Profile create(String sub, String email, String avatarUrl) throws AnimeRecoException {
         if (!StringUtils.hasText(sub) || !StringUtils.hasText(email) || !StringUtils.hasText(avatarUrl)) {
             throw new AnimeRecoException("createProfile failed, required field to create a Profile is missing");
