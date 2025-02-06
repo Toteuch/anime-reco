@@ -1,5 +1,12 @@
 # Anime-Reco
 
+#### Next Version
+
+* Profile page
+  * Profile details
+  * Job requests
+  * Last jobs summary
+
 #### Version 0.3.0
 
 * Create a JobTask to plan an asynchronous task

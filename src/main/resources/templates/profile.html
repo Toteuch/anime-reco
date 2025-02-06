@@ -1,0 +1,166 @@
+<!doctype html>
+<html data-bs-theme="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Anime-Reco</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-5.3.3.min.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/anime-reco.css}">
+</head>
+<body>
+<main class="container" role="main">
+    <nav th:replace="~{fragments/general.html :: navbar}"></nav>
+    <div class="container">
+        <div class="row g-2">
+            <div class="col" id="profileDetailsCol">
+
+            </div>
+            <div class="col" id="jobSummaryCol">
+
+            </div>
+        </div>
+    </div>
+</main>
+<script th:src="@{/js/jquery-3.7.1.js}"></script>
+<script th:src="@{/js/popper-1.14.3.min.js}"></script>
+<script th:src="@{/js/bootstrap-5.3.3.bundle.min.js}"></script>
+<script th:src="@{/js/anime-reco.js}"></script>
+<script>
+    $(document).ready(function() {
+        getProfileDetails();
+        getJobsSummary();
+    });
+    function getJobsSummary() {
+        $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/job-summary",
+            success: function(data){
+                if (data.error != null) {
+                    // error modal
+                } else {
+                    displayJobSummaries(data.jobSummaryMap);
+                }
+            }
+        });
+    }
+    function displayJobSummaries(jobSummaryMap) {
+        let mapJobSummary = new Map(Object.entries(jobSummaryMap));
+        let processSimJS = mapJobSummary.get('PROCESS_USER_SIMILARITY');
+        let contentProcessSim = getJSContent(processSimJS);
+        let processRecoJS = mapJobSummary.get('PROCESS_ANIME_RECOMMENDATION');
+        let contentProcessReco = getJSContent(processRecoJS);
+        $('#jobSummaryCol').html(contentProcessSim+contentProcessReco);
+    }
+    function getJSContent(jobSummary) {
+        let content = "";
+        let bgColor = "alert-secondary";
+        if (jobSummary.status != null) {
+            if (jobSummary.status == 'QUEUED') {
+                bgColor = "alert-info";
+            } else if (jobSummary.status == 'STARTED') {
+                bgColor = "alert-primary";
+            } else if (jobSummary.status == 'COMPLETED') {
+                bgColor = "alert-success";
+            } else if (jobSummary.status == 'FAILED') {
+                bgColor = "alert-danger";
+            } else if (jobSummary.status == 'ABANDONED') {
+                bgColor = "alert-warning";
+            }
+        }
+        content += `
+            <div class="alert `+bgColor+` mb-1" id="`+jobSummary.jobName+`"
+                 role="alert" style="padding-top: 0.25rem; padding-bottom: 0rem;">
+                <div class="d-flex mb-1">
+                    <div class="me-auto"><strong>`+jobSummary.jobLabel+`</strong></div>
+                    <div>
+                        <button class="btn btn-danger py-1"><i
+                                class="bi bi-slash-circle"></i></button>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: `+getProgressPercentage(jobSummary)+`%;"></div>
+                    <div class="progress-text">
+                        `+jobSummary.processedItemCount+`/`+jobSummary.readItemCount+`(`+getProgressPercentage
+                        (jobSummary)+`%)
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <div class="p-2 fw-light">Status: `+jobSummary.status+`</div>
+                    <div class="p-2 fw-light">Execution time: `+jobSummary.formattedExecutionTime+`</div>`;
+                        if (jobSummary.status == 'STARTED' || jobSummary.status == 'QUEUED') {
+                            content += `<div class="p-2 fw-light">Estimated end date: `+jobSummary.estimatedEndDate+`</div>`;
+                        } else {
+                            content += `<div class="p-2 fw-light">End date: `+jobSummary.endDate+`</div>`;
+                        }
+        content += `
+                </div>
+            </div>
+        `;
+        return content;
+    }
+    function getProgressPercentage(jobSummary) {
+        if (jobSummary.processedItemCount && jobSummary.processedItemCount > 0) {
+            return Math.round(jobSummary.processedItemCount / jobSummary.readItemCount * 100);
+        } else {
+            return 0;
+        }
+    }
+    function linkUser() {
+        let username = $('#usernameTextInput').val();
+        $.ajax({
+            type: "POST",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/profile/link/" + username,
+            success: function(data){
+                if (data.error != null) {
+                    // error modal
+                } else {
+                    displayProfileDetails(data);
+                }
+            }
+        });
+    }
+    function getProfileDetails() {
+        $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/profile/details",
+            success: function(data){
+                if (data.error != null) {
+                    // error modal
+                } else {
+                    displayProfileDetails(data);
+                }
+            }
+        });
+    }
+    function displayProfileDetails(data) {
+        let htmlContent = `
+            <div class="input-group mb-3 profile">
+                <span class="input-group-text" id="labelSub">Sub</span>
+                <input aria-describedby="labelSub" class="form-control" disabled readonly type="text"
+                       value="`+data.sub+`">
+            </div>
+            <div class="input-group mb-3 profile">
+                <span class="input-group-text" id="labelEmail">Email</span>
+                <input aria-describedby="labelEmail" class="form-control" disabled readonly type="text"
+                       value="`+data.email+`">
+            </div>
+            <div class="input-group mb-3 profile">
+                <span class="input-group-text" id="labelUsername">Username</span>
+                <input aria-describedby="labelUsername" class="form-control"
+                       placeholder="Your MyAnimeList.net's username"
+                       type="text" value="`+data.username+`" id="usernameTextInput" >
+                <a aria-disabled="true" class="btn btn-success" href="#a"
+                   id="syncMalUsernameButton" onClick="linkUser();" role="button">
+                    <i class="bi bi-arrow-repeat"></i>
+                </a>
+            </div>
+        `;
+        $("#profileDetailsCol").html(htmlContent);
+    }
+</script>
+</body>
+</html>
