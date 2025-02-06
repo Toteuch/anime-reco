@@ -52,7 +52,7 @@ public class Anime {
     @JoinColumn(name = "anime_id")
     private List<Notification> notifications;
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "anime_id")
     private List<Recommendation> recommendations;
 
     public Anime() {
@@ -233,5 +233,13 @@ public class Anime {
 
     public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
+    }
+
+    public List<Recommendation> getRecommendations() {
+        return recommendations;
+    }
+
+    public void setRecommendations(List<Recommendation> recommendations) {
+        this.recommendations = recommendations;
     }
 }
