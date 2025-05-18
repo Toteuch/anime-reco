@@ -7,7 +7,6 @@ import com.toteuch.anime.reco.domain.job.entities.JobTask;
 import com.toteuch.anime.reco.domain.profile.ProfileService;
 import com.toteuch.anime.reco.domain.profile.UserSimilarityService;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
-import com.toteuch.anime.reco.domain.profile.entities.UserSimilarity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,17 +78,16 @@ public class JobTaskService {
 
     private JobTask create(String sub, JobName name, Author author, Date createAt) throws AnimeRecoException {
         Profile profile = profileService.findBySub(sub);
-        if (null == profile) throw new AnimeRecoException("createJobTask failed, Profile notFound");
+        if (null == profile) throw new AnimeRecoException("Profile notFound");
         switch (name) {
             case PROCESS_USER_SIMILARITY:
                 if (null == profile.getUser())
-                    throw new AnimeRecoException("createJobTask failed, Profile isn't linked to a " +
-                            "user");
+                    throw new AnimeRecoException("Profile isn't linked to a user");
                 break;
             case PROCESS_ANIME_RECOMMENDATION:
-                List<UserSimilarity> similarities = userSimilarityService.getUserSimilarities(profile.getSub());
-                if (similarities == null || similarities.size() < 10)
-                    throw new AnimeRecoException("createJobTask failed, Profile must have at least 10 similarities");
+                JobTask lastPUS = getLastOccurrence(profile.getSub(), JobName.PROCESS_USER_SIMILARITY);
+                if (lastPUS == null || lastPUS.getStatus() != JobStatus.COMPLETED)
+                    throw new AnimeRecoException("Please complete the user similarities before");
                 break;
             case CLEAR_OLD_DATA:
                 break;
@@ -100,12 +98,11 @@ public class JobTaskService {
         JobTask jobTask = null;
         if (null != jobTaskList) {
             if (jobTaskList.size() > 1) {
-                throw new AnimeRecoException("createJobTask failed, there is more than 1 task queued for this job");
+                throw new AnimeRecoException("There is more than 1 task queued for this job");
             } else if (jobTaskList.size() == 1) {
                 jobTask = jobTaskList.get(0);
                 if (author == Author.USER) {
-                    throw new AnimeRecoException("createJobTask failed, JobTask already queued for that " +
-                            "Profile");
+                    throw new AnimeRecoException("Job already queued for that Profile");
                 } else {
                     // put the job at the end of the queue
                     abandon(sub, jobTask.getId());
@@ -180,7 +177,7 @@ public class JobTaskService {
 
     public void abandon(String sub, Long jobTaskId) throws AnimeRecoException {
         JobTask jobTask = repo.findByProfileSubAndId(sub, jobTaskId);
-        if (!isAbandonnable(jobTask.getStatus())) throw new AnimeRecoException("JobTask can't be abandoned");
+        if (!isAbandonnable(jobTask.getStatus())) throw new AnimeRecoException("Job can't be abandoned");
         jobTask.setStatus(JobStatus.ABANDONED);
         repo.save(jobTask);
         log.debug("JobTask {} ({}) has been abandoned", jobTask.getName().name(), jobTaskId);

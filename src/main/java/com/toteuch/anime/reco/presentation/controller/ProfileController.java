@@ -56,7 +56,7 @@ public class ProfileController {
         ProfileDetailsResponse response = new ProfileDetailsResponse();
         response.setSub(profile.getSub());
         response.setEmail(profile.getEmail());
-        response.setUsername(profile.getUser() != null ? profile.getUser().getUsername() : null);
+        response.setUsername(profile.getUser() != null ? profile.getUser().getUsername() : "");
         return response;
     }
 

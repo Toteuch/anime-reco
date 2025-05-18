@@ -43,6 +43,7 @@ public class JobSummaryService {
         if (jobTask == null) return null;
         JobSummaryPojo pojo = new JobSummaryPojo();
         pojo.setStatus(jobTask.getStatus().name());
+        pojo.setJobId(jobTask.getId());
         Long executionTime = null;
         if (jobTask.getStartedAt() != null && jobTask.getUpdatedAt() != null) {
             LocalDateTime localStartedAt =
@@ -60,10 +61,13 @@ public class JobSummaryService {
         pojo.setProcessedItemCount(jobTask.getProcessItemCount() != null ? jobTask.getProcessItemCount() : 0L);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
         switch (jobTask.getStatus()) {
-            case COMPLETED, ABANDONED, FAILED:
+            case ABANDONED:
+                pojo.setEndDate(sdf.format(jobTask.getUpdatedAt()));
+            case COMPLETED, FAILED:
                 pojo.setCanBeAbandoned(false);
                 pojo.setCanBeStarted(true);
-                pojo.setEndDate(sdf.format(jobTask.getEndedAt()));
+                if (pojo.getEndDate() == null)
+                    pojo.setEndDate(sdf.format(jobTask.getEndedAt()));
                 if (executionTime == null || executionTime == 0L) {
                     pojo.setFormattedExecutionTime("N/A");
                 }

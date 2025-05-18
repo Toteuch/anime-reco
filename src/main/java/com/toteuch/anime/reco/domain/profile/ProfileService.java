@@ -49,7 +49,7 @@ public class ProfileService {
         if (profile.getUser() != null && username.equals(profile.getUser().getUsername())) return profile;
         Profile profileUser = repo.findByUserUsername(username);
         if (profileUser != null)
-            throw new AnimeRecoException("The user is already link to a profile");
+            throw new AnimeRecoException("The user is already linked to a profile");
         if (profile.getUser() != null) {
             MalUser previousUser = profile.getUser();
             previousUser.setProfile(null);

@@ -20,6 +20,26 @@
                     <a aria-current="page" class="nav-link active" href="#" th:if="${currentPage == 'profile'}">Profile
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link link-secondary" href="/search" th:if="${currentPage != 'search'}">Search</a>
+                    <a aria-current="page" class="nav-link active" href="#" th:if="${currentPage == 'search'}">Search
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-secondary" href="/watchlist" th:if="${currentPage != 'watchlist'}">Watchlist
+                    </a>
+                    <a aria-current="page" class="nav-link active" href="#"
+                       th:if="${currentPage == 'watchlist'}">Watchlist
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link link-secondary" href="/notifications"
+                       th:if="${currentPage != 'notifications'}">Notifications
+                    </a>
+                    <a aria-current="page" class="nav-link active" href="#"
+                       th:if="${currentPage == 'notifications'}">Notifications
+                    </a>
+                </li>
             </ul>
         </div>
         <a class="nav-link"

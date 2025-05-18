@@ -3,6 +3,7 @@ package com.toteuch.anime.reco.domain.job;
 public class JobSummaryPojo {
     private String jobName;
     private String jobLabel;
+    private Long jobId;
     private Long processedItemCount;
     private Long readItemCount;
     private String status;
@@ -93,5 +94,13 @@ public class JobSummaryPojo {
 
     public void setJobLabel(String jobLabel) {
         this.jobLabel = jobLabel;
+    }
+
+    public Long getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(Long jobId) {
+        this.jobId = jobId;
     }
 }
