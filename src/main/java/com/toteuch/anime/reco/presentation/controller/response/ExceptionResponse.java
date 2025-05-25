@@ -7,6 +7,9 @@ public class ExceptionResponse {
         this.error = error;
     }
 
+    public ExceptionResponse() {
+    }
+
     public String getError() {
         return error;
     }

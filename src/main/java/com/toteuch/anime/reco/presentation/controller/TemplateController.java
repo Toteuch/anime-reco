@@ -32,4 +32,11 @@ public class TemplateController {
         model.addAttribute("currentPage", TemplateName.PROFILE.getCode());
         return "profile";
     }
+
+    @GetMapping("notifications")
+    public String showNotification(Model model) {
+        model.addAttribute("isAuthenticated", "true");
+        model.addAttribute("currentPage", TemplateName.NOTIFICATIONS.getCode());
+        return "notifications";
+    }
 }

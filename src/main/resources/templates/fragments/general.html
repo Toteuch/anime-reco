@@ -48,4 +48,22 @@
         <a class="nav-link link-secondary" href="/logout" th:if="${isAuthenticated}">Logout</a>
     </div>
 </nav>
+<div aria-hidden="true" aria-labelledby="modalWindowTitle" class="modal fade" data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     id="errorModal" tabindex="-1" th:fragment="errorModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalWindowTitle"></h1>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body" id="modalWindowMessage">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </html>

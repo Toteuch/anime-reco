@@ -2,7 +2,8 @@ package com.toteuch.anime.reco.presentation.controller;
 
 public enum TemplateName {
     HOME("home"),
-    PROFILE("profile");
+    PROFILE("profile"),
+    NOTIFICATIONS("notifications");
 
     private final String code;
 

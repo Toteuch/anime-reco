@@ -60,4 +60,13 @@ public class NotificationService {
     public List<Notification> getUnreadNotifications(String sub) {
         return repo.findByProfileSubAndReadAtNull(sub, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
+
+    /**
+     * Sorted by creation date descending
+     *
+     * @return
+     */
+    public List<Notification> getAllNotifications(String sub) {
+        return repo.findByProfileSub(sub, Sort.by(Sort.Direction.DESC, "createdAt"));
+    }
 }

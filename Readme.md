@@ -3,9 +3,16 @@
 #### Next Version
 
 * Profile page
+
   * Profile details
   * Job requests
   * Last jobs summary
+* Basic Notification page
+
+  * Notification list
+
+    * Sorted from newest to oldest
+  * Mark as read
 
 #### Version 0.3.0
 
