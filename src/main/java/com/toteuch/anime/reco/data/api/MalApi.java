@@ -65,10 +65,10 @@ public class MalApi {
     private void sleepIfNeeded() {
         long now = System.currentTimeMillis();
         long last = lastCall.get();
-        if (now - last < 1000) {
+        if (now - last < requestInterval) {
             try {
-                long sleep = 1000 - (now - last);
-                log.trace("MalApi sleeping for {} ms...", sleep);
+                long sleep = requestInterval - (now - last);
+                log.trace("Request interval set to {} ms: MalApi sleeping for {} ms...", requestInterval, sleep);
                 Thread.sleep(sleep);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -93,6 +93,7 @@ public class MalApi {
                     if (e.getStatusCode() == HttpStatus.GATEWAY_TIMEOUT && retryCount < 3) {
                         retryCount++;
                     } else {
+                        log.error(e.getResponseBodyAsString());
                         throw e;
                     }
                 }

@@ -13,6 +13,9 @@
 
     * Sorted from newest to oldest
   * Mark as read
+* Fixes
+
+  * Usage of the request interval (default set 2000ms to avoid 307 (api limit))
 
 #### Version 0.3.0
 
