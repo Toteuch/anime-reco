@@ -231,7 +231,6 @@ public class AnimeService {
         // PICTURE LINK
         List<PictureLink> pictureLinks = pictureLinkRepository.findByAnime(anime);
         pictureLinks.clear();
-        anime.getPictureLinks().clear();
         for (String medium : rawDetails.getPictureUrlsMedium()) {
             PictureLink pl = new PictureLink(anime, medium);
             pictureLinks.add(pictureLinkRepository.save(pl));
