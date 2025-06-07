@@ -23,6 +23,7 @@
         <button onclick="refresh();">refreshScore</button>
         <button onclick="similarity();">ProcessUserSimilarity</button>
         <button onclick="recommendation();">ProcessAnimeRecommendation</button>
+        <button onclick="refreshOldAnime();">RefreshOldAnime</button>
     </div>
     <div class="mb-3">
         <a href="/profile">Profile</a>
@@ -33,6 +34,16 @@
 <script th:src="@{/js/bootstrap-5.3.3.bundle.min.js}"></script>
 <script th:src="@{/js/anime-reco.js}"></script>
 <script>
+    function refreshOldAnime() {
+        $.ajax({
+            type: "POST",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/debug/refresh-old-anime",
+            success: function(){
+                alert("refresh old anime requested");
+            }
+        });
+    }
     function link() {
         let username = $('#usernameFormInput').val();
         $.ajax({

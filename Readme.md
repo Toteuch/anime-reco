@@ -16,6 +16,7 @@
 * Fixes
 
   * Usage of the request interval (default set 2000ms to avoid 307 (api limit))
+  * Issue on old anime refresh (orphan deletion)
 
 #### 0.3.0
 

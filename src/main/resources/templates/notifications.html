@@ -70,11 +70,15 @@
                     <td>${notifications[i].animeTitle}</td>
                     <td>${notifications[i].createdAt}</td>
                     <td>${notifications[i].readAt}</td>
+            `;
+            if (notifications[i].readAt == null) {
+                content +=`
                     <td><a href='#'
                         onclick="read(${notifications[i].id});">read</a>
                     </td>
                 </tr>
-            `;
+                `;
+            }
         }
         content += "</table></tbody>";
         $('#mainContainer').html(content);

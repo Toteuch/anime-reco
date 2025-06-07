@@ -231,12 +231,12 @@ public class AnimeService {
         // PICTURE LINK
         List<PictureLink> pictureLinks = pictureLinkRepository.findByAnime(anime);
         pictureLinks.clear();
+        anime.getPictureLinks().clear();
         for (String medium : rawDetails.getPictureUrlsMedium()) {
             PictureLink pl = new PictureLink(anime, medium);
             pictureLinks.add(pictureLinkRepository.save(pl));
         }
         anime.setPictureLinks(pictureLinks);
-        anime = repo.save(anime);
         // FAVORITE
         List<Favorite> favorites = anime.getFavorites();
         if (anime.getSequelAnimeId() != null && previousSequelId == null && !anime.getFavorites().isEmpty()) {

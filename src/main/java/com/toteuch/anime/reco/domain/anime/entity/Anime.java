@@ -34,12 +34,12 @@ public class Anime {
             @UniqueConstraint(name = "unique_anime_genre", columnNames = {"genres_id", "anime_id"})
     }, joinColumns = @JoinColumn(name = "anime_id"))
     private List<Genre> genres;
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "anime_id")
     private List<AlternativeTitle> alternativeTitles;
     @ManyToOne
     private Season season;
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "anime_id")
     private List<PictureLink> pictureLinks;
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
