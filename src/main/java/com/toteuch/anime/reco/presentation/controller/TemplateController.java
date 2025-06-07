@@ -21,6 +21,22 @@ public class TemplateController {
         Profile profile = profileService.findBySub(user.getSubject());
         model.addAttribute("sub", profile.getSub());
         model.addAttribute("username", profile.getUser() != null ? profile.getUser().getUsername() : "");
+        model.addAttribute("isAuthenticated", "true");
+        model.addAttribute("currentPage", TemplateName.HOME.getCode());
         return "home";
+    }
+
+    @GetMapping("profile")
+    public String showProfile(Model model) {
+        model.addAttribute("isAuthenticated", "true");
+        model.addAttribute("currentPage", TemplateName.PROFILE.getCode());
+        return "profile";
+    }
+
+    @GetMapping("notifications")
+    public String showNotification(Model model) {
+        model.addAttribute("isAuthenticated", "true");
+        model.addAttribute("currentPage", TemplateName.NOTIFICATIONS.getCode());
+        return "notifications";
     }
 }

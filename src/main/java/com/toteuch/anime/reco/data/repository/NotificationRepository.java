@@ -12,5 +12,7 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findByProfileSubAndReadAtNull(String sub, Sort sort);
 
+    List<Notification> findByProfileSub(String sub, Sort sort);
+
     Notification findByProfileAndId(Profile profile, Long id);
 }

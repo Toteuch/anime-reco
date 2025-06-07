@@ -45,11 +45,11 @@ public class ProfileService {
 
     public Profile linkMalUser(String sub, String username) throws AnimeRecoException {
         Profile profile = repo.findBySub(sub);
-        if (profile == null) throw new AnimeRecoException("linkMalUser failed, profile doesn't exist");
+        if (profile == null) throw new AnimeRecoException("Profile doesn't exist");
         if (profile.getUser() != null && username.equals(profile.getUser().getUsername())) return profile;
         Profile profileUser = repo.findByUserUsername(username);
         if (profileUser != null)
-            throw new AnimeRecoException("linkMalUser failed, the user is already link to a profile");
+            throw new AnimeRecoException("The user is already linked to a profile");
         if (profile.getUser() != null) {
             MalUser previousUser = profile.getUser();
             previousUser.setProfile(null);

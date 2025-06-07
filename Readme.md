@@ -1,6 +1,23 @@
 # Anime-Reco
 
-#### Version 0.3.0
+#### Next
+
+* Profile page
+
+  * Profile details
+  * Job requests
+  * Last jobs summary
+* Basic Notification page
+
+  * Notification list
+
+    * Sorted from newest to oldest
+  * Mark as read
+* Fixes
+
+  * Usage of the request interval (default set 2000ms to avoid 307 (api limit))
+
+#### 0.3.0
 
 * Create a JobTask to plan an asynchronous task
 * Abandon a JobTask that is not finished (in STARTED or QUEUED state)
@@ -14,7 +31,7 @@
 * Add a home page (required authent through Google OAuth2)
   * Display temporary page with basic actions to setup a Profile
 
-#### Version 0.2.0
+#### 0.2.0
 
 * Create a Profile from a Subject, email and Avatar URL: the Subject and the Email mustn't exist already
 * Link a Profile to a MalUser: the MalUser mustn't be linked to a Profile already
@@ -27,7 +44,7 @@
 * Notify profile when an anime has been favorited
 * Notify when a favorited anime got its status changed
 
-#### Version 0.1.0
+#### 0.1.0
 
 New features:
 

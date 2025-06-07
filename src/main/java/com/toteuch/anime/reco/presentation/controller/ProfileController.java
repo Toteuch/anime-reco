@@ -7,6 +7,7 @@ import com.toteuch.anime.reco.domain.job.JobTaskService;
 import com.toteuch.anime.reco.domain.maluser.MalUserScoreService;
 import com.toteuch.anime.reco.domain.profile.ProfileService;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
+import com.toteuch.anime.reco.presentation.controller.response.ProfileDetailsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -25,17 +26,43 @@ public class ProfileController {
     @Autowired
     private JobTaskService jobTaskService;
 
-    @PostMapping("/profile/link/{username}")
-    public void linkUser(@PathVariable(name = "username") String username) throws AnimeRecoException {
-        DefaultOidcUser user = (DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Profile profile = profileService.findBySub(user.getSubject());
-        profileService.linkMalUser(profile.getSub(), username);
+    @GetMapping("/profile/details")
+    public ProfileDetailsResponse getProfileDetails() {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            return getProfileDetailResponse(profile);
+        } else {
+            return new ProfileDetailsResponse("Not authenticated");
+        }
     }
 
-    @GetMapping("/scores/{username}")
-    public void favorite(@PathVariable(name = "username") String username) {
-        userScoreService.refreshUserScores(username);
+    @PostMapping("/profile/link/{username}")
+    public ProfileDetailsResponse linkUser(@PathVariable(name = "username") String username) {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            try {
+                profile = profileService.linkMalUser(profile.getSub(), username);
+                userScoreService.refreshUserScores(username);
+                return getProfileDetailResponse(profile);
+            } catch (AnimeRecoException e) {
+                return new ProfileDetailsResponse(e.getMessage());
+            }
+        } else {
+            return new ProfileDetailsResponse("Not authenticated");
+        }
     }
+
+    private ProfileDetailsResponse getProfileDetailResponse(Profile profile) {
+        ProfileDetailsResponse response = new ProfileDetailsResponse();
+        response.setSub(profile.getSub());
+        response.setEmail(profile.getEmail());
+        response.setUsername(profile.getUser() != null ? profile.getUser().getUsername() : "");
+        return response;
+    }
+
+    /*
+        OLD
+     */
 
 
     @PostMapping("/profile/similarity")

@@ -1,0 +1,84 @@
+<!doctype html>
+<html data-bs-theme="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Anime-Reco</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-5.3.3.min.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/anime-reco.css}">
+</head>
+<body>
+<main class="container" role="main">
+    <nav th:replace="~{fragments/general.html :: navbar}"></nav>
+    <div class="container" id="mainContainer">
+
+    </div>
+    <!-- Modal -->
+    <div th:replace="~{fragments/general.html :: errorModal}"></div>
+</main>
+<script th:src="@{/js/jquery-3.7.1.js}"></script>
+<script th:src="@{/js/popper-1.14.3.min.js}"></script>
+<script th:src="@{/js/bootstrap-5.3.3.bundle.min.js}"></script>
+<script th:src="@{/js/anime-reco.js}"></script>
+<script>
+    $(document).ready(function() {
+        getNotifications();
+    });
+    function showModal(title, message) {
+        $('#modalWindowTitle').html(title);
+        $('#modalWindowMessage').html(message);
+        $('#errorModal').modal('show');
+    }
+    function getNotifications() {
+        $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/notifications/list",
+            success: function(data){
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    displayNotifications(data.notifications);
+                }
+            }
+        });
+    }
+
+    function read(id) {
+        $.ajax({
+            type: "POST",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/notifications/"+id+"/read",
+            success: function(data){
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    location.reload();
+                }
+            }
+        });
+    }
+
+    function displayNotifications(notifications) {
+        let content = "<table><tbody>";
+        for (let i in Object.entries(notifications)) {
+            content += `
+                <tr>
+                    <td>${notifications[i].id}</td>
+                    <td>${notifications[i].type}</td>
+                    <td>${notifications[i].animeTitle}</td>
+                    <td>${notifications[i].createdAt}</td>
+                    <td>${notifications[i].readAt}</td>
+                    <td><a href='#'
+                        onclick="read(${notifications[i].id});">read</a>
+                    </td>
+                </tr>
+            `;
+        }
+        content += "</table></tbody>";
+        $('#mainContainer').html(content);
+    }
+</script>
+</body>
+</html>

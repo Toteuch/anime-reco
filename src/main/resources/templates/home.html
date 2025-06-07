@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html data-bs-theme="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -9,7 +9,7 @@
 </head>
 <body>
 <main class="container" role="main">
-    <input id="csrf-token" th:value="${_csrf.token}" type="hidden"/>
+    <nav th:replace="~{fragments/general.html :: navbar}"></nav>
     <div class="mb-3">
         <label class="form-label" for="subFormInput">Sub</label>
         <input class="form-control" disabled id="subFormInput" readonly th:value="${sub}" type="text">
@@ -23,6 +23,9 @@
         <button onclick="refresh();">refreshScore</button>
         <button onclick="similarity();">ProcessUserSimilarity</button>
         <button onclick="recommendation();">ProcessAnimeRecommendation</button>
+    </div>
+    <div class="mb-3">
+        <a href="/profile">Profile</a>
     </div>
 </main>
 <script th:src="@{/js/jquery-3.7.1.js}"></script>
