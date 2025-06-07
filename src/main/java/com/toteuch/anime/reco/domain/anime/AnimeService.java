@@ -252,6 +252,7 @@ public class AnimeService {
                 }
             }
         }
+        save(anime);
         // NOTIFICATION
         if (previousStatus != null && !previousStatus.equals(anime.getStatus()) && anime.getFavorites() != null) {
             for (Favorite favorite : anime.getFavorites()) {
