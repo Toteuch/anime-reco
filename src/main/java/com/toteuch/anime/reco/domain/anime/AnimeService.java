@@ -230,10 +230,13 @@ public class AnimeService {
         anime.setSeason(season);
         // PICTURE LINK
         List<PictureLink> pictureLinks = pictureLinkRepository.findByAnime(anime);
-        pictureLinks.clear();
+        List<String> existingMediums = new ArrayList<>();
+        pictureLinks.forEach(pl -> existingMediums.add(pl.getMedium()));
         for (String medium : rawDetails.getPictureUrlsMedium()) {
-            PictureLink pl = new PictureLink(anime, medium);
-            pictureLinks.add(pictureLinkRepository.save(pl));
+            if (!existingMediums.contains(medium)) {
+                PictureLink pl = new PictureLink(anime, medium);
+                pictureLinks.add(pictureLinkRepository.save(pl));
+            }
         }
         anime.setPictureLinks(pictureLinks);
         // FAVORITE
