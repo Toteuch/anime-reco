@@ -17,25 +17,36 @@ public class TemplateController {
 
     @GetMapping({"/", "/index.html"})
     public String showHome(Model model) {
-        DefaultOidcUser user = (DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Profile profile = profileService.findBySub(user.getSubject());
-        model.addAttribute("sub", profile.getSub());
-        model.addAttribute("username", profile.getUser() != null ? profile.getUser().getUsername() : "");
-        model.addAttribute("isAuthenticated", "true");
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            model.addAttribute("sub", profile.getSub());
+            model.addAttribute("username", profile.getUser() != null ? profile.getUser().getUsername() : "");
+            model.addAttribute("isAuthenticated", "true");
+        } else {
+            model.addAttribute("isAuthenticated", "false");
+        }
         model.addAttribute("currentPage", TemplateName.HOME.getCode());
         return "home";
     }
 
     @GetMapping("profile")
     public String showProfile(Model model) {
-        model.addAttribute("isAuthenticated", "true");
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            model.addAttribute("isAuthenticated", "true");
+        } else {
+            model.addAttribute("isAuthenticated", "false");
+        }
         model.addAttribute("currentPage", TemplateName.PROFILE.getCode());
         return "profile";
     }
 
     @GetMapping("notifications")
     public String showNotification(Model model) {
-        model.addAttribute("isAuthenticated", "true");
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            model.addAttribute("isAuthenticated", "true");
+        } else {
+            model.addAttribute("isAuthenticated", "false");
+        }
         model.addAttribute("currentPage", TemplateName.NOTIFICATIONS.getCode());
         return "notifications";
     }

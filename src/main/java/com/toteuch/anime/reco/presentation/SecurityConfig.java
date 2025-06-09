@@ -25,14 +25,14 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/*").authenticated();
+                    auth.requestMatchers("/logout").authenticated();
                     auth.anyRequest().permitAll();
                 })
                 .oauth2Login(oauth2login -> {
                     oauth2login
                             .userInfoEndpoint(userInfo -> userInfo
                                     .oidcUserService(this.oidcUserService()))
-                            .defaultSuccessUrl("/", true);
+                            .defaultSuccessUrl("/", false);
                 })
                 .logout(logout -> logout.logoutSuccessUrl("/"));
 

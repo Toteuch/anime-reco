@@ -2,6 +2,8 @@
 
 #### Next
 
+* Allow anonymous session
+
 #### 0.4.0
 
 * Profile page
