@@ -39,4 +39,11 @@ public class TemplateController {
         model.addAttribute("currentPage", TemplateName.NOTIFICATIONS.getCode());
         return "notifications";
     }
+
+    @GetMapping("search")
+    public String showSearch(Model model) {
+        model.addAttribute("isAuthenticated", "true");
+        model.addAttribute("currentPage", TemplateName.SEARCH.getCode());
+        return "search";
+    }
 }

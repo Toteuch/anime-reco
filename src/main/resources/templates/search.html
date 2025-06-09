@@ -1,0 +1,73 @@
+<!doctype html>
+<html data-bs-theme="dark" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Anime-Reco</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-5.3.3.min.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/anime-reco.css}">
+</head>
+<body>
+<main class="container" role="main">
+    <nav th:replace="~{fragments/general.html :: navbar}"></nav>
+    <button class="btn btn-primary" data-bs-target="#filterModal" data-bs-toggle="modal" type="button">
+        Launch demo modal
+    </button>
+    <div class="modal" id="filterModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Filter</h5>
+                    <button aria-label="Cancel" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control" id="filterTitleInput" placeholder="Title" type="text">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
+                    <button class="btn btn-primary" type="button">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="filterNameFormInput">Name</label>
+        <input class="form-control" id="filterNameFormInput" type="text">
+    </div>
+    <div class="mb-3">
+        <button onclick="create();">create</button>
+    </div>
+</main>
+<script th:src="@{/js/jquery-3.7.1.js}"></script>
+<script th:src="@{/js/popper-1.14.3.min.js}"></script>
+<script th:src="@{/js/bootstrap-5.3.3.bundle.min.js}"></script>
+<script th:src="@{/js/anime-reco.js}"></script>
+<script>
+    function create() {
+        let body = {
+            "name": $('#filterNameFormInput').val(),
+            "mediaTypes": ["tv", "movie"],
+            "status": ["not_aired_yet"],
+            "minSeasonYear": 2010,
+            "genres": [4,22]
+        };
+        $.ajax({
+            type: "POST",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/search-filter",
+            data: JSON.stringify(body),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data) {
+                if (data.error != null) {
+                    alert(data.error);
+                } else {
+                    alert("filter created");
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

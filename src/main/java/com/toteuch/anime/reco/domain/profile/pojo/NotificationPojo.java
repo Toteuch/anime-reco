@@ -1,4 +1,6 @@
-package com.toteuch.anime.reco.domain.profile;
+package com.toteuch.anime.reco.domain.profile.pojo;
+
+import com.toteuch.anime.reco.domain.profile.NotificationType;
 
 import java.util.Date;
 

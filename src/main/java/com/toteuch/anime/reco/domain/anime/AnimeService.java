@@ -287,4 +287,8 @@ public class AnimeService {
     public void save(Anime newAnime) {
         repo.save(newAnime);
     }
+
+    public Genre getGenreById(Long id) {
+        return genreRepository.findById(id).orElse(null);
+    }
 }

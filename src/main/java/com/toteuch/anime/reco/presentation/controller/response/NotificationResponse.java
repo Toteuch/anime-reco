@@ -1,6 +1,6 @@
 package com.toteuch.anime.reco.presentation.controller.response;
 
-import com.toteuch.anime.reco.domain.profile.NotificationPojo;
+import com.toteuch.anime.reco.domain.profile.pojo.NotificationPojo;
 
 import java.util.List;
 

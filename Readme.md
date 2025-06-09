@@ -2,6 +2,13 @@
 
 #### Next
 
+* Filters management
+  * Save a filter
+  * Delete a filter
+  * Sort filters
+* Basic search anime page
+  * Access the filter management
+
 #### 0.4.0
 
 * Profile page

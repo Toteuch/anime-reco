@@ -1,9 +1,9 @@
 package com.toteuch.anime.reco.presentation.controller;
 
 import com.toteuch.anime.reco.domain.AnimeRecoException;
-import com.toteuch.anime.reco.domain.profile.NotificationPojo;
 import com.toteuch.anime.reco.domain.profile.NotificationService;
 import com.toteuch.anime.reco.domain.profile.entities.Notification;
+import com.toteuch.anime.reco.domain.profile.pojo.NotificationPojo;
 import com.toteuch.anime.reco.presentation.controller.response.NotificationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
