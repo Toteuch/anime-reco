@@ -12,18 +12,25 @@
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
     <button class="btn btn-primary" data-bs-target="#filterModal" data-bs-toggle="modal" type="button">
-        Launch demo modal
+        Filter
     </button>
     <div class="modal" id="filterModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Filter</h5>
-                    <button aria-label="Cancel" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-                </div>
                 <div class="modal-body">
-                    <input class="form-control" id="filterTitleInput" placeholder="Title" type="text">
+                    <div class="d-flex flex-row mb-3">
+                        <div>
+                            <input class="form-control" id="filterTitleInput" placeholder="Title" type="text">
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" type="button">Save</button>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" type="button">Open</button>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
                     <button class="btn btn-primary" type="button">Apply</button>
