@@ -1,6 +1,7 @@
 package com.toteuch.anime.reco.presentation.controller;
 
 import com.toteuch.anime.reco.domain.profile.ProfileService;
+import com.toteuch.anime.reco.domain.profile.SearchFilterService;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,8 @@ public class TemplateController {
 
     @Autowired
     private ProfileService profileService;
+    @Autowired
+    private SearchFilterService searchFilterService;
 
     @GetMapping({"/", "/index.html"})
     public String showHome(Model model) {
@@ -53,7 +56,11 @@ public class TemplateController {
 
     @GetMapping("search")
     public String showSearch(Model model) {
-        model.addAttribute("isAuthenticated", "true");
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            model.addAttribute("isAuthenticated", "true");
+        } else {
+            model.addAttribute("isAuthenticated", "false");
+        }
         model.addAttribute("currentPage", TemplateName.SEARCH.getCode());
         return "search";
     }

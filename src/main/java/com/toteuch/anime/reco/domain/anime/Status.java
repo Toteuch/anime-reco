@@ -2,17 +2,26 @@ package com.toteuch.anime.reco.domain.anime;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public enum Status {
-    FINISHED("finished_airing"),
-    ONGOING("currently_airing"),
-    COMING("not_yet_aired");
-    private final String malCode;
+    COMING("not_yet_aired", "Incoming"),
+    ONGOING("currently_airing", "Ongoing"),
+    FINISHED("finished_airing", "Completed");
 
-    Status(String mal_code) {
+
+    private final String malCode;
+    private final String label;
+
+    Status(String mal_code, String label) {
         this.malCode = mal_code;
+        this.label = label;
+    }
+
+    public static Map<String, String> getStatusMap() {
+        Map<String, String> statusMap = new HashMap<>();
+        Arrays.stream(values()).toList().forEach(s -> statusMap.put(s.malCode, s.label));
+        return statusMap;
     }
 
     public static List<Status> parseStatusList(List<String> malCodeList) {

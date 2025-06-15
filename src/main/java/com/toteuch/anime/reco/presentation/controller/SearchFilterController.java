@@ -12,9 +12,12 @@ import com.toteuch.anime.reco.presentation.controller.response.SearchFilterRespo
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 public class SearchFilterController {
@@ -44,6 +47,21 @@ public class SearchFilterController {
         } else {
             return new SearchFilterResponse("User not authenticated");
         }
+    }
+
+    @GetMapping("/search-filter/media-type")
+    public Map<String, String> getMediaTypes() {
+        return MediaType.getMediaTypesMap();
+    }
+
+    @GetMapping("/search-filter/status")
+    public Map<String, String> getStatus() {
+        return Status.getStatusMap();
+    }
+
+    @GetMapping("/search-filter/genre")
+    public Map<Long, String> getGenres() {
+        return animeService.getGenresMap();
     }
 
     private SearchFilterPojo getSearchFilterPojo(SearchFilter searchFilter) {

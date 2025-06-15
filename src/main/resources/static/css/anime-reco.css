@@ -31,3 +31,7 @@ div.input-group.profile > .input-group-text {
     color: #000;
     font-weight: bold;
 }
+
+input[type="number"] {
+    width: 4.5em;
+}

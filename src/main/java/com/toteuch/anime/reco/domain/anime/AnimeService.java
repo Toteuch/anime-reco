@@ -291,4 +291,11 @@ public class AnimeService {
     public Genre getGenreById(Long id) {
         return genreRepository.findById(id).orElse(null);
     }
+
+    public Map<Long, String> getGenresMap() {
+        Map<Long, String> genresMap = new HashMap<>();
+        List<Genre> genres = genreRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+        genres.forEach(g -> genresMap.put(g.getId(), g.getName()));
+        return genresMap;
+    }
 }

@@ -2,25 +2,32 @@ package com.toteuch.anime.reco.domain.anime;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public enum MediaType {
-    TV("tv"),
-    MOVIE("movie"),
-    OVA("ova"),
-    TV_SPECIAL("tv_special"),
-    SPECIAL("special"),
-    ONLINE("ona"),
-    MUSIC("music"),
-    COMMERCIAL("cm"),
-    PILOT("pv"),
-    UNKNOWN("unknown");
+    TV("tv", "TV"),
+    MOVIE("movie", "Movie"),
+    OVA("ova", "OVA"),
+    TV_SPECIAL("tv_special", "TV Special"),
+    SPECIAL("special", "Special"),
+    ONLINE("ona", "Online"),
+    MUSIC("music", "Music"),
+    COMMERCIAL("cm", "Commercial"),
+    PILOT("pv", "Pilot"),
+    UNKNOWN("unknown", "Unknown");
 
     private final String malCode;
+    private final String label;
 
-    MediaType(String malCode) {
+    MediaType(String malCode, String label) {
         this.malCode = malCode;
+        this.label = label;
+    }
+
+    public static Map<String, String> getMediaTypesMap() {
+        Map<String, String> mtMap = new HashMap<>();
+        Arrays.stream(MediaType.values()).toList().forEach(mt -> mtMap.put(mt.getMalCode(), mt.getLabel()));
+        return mtMap;
     }
 
     public static List<MediaType> parseMediaTypes(List<String> malCodeList) {
@@ -45,5 +52,9 @@ public enum MediaType {
 
     public String getMalCode() {
         return malCode;
+    }
+
+    public String getLabel() {
+        return label;
     }
 }
