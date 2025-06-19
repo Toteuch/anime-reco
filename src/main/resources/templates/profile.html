@@ -33,14 +33,7 @@
         getProfileDetails();
         getJobsSummary();
     });
-    function showErrorModal(message) {
-        showModal('Error', message);
-    }
-    function showModal(title, message) {
-        $('#modalWindowTitle').html(title);
-        $('#modalWindowMessage').html(message);
-        $('#errorModal').modal('show');
-    }
+
     function getJobsSummary() {
         $.ajax({
             type: "GET",

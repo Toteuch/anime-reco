@@ -3,30 +3,26 @@
 #### Next
 
 * Allow anonymous session
-* Filters management
-* Save a filter
-* Delete a filter
-* Sort filters
-* Basic search anime page
-    * Access the filter management
+* Search anime page
+  * Filter search
 
 #### 0.4.0
 
 * Profile page
 
-    * Profile details
-    * Job requests
-    * Last jobs summary
+  * Profile details
+  * Job requests
+  * Last jobs summary
 * Basic Notification page
 
-    * Notification list
+  * Notification list
 
-        * Sorted from newest to oldest
-    * Mark as read
+    * Sorted from newest to oldest
+  * Mark as read
 * Fixes
 
-    * Usage of the request interval (default set 2000ms to avoid 307 (api limit))
-    * Issue on old anime refresh (orphan deletion)
+  * Usage of the request interval (default set 2000ms to avoid 307 (api limit))
+  * Issue on old anime refresh (orphan deletion)
 
 #### 0.3.0
 
@@ -37,12 +33,12 @@
 * Modify some columns definition on existing tables (execute V0001__alter_tables_0.3.0.sql if previous version was
   installed)
 * Automatically trigger once a day (4AM) a refresh job that
-    * Clear old data for eligible profiles (delete the configured amount of similarities, for Profiles that already
-      completed ProcessUserSimilarityJob at least once)
-    * Call ProcessUserSimilarityJob for the profiles
-    * Call ProcessAnimeRecommendationJob for the profiles
+  * Clear old data for eligible profiles (delete the configured amount of similarities, for Profiles that already
+    completed ProcessUserSimilarityJob at least once)
+  * Call ProcessUserSimilarityJob for the profiles
+  * Call ProcessAnimeRecommendationJob for the profiles
 * Add a home page (required authent through Google OAuth2)
-    * Display temporary page with basic actions to setup a Profile
+  * Display temporary page with basic actions to setup a Profile
 
 #### 0.2.0
 
@@ -50,11 +46,11 @@
 * Link a Profile to a MalUser: the MalUser mustn't be linked to a Profile already
 * Create and Delete a favorite anime for a Profile
 * Automatically create a favorite anime:
-    * When retrieving a user's scores list from MyAnimeList.net, if a score is at least 7 and the score isn't already
-      exisiting in DB, creates a favorite anime for the linked profile
-        * Also, if the new favorite Anime got related anime (prequel/sequel), favorite them and their related animes
-    * When refreshing anime details, if the anime got a new sequel, all profiles that have this anime in favorite got
-      the sequel as favorite too
+  * When retrieving a user's scores list from MyAnimeList.net, if a score is at least 7 and the score isn't already
+    exisiting in DB, creates a favorite anime for the linked profile
+    * Also, if the new favorite Anime got related anime (prequel/sequel), favorite them and their related animes
+  * When refreshing anime details, if the anime got a new sequel, all profiles that have this anime in favorite got
+    the sequel as favorite too
 * Delete all favorite animes for a Profile
 * Notify profile when an anime has been favorited
 * Notify when a favorited anime got its status changed

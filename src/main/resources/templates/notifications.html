@@ -25,11 +25,7 @@
     $(document).ready(function() {
         getNotifications();
     });
-    function showModal(title, message) {
-        $('#modalWindowTitle').html(title);
-        $('#modalWindowMessage').html(message);
-        $('#errorModal').modal('show');
-    }
+
     function getNotifications() {
         $.ajax({
             type: "GET",

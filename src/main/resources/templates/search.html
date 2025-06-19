@@ -11,171 +11,40 @@
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
-    <button class="btn btn-primary" data-bs-target="#filterModal" data-bs-toggle="modal" type="button">
-        Filter
-    </button>
+    <div class="d-flex py-2">
+        <h2 class="px-2">Search</h2>
+        <button class="btn btn-primary" data-bs-target="#filterModal" data-bs-toggle="modal" type="button">
+            Filter
+        </button>
+    </div>
+    <span class="span-pagination"></span>
+    <div class="row row-cols-8 py-2" id="animeListResult">
+
+    </div>
+    <span class="span-pagination"></span>
     <div class="modal" id="filterModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-body">
-                    <div class="d-flex">
-                        <div class="p-2 flex-grow-1">
-                            <input class="form-control" id="filterTitleInput" placeholder="Title" type="text">
-                        </div>
-                        <div class="p-2">
-                            <button class="btn btn-primary" type="button">
-                                <svg class="bi bi-floppy" fill="currentColor" height="16" viewBox="0 0 16 16"
-                                     width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M11 2H9v3h2z"/>
-                                    <path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="p-2">
-                            <button class="btn btn-primary" type="button">
-                                <svg class="bi bi-folder2" fill="currentColor" height="16" viewBox="0 0 16 16"
-                                     width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5zM2.5 3a.5.5 0 0 0-.5.5V6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3zM14 7H2v5.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="pb-2 p-2">
-                        <label for=mediaTypesGroup>Media Types</label>
-                        <div aria-label="Media Types" class="btn-group" id="mediaTypesGroup" role="group">
-
-                        </div>
-                    </div>
-                    <div class="pb-2 d-flex">
-                        <label class="p-2" for="minSeasonInput">From</label>
-                        <input class="form-control p-2 w-5" id="minSeasonInput" type="number"/>
-                        <label class="p-2" for="maxSeasonInput">To</label>
-                        <input class="form-control p-2 w-5" id="maxSeasonInput" type="number"/>
-                        <label class="p-2 ps-5" for="statusGroup">Status</label>
-                        <div aria-label="Status" class="btn-group" id="statusGroup" role="group">
-
-                        </div>
-                    </div>
-                    <div class="pb-2">
-                        <label class="p-2">Genres</label>
-                    </div>
-                    <div class="pb-2">
-                        <div aria-label="Genres" class="btn-group justify-content-center" id="genresGroup" role="group">
-
-                        </div>
-                    </div>
-                </div>
+                <div class="modal-body" id="modalBodyFilter"></div>
 
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
-                    <button class="btn btn-primary" type="button">Apply</button>
+                    <button class="btn btn-primary" onclick="applyFilter(0);" type="button">Apply</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label" for="filterNameFormInput">Name</label>
-        <input class="form-control" id="filterNameFormInput" type="text">
-    </div>
-    <div class="mb-3">
-        <button onclick="create();">create</button>
-    </div>
+    <div th:replace="~{fragments/general.html :: errorModal}"></div>
 </main>
 <script th:src="@{/js/jquery-3.7.1.js}"></script>
 <script th:src="@{/js/popper-1.14.3.min.js}"></script>
 <script th:src="@{/js/bootstrap-5.3.3.bundle.min.js}"></script>
 <script th:src="@{/js/anime-reco.js}"></script>
+<script th:src="@{/js/modal-anime-filter.js}"></script>
 <script>
     $(function() {
-        displayMediaTypes();
-        displayStatus();
-        displayGenres();
+        applyFilter(0);
     });
-
-    function activate3States() {
-        $('button[type="button"][class~="btn-filter-3"]').on('click', function() {
-            var colorClasses = ["btn-outline-primary", "btn-primary", "btn-danger"];
-            var $radios = $('input[type="radio"][name="' + $(this).attr('id') + '"]');
-            alert($(this).attr('id'));
-            var $checked = $radios.filter(':checked');
-            var $next = $radios.eq($radios.index($checked) + 1);
-            if (!$next.length) {
-                $next = $radios.first();
-            }
-            $next.prop("checked", true);
-            var newValue = $radios.filter(':checked').val();
-            $(this)
-                .removeClass(colorClasses.join(" "))
-                .addClass(colorClasses[newValue]);
-        });
-    }
-
-    function displayGenres() {
-        $.ajax({
-            type: "GET",
-            headers: {"X-CSRF-Token": $('#csrf-token').val()},
-            url: window.location.protocol + "//" + window.location.host + "/search-filter/genre",
-            dataType: 'json',
-            success: function(data) {
-                var genresMap = new Map(Object.entries(data));
-                let html = "";
-                /*for(const [key, value] of genresMap) {
-                    html+=`
-                        <input checked hidden name="g_`+key+`" type="radio" value="0"/>
-                        <input hidden name="g_`+key+`" type="radio" value="1"/>
-                        <input hidden name="g_`+key+`" type="radio" value="2"/>
-                    `;
-                }*/
-                for(const [key, value] of genresMap) {
-                    html+=`
-                        <button class="btn btn-filter-3 btn-outline-primary" id="g_`+key+`" type="button">`+value+`</button>
-                    `;
-                }
-                $('#genresGroup').html(html);
-                activate3States();
-            }
-        });
-    }
-
-    function displayStatus() {
-        $.ajax({
-            type: "GET",
-            headers: {"X-CSRF-Token": $('#csrf-token').val()},
-            url: window.location.protocol + "//" + window.location.host + "/search-filter/status",
-            dataType: 'json',
-            success: function(data) {
-                var statusMap = new Map(Object.entries(data));
-                let html = "";
-                for(const [key, value] of statusMap) {
-                    html += `
-                        <input autocomplete="off" class="btn-check" id="s_${key}" type="checkbox"/>
-                        <label class="btn btn-outline-primary" for="s_${key}">${value}</label>
-                    `;
-                }
-                $('#statusGroup').html(html);
-            }
-        });
-    }
-
-    function displayMediaTypes() {
-        $.ajax({
-            type: "GET",
-            headers: {"X-CSRF-Token": $('#csrf-token').val()},
-            url: window.location.protocol + "//" + window.location.host + "/search-filter/media-type",
-            dataType: 'json',
-            success: function(data) {
-                var mediaTypes = new Map(Object.entries(data));
-                let html = "";
-                for(const [key, value] of mediaTypes) {
-                    html += `
-                        <input autocomplete="off" class="btn-check" id="mt_${key}" type="checkbox"/>
-                        <label class="btn btn-outline-primary" for="mt_${key}">${value}</label>
-                    `;
-                }
-                $('#mediaTypesGroup').html(html);
-            }
-        });
-    }
 
     function create() {
         let body = {
@@ -194,12 +63,130 @@
             dataType: 'json',
             success: function(data) {
                 if (data.error != null) {
-                    alert(data.error);
+                    showErrorModal(data.error);
                 } else {
                     alert("filter created");
                 }
             }
         });
+    }
+
+    function applyFilter(pageNumber) {
+        var filter = getSearchFilter(pageNumber);
+        $.ajax({
+            type: "POST",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/anime/search",
+            data: JSON.stringify(filter),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data) {
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    displayResult(data);
+                    $('#filterModal').modal('hide');
+                }
+            }
+        });
+    }
+
+    function displayResult(data) {
+        var spanPaginationHtml = getPagination(data.totalPages, data.pageNumber);
+        $('.span-pagination').each(function() {
+            $(this).html(spanPaginationHtml);
+        });
+        let animeList = data.animeList;
+        let html = "";
+        for(let i = 0; i < animeList.length; i++) {
+            let altTitleContent = "<p>";
+            for (let y = 0; y < animeList[i].altTitles.length; y++) {
+                altTitleContent += animeList[i].altTitles[y];
+                if (y+1 < animeList[i].altTitles.length) {
+                    altTitleContent += "</br>";
+                }
+            }
+            altTitleContent += "</p>";
+            html += `
+                <div class="col">
+                    <div class="card mb-3">
+                        <img class="card-img-top img-wrapper" src="` + animeList[i].mainMediumUrl + `" alt="` + animeList[i].title + `">
+                        <div class="card-footer" data-toggle="tooltip"
+                            data-bs-title="`+altTitleContent+`"
+                            data-bs-html="true"
+                            data-bs-custom-class="alt-titles-tooltip"
+                            <p class="card-text text-truncate">` + animeList[i].title + `</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        $('#animeListResult').html(html);
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+
+    function getPagination(totalPages, currentPage) {
+        var spanPagination = '';
+        var lastPageTriggered = false;
+        var firstPageTriggered = false;
+        if (totalPages > 0) {
+            spanPagination += '<nav aria-label="...">';
+            spanPagination += ' <ul class="pagination">';
+            if (currentPage == 0) {
+                spanPagination += '  <li class="page-item disabled">';
+                spanPagination += '   <span class="page-link">Previous</span>';
+                spanPagination += '  </li>';
+            } else {
+                spanPagination += '  <li class="page-item">';
+                spanPagination += '   <a class="page-link" href="#a" onclick="applyFilter('
+                    + (currentPage - 1) + ')">Previous</a>';
+                spanPagination += '  </li>';
+            }
+            if (currentPage - 3 > 1) {
+                spanPagination += getPaginationLink(currentPage, 1);
+                spanPagination += '  <li class="page-item disabled">';
+                spanPagination += '   <span class="page-link">...</span>';
+                spanPagination += '  </li>';
+            }
+            for (var i = currentPage - 3; i < currentPage + 4; i++) {
+                if (i <= totalPages) {
+                    if (i == totalPages) {
+                        lastPageTriggered = true;
+                    }
+                    spanPagination += getPaginationLink(currentPage, i);
+                }
+            }
+            if (!lastPageTriggered) {
+                spanPagination += '  <li class="page-item disabled">';
+                spanPagination += '   <span class="page-link">...</span>';
+                spanPagination += '  </li>';
+                spanPagination += getPaginationLink(currentPage, totalPages);
+            }
+            if (currentPage == totalPages) {
+                spanPagination += '  <li class="page-item disabled">';
+                spanPagination += '   <span class="page-link">Next</span>';
+                spanPagination += '  </li>';
+            } else {
+                spanPagination += '  <li class="page-item">';
+                spanPagination += '   <a class="page-link" href="#" onclick="applyFilter('
+                    + (currentPage + 1) + ')">Next</a>';
+                spanPagination += '  </li>';
+            }
+            spanPagination += ' </ul>';
+            spanPagination += '</nav>';
+        }
+        return spanPagination;
+    }
+
+    function getPaginationLink(currentPage, displayPage) {
+        if (displayPage <= 0) {
+            return '';
+        }
+        if (currentPage + 1 == displayPage) {
+            return '<li class="page-item active" aria-current="page"><span class="page-link">' + displayPage + '</span></li>';
+        }
+        return '<li class="page-item"><a class="page-link" href="#" onclick="applyFilter('+ (displayPage - 1) + '); ">' +
+        displayPage + '</a></li>';
     }
 </script>
 </body>

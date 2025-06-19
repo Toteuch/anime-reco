@@ -14,14 +14,12 @@ import com.toteuch.anime.reco.domain.profile.NotificationService;
 import com.toteuch.anime.reco.domain.profile.NotificationType;
 import com.toteuch.anime.reco.domain.profile.entities.Favorite;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
+import com.toteuch.anime.reco.domain.profile.entities.SearchFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Limit;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -35,6 +33,7 @@ public class AnimeService {
     private static final SimpleDateFormat SDF_FULL = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat SDF_YM = new SimpleDateFormat("yyyy-MM");
     private static final SimpleDateFormat SDF_Y = new SimpleDateFormat("yyyy");
+    private static final int PAGE_SIZE = 20;
 
     @Autowired
     private AnimeRepository repo;
@@ -297,5 +296,9 @@ public class AnimeService {
         List<Genre> genres = genreRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
         genres.forEach(g -> genresMap.put(g.getId(), g.getName()));
         return genresMap;
+    }
+
+    public Page<Anime> search(SearchFilter searchFilter, int page) throws AnimeRecoException {
+        return repo.findAll(AnimeSpecification.getSpecification(searchFilter), PageRequest.of(page, PAGE_SIZE));
     }
 }

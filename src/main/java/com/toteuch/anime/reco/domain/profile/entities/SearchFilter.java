@@ -15,6 +15,7 @@ public class SearchFilter {
     private Long id;
     @Column(nullable = false)
     private String name;
+    private String title;
     @ManyToOne
     @JoinColumn(name = "profile_id")
     private Profile profile;
@@ -105,5 +106,13 @@ public class SearchFilter {
 
     public void setNegativeGenres(List<Genre> negativeGenres) {
         this.negativeGenres = negativeGenres;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

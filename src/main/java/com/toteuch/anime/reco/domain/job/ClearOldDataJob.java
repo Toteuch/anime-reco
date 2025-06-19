@@ -51,7 +51,7 @@ public class ClearOldDataJob {
         log.debug("Gathering data to start clearing down old data for Profile {} ({})", profile.getSub(), profile.getId());
 
         // READER
-        Page<UserSimilarity> similarityToProcessPage = userSimilarityService.findOldestSimilarity(profile.getSub(),
+        Page<UserSimilarity> similarityToProcessPage = userSimilarityService.findSimilarities(profile.getSub(),
                 PageRequest.of(0, pageSize, Sort.by(Sort.Direction.ASC, "lastUpdate")));
         long totalSimilarity = similarityToProcessPage.getTotalElements();
         long totalPageToProcess = similarityToProcessPage.getTotalPages();
@@ -74,7 +74,7 @@ public class ClearOldDataJob {
                         && similarityToProcessPage.getPageable().getPageNumber() + 1 < totalPageToProcess) {
                     Pageable page = similarityToProcessPage.nextPageable();
                     log.trace("Requesting similarities to process page {}...", page.getPageNumber() + 1);
-                    similarityToProcessPage = userSimilarityService.findOldestSimilarity(profile.getSub(), page);
+                    similarityToProcessPage = userSimilarityService.findSimilarities(profile.getSub(), page);
                     similarityToProcessList = similarityToProcessPage.getContent();
                 } else {
                     similarityToProcessList = null;

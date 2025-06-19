@@ -33,7 +33,7 @@ public class UserSimilarityService {
     @Autowired
     private MalUserScoreService userScoreService;
 
-    public Page<UserSimilarity> findOldestSimilarity(String sub, Pageable pageable) {
+    public Page<UserSimilarity> findSimilarities(String sub, Pageable pageable) {
         return repo.findByProfileSub(sub, pageable);
     }
 
