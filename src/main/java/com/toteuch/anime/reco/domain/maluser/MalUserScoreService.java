@@ -7,14 +7,10 @@ import com.toteuch.anime.reco.data.api.exception.MalApiGatewayTimeoutException;
 import com.toteuch.anime.reco.data.api.exception.MalApiListNotFoundException;
 import com.toteuch.anime.reco.data.api.exception.MalApiListVisibilityException;
 import com.toteuch.anime.reco.data.repository.MalUserScoreRepository;
-import com.toteuch.anime.reco.domain.AnimeRecoException;
-import com.toteuch.anime.reco.domain.Author;
 import com.toteuch.anime.reco.domain.anime.AnimeService;
 import com.toteuch.anime.reco.domain.anime.entity.Anime;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUser;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUserScore;
-import com.toteuch.anime.reco.domain.profile.FavoriteService;
-import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +25,6 @@ import java.util.Map;
 public class MalUserScoreService {
     private static final Logger log = LoggerFactory.getLogger(MalUserScoreService.class);
 
-    private static final Double FAVORITE_ANIME_SCORE_THRESHOLD = 7.0;
-
     @Autowired
     private MalUserScoreRepository repo;
     @Autowired
@@ -39,8 +33,6 @@ public class MalUserScoreService {
     private MalApi malApi;
     @Autowired
     private AnimeService animeService;
-    @Autowired
-    private FavoriteService favoriteService;
 
     public List<MalUserScore> getByUser(MalUser user) {
         return repo.findByUser(user);
@@ -181,12 +173,9 @@ public class MalUserScoreService {
         for (MalUserScore score : scores) {
             existingScoresMap.put(score.getAnime().getId(), score);
         }
-        Profile profile = user.getProfile();
         for (Map.Entry<Long, UserAnimeScoreRaw> entry : rawScores.entrySet()) {
             Long animeId = entry.getKey();
             UserAnimeScoreRaw rawScore = entry.getValue();
-
-            double previousScore = FAVORITE_ANIME_SCORE_THRESHOLD;
 
             if (rawScore.getUserScore() > 0) {
                 Anime anime = animeService.findById(animeId).orElseGet(() -> {
@@ -203,13 +192,9 @@ public class MalUserScoreService {
                     repo.save(score);
                     countRatedAnime++;
                 } else {
-                    previousScore = score.getScore();
                     score.setScore(rawScore.getUserScore());
                     repo.save(score);
                     countRatedAnime++;
-                }
-                if (favoriteAnime(rawScore, previousScore, profile, existingScoresMap, anime)) {
-                    favoriteService.favoriteRelatedAnime(profile, anime, existingScoresMap);
                 }
             }
         }
@@ -222,22 +207,5 @@ public class MalUserScoreService {
         user.setAnimeRatedCount(countRatedAnime);
         userService.save(user);
         log.trace("User scores refresh for user {} is complete", username);
-    }
-
-    private boolean favoriteAnime(UserAnimeScoreRaw rawScore, double previousScore, Profile profile, Map<Long,
-            MalUserScore> existingScoresMap, Anime anime) {
-        if (rawScore.getUserScore() >= FAVORITE_ANIME_SCORE_THRESHOLD && profile != null) {
-            Long animeId = anime.getId();
-            if (previousScore < FAVORITE_ANIME_SCORE_THRESHOLD || !existingScoresMap.containsKey(animeId)) {
-                try {
-                    favoriteService.create(profile.getSub(), animeId, Author.SYSTEM);
-                    return true;
-                } catch (AnimeRecoException e) {
-                    log.error("Failed to create favorite for Profile {} (Anime: {}) WITH author SYSTEM: {}",
-                            profile.getSub(), animeId, e.getMessage());
-                }
-            }
-        }
-        return false;
     }
 }

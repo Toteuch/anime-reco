@@ -1,8 +1,8 @@
 package com.toteuch.anime.reco.domain.anime.entity;
 
 import com.toteuch.anime.reco.domain.maluser.entity.MalUserScore;
-import com.toteuch.anime.reco.domain.profile.entities.Favorite;
 import com.toteuch.anime.reco.domain.profile.entities.Notification;
+import com.toteuch.anime.reco.domain.profile.entities.NotificationSetting;
 import com.toteuch.anime.reco.domain.profile.entities.Recommendation;
 import jakarta.persistence.*;
 
@@ -47,7 +47,7 @@ public class Anime {
     private List<MalUserScore> userScores;
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "anime_id")
-    private List<Favorite> favorites;
+    private List<NotificationSetting> notificationSettings;
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "anime_id")
     private List<Notification> notifications;
@@ -219,12 +219,12 @@ public class Anime {
         this.userScores = userScores;
     }
 
-    public List<Favorite> getFavorites() {
-        return favorites;
+    public List<NotificationSetting> getNotificationSettings() {
+        return notificationSettings;
     }
 
-    public void setFavorites(List<Favorite> favorites) {
-        this.favorites = favorites;
+    public void setNotificationSettings(List<NotificationSetting> notificationSettings) {
+        this.notificationSettings = notificationSettings;
     }
 
     public List<Notification> getNotifications() {

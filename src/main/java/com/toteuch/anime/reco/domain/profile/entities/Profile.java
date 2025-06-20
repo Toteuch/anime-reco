@@ -24,7 +24,7 @@ public class Profile {
     private MalUser user;
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "profile_id")
-    private List<Favorite> favorites;
+    private List<NotificationSetting> notificationSettings;
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "profile_id")
     private List<Notification> notifications;
@@ -93,12 +93,12 @@ public class Profile {
         this.user = user;
     }
 
-    public List<Favorite> getFavorites() {
-        return favorites;
+    public List<NotificationSetting> getNotificationSettings() {
+        return notificationSettings;
     }
 
-    public void setFavorites(List<Favorite> favorites) {
-        this.favorites = favorites;
+    public void setNotificationSettings(List<NotificationSetting> notificationSettings) {
+        this.notificationSettings = notificationSettings;
     }
 
     public List<Notification> getNotifications() {

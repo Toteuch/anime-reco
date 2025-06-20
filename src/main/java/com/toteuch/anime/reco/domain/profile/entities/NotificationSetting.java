@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "unique_anime_profile", columnNames = {"anime_id", "profile_id"})
 })
-public class Favorite {
+public class NotificationSetting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,14 +26,14 @@ public class Favorite {
     @Column(nullable = false)
     private Author author;
 
-    public Favorite(Profile profile, Anime anime, Author author) {
+    public NotificationSetting(Profile profile, Anime anime, Author author) {
         this.anime = anime;
         this.profile = profile;
         this.author = author;
         this.createdAt = new Date();
     }
 
-    public Favorite() {
+    public NotificationSetting() {
     }
 
     public Long getId() {

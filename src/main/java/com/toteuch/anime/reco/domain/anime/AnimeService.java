@@ -9,10 +9,10 @@ import com.toteuch.anime.reco.data.repository.*;
 import com.toteuch.anime.reco.domain.AnimeRecoException;
 import com.toteuch.anime.reco.domain.Author;
 import com.toteuch.anime.reco.domain.anime.entity.*;
-import com.toteuch.anime.reco.domain.profile.FavoriteService;
 import com.toteuch.anime.reco.domain.profile.NotificationService;
+import com.toteuch.anime.reco.domain.profile.NotificationSettingService;
 import com.toteuch.anime.reco.domain.profile.NotificationType;
-import com.toteuch.anime.reco.domain.profile.entities.Favorite;
+import com.toteuch.anime.reco.domain.profile.entities.NotificationSetting;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import com.toteuch.anime.reco.domain.profile.entities.SearchFilter;
 import org.slf4j.Logger;
@@ -46,9 +46,9 @@ public class AnimeService {
     @Autowired
     private PictureLinkRepository pictureLinkRepository;
     @Autowired
-    private FavoriteService favoriteService;
-    @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private NotificationSettingService notificationSettingService;
 
     @Autowired
     private MalApi malApi;
@@ -148,6 +148,7 @@ public class AnimeService {
         Anime anime = findById(animeId).orElse(null);
         Long previousSequelId = anime.getSequelAnimeId();
         String previousStatus = anime.getStatus();
+        Date previousStartDate = anime.getStartDate();
         anime.setTitle(rawDetails.getTitle());
         anime.setMediaType(rawDetails.getMediaType());
         anime.setNumEpisodes(rawDetails.getNumEpisodes());
@@ -238,26 +239,46 @@ public class AnimeService {
             }
         }
         anime.setPictureLinks(pictureLinks);
-        // FAVORITE
-        List<Favorite> favorites = anime.getFavorites();
-        if (anime.getSequelAnimeId() != null && previousSequelId == null && !anime.getFavorites().isEmpty()) {
-            for (Favorite favorite : anime.getFavorites()) {
-                Profile profile = favorite.getProfile();
+        // NOTIFICATION SETTINGS
+        List<NotificationSetting> notificationSettings = anime.getNotificationSettings();
+        if (anime.getSequelAnimeId() != null && previousSequelId == null && !anime.getNotificationSettings().isEmpty()) {
+            for (NotificationSetting notificationSetting : anime.getNotificationSettings()) {
+                Profile profile = notificationSetting.getProfile();
                 try {
-                    favoriteService.create(profile.getSub(), anime.getSequelAnimeId(), Author.SYSTEM);
+                    notificationSettingService.enableNotifications(profile.getSub(), anime.getSequelAnimeId(), Author.SYSTEM);
                 } catch (AnimeRecoException e) {
-                    log.error("Failed to create favorite for Profile {} (Anime: {}) WITH author SYSTEM: {}",
+                    log.error("Failed to enable notifications for Profile {} (Anime: {}) WITH author SYSTEM: {}",
                             profile.getSub(), anime.getSequelAnimeId(), e.getMessage());
                 }
             }
         }
         save(anime);
-        // NOTIFICATION
-        if (previousStatus != null && !previousStatus.equals(anime.getStatus()) && anime.getFavorites() != null) {
-            for (Favorite favorite : anime.getFavorites()) {
+        // NOTIFICATION - New related anime
+        if (previousSequelId == null && previousSequelId != anime.getSequelAnimeId() && anime.getNotificationSettings() != null) {
+            for (NotificationSetting notificationSetting : anime.getNotificationSettings()) {
                 try {
-                    notificationService.create(favorite.getProfile().getSub(), animeId,
-                            NotificationType.FAVORITE_ANIME_STATUS_CHANGED);
+                    notificationService.create(notificationSetting.getProfile().getSub(), animeId,
+                            NotificationType.NEW_RELATED_ANIME);
+                } catch (AnimeRecoException e) {
+                    log.error(e.getMessage());
+                }
+            }
+        } else if (previousStatus != null && !previousStatus.equals(anime.getStatus()) && anime.getNotificationSettings() != null) {
+            // NOTIFICATION - Status changed
+            for (NotificationSetting notificationSetting : anime.getNotificationSettings()) {
+                try {
+                    notificationService.create(notificationSetting.getProfile().getSub(), animeId,
+                            NotificationType.STATUS_CHANGED);
+                } catch (AnimeRecoException e) {
+                    log.error(e.getMessage());
+                }
+            }
+        } else if (previousStartDate != anime.getStartDate() && anime.getNotificationSettings() != null) {
+            // NOTIFICATION - Start date changed
+            for (NotificationSetting notificationSetting : anime.getNotificationSettings()) {
+                try {
+                    notificationService.create(notificationSetting.getProfile().getSub(), animeId,
+                            NotificationType.START_DATE_CHANGED);
                 } catch (AnimeRecoException e) {
                     log.error(e.getMessage());
                 }

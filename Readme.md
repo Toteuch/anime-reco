@@ -5,6 +5,12 @@
 * Allow anonymous session
 * Search anime page
   * Filter search
+* Change Favorite to NotificationSetting
+* Remove the auto NotificationSetting for anime score above the threshold
+* Notification types :
+  * New related anime
+  * Status changed
+  * Start date changed
 
 #### 0.4.0
 
