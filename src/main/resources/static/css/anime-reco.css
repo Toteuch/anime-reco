@@ -45,6 +45,15 @@ input[type="number"] {
     width: 155px;
 }
 
+.img-wrapper-xl {
+    height: 330px;
+    width: 232.5px;
+}
+
+.thumbnail {
+    height: 105px;
+}
+
 .alt-titles-tooltip {
     text-align: left;
 }

@@ -24,6 +24,15 @@ public enum Status {
         return statusMap;
     }
 
+    public static Status getByMalCode(String malCode) {
+        for (Status s : Status.values()) {
+            if (StringUtils.equalsIgnoreCase(s.malCode, malCode)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
     public static List<Status> parseStatusList(List<String> malCodeList) {
         List<Status> statusList = new ArrayList<>();
         if (malCodeList == null) return statusList;
@@ -46,5 +55,9 @@ public enum Status {
 
     public String getMalCode() {
         return malCode;
+    }
+
+    public String getLabel() {
+        return label;
     }
 }

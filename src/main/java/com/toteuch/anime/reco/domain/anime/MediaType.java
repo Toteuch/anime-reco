@@ -24,6 +24,15 @@ public enum MediaType {
         this.label = label;
     }
 
+    public static MediaType getByMalCode(String malCode) {
+        for (MediaType mt : MediaType.values()) {
+            if (StringUtils.equalsIgnoreCase(mt.malCode, malCode)) {
+                return mt;
+            }
+        }
+        return null;
+    }
+
     public static Map<String, String> getMediaTypesMap() {
         Map<String, String> mtMap = new HashMap<>();
         Arrays.stream(MediaType.values()).toList().forEach(mt -> mtMap.put(mt.getMalCode(), mt.getLabel()));

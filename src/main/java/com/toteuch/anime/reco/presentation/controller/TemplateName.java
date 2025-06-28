@@ -4,7 +4,9 @@ public enum TemplateName {
     HOME("home"),
     PROFILE("profile"),
     NOTIFICATIONS("notifications"),
-    SEARCH("search");
+    SEARCH("search"),
+    WATCHLIST("watchlist"),
+    RECOMMENDATIONS("recommendations");
 
     private final String code;
 

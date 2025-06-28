@@ -34,11 +34,11 @@ public class AnimeSpecification {
             }
             // Media Types
             if (searchFilter.getMediaTypes() != null && !searchFilter.getMediaTypes().isEmpty()) {
-                predicates.add(root.get("mediaType").in(searchFilter.getMediaTypes()));
+                predicates.add(root.get("mediaType").in(MediaType.getMalCode(searchFilter.getMediaTypes())));
             }
             // Status
             if (searchFilter.getStatusList() != null && !searchFilter.getStatusList().isEmpty()) {
-                predicates.add(root.get("status").in(searchFilter.getStatusList()));
+                predicates.add(root.get("status").in(Status.getMalCodes(searchFilter.getStatusList())));
             }
             // Min season year
             if (searchFilter.getMinSeasonYear() != null) {

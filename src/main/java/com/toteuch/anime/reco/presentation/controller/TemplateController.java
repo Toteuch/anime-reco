@@ -64,4 +64,26 @@ public class TemplateController {
         model.addAttribute("currentPage", TemplateName.SEARCH.getCode());
         return "search";
     }
+
+    @GetMapping("recommendations")
+    public String showRecommendations(Model model) {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            model.addAttribute("isAuthenticated", "true");
+        } else {
+            model.addAttribute("isAuthenticated", "false");
+        }
+        model.addAttribute("currentPage", TemplateName.RECOMMENDATIONS.getCode());
+        return "recommendations";
+    }
+
+    @GetMapping("watchlist")
+    public String showWatchlist(Model model) {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            model.addAttribute("isAuthenticated", "true");
+        } else {
+            model.addAttribute("isAuthenticated", "false");
+        }
+        model.addAttribute("currentPage", TemplateName.WATCHLIST.getCode());
+        return "watchlist";
+    }
 }

@@ -29,6 +29,12 @@ public class Genre {
         return genresIds;
     }
 
+    public static List<String> getGenresLabels(List<Genre> genres) {
+        List<String> genresLabels = new ArrayList<>();
+        genres.forEach(g -> genresLabels.add(g.getName()));
+        return genresLabels;
+    }
+
     public Long getId() {
         return id;
     }

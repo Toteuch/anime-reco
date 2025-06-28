@@ -4,7 +4,7 @@ $(function() {
     html += '           <input class="form-control" id="filterTitleInput" placeholder="Title" type="text">';
     html += '       </div>';
     html += '       <div class="p-2">';
-    html += '           <button class="btn btn-primary" type="button">';
+    html += '           <button class="btn btn-primary" type="button" onclick="saveSearchFilter();">';
     html += '               <svg class="bi bi-floppy" fill="currentColor" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">';
     html += '                   <path d="M11 2H9v3h2z"/>';
     html += '                   <path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"/>';
@@ -12,7 +12,7 @@ $(function() {
     html += '           </button>';
     html += '       </div>';
     html += '       <div class="p-2">';
-    html += '           <button class="btn btn-primary" type="button">';
+    html += '           <button class="btn btn-primary" type="button" onclick="openSearchFilter()">';
     html += '               <svg class="bi bi-folder2" fill="currentColor" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">';
     html += '                   <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5zM2.5 3a.5.5 0 0 0-.5.5V6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3zM14 7H2v5.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5z"/>';
     html += '               </svg>';
@@ -192,7 +192,7 @@ function activate2States() {
         minSeasonYear: selectedMinSeasonYear,
         maxSeasonYear: selectedMaxSeasonYear,
         mediaTypes: selectedMediaTypes,
-        status: selectedStatus,
+        statusList: selectedStatus,
         genres: genresIn,
         negativeGenres: genresOut,
         pageNumber: pageNumber

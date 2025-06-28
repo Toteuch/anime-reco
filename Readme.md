@@ -11,6 +11,7 @@
   * New related anime
   * Status changed
   * Start date changed
+* Anime details window
 
 #### 0.4.0
 
