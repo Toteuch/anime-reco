@@ -1,6 +1,6 @@
 # Anime-Reco
 
-#### Next
+#### 0.5.0
 
 * Allow anonymous session
 * Search anime page
