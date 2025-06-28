@@ -110,7 +110,8 @@ public class AnimeController {
         AnimeDetailsPojo pojo = new AnimeDetailsPojo();
         pojo.setId(anime.getId());
         pojo.setMainTitle(getMainTitle(anime));
-        pojo.setMediaTypeLabel(MediaType.getByMalCode(anime.getMediaType()).getLabel());
+        pojo.setMediaTypeLabel(MediaType.getByMalCode(anime.getMediaType()) != null ?
+                MediaType.getByMalCode(anime.getMediaType()).getLabel() : null);
         pojo.setNumEpisodes(anime.getNumEpisodes());
         pojo.setPrequelAnimeId(anime.getPrequelAnimeId());
         pojo.setSequelAnimeId(anime.getSequelAnimeId());
