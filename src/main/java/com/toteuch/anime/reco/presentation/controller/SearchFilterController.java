@@ -5,7 +5,9 @@ import com.toteuch.anime.reco.domain.anime.AnimeService;
 import com.toteuch.anime.reco.domain.anime.MediaType;
 import com.toteuch.anime.reco.domain.anime.Status;
 import com.toteuch.anime.reco.domain.anime.entity.Genre;
+import com.toteuch.anime.reco.domain.profile.ProfileService;
 import com.toteuch.anime.reco.domain.profile.SearchFilterService;
+import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import com.toteuch.anime.reco.domain.profile.entities.SearchFilter;
 import com.toteuch.anime.reco.domain.profile.pojo.SearchFilterPojo;
 import com.toteuch.anime.reco.presentation.controller.response.SearchFilterResponse;
@@ -26,26 +28,21 @@ public class SearchFilterController {
     private SearchFilterService searchFilterService;
     @Autowired
     private AnimeService animeService;
+    @Autowired
+    private ProfileService profileService;
 
     @PostMapping("/search-filter")
-    public SearchFilterResponse create(@RequestBody SearchFilterPojo body) {
+    public SearchFilterResponse saveFilter(@RequestBody SearchFilterPojo body) {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
             try {
-                SearchFilter searchFilter = searchFilterService.createFilter(
-                        oidcUser.getSubject(),
-                        body.getName(),
-                        MediaType.parseMediaTypes(body.getMediaTypes()),
-                        Status.parseStatusList(body.getStatusList()),
-                        body.getMinSeasonYear(),
-                        body.getMaxSeasonYear(),
-                        body.getGenres(),
-                        body.getNegativeGenres());
-                return new SearchFilterResponse(getSearchFilterPojo(searchFilter));
-            } catch (AnimeRecoException e) {
-                return new SearchFilterResponse(e.getMessage());
+                return new SearchFilterResponse(getSearchFilterPojo(searchFilterService.saveSearchFilter(profile,
+                        body)));
+            } catch (AnimeRecoException ex) {
+                return new SearchFilterResponse(ex.getMessage());
             }
         } else {
-            return new SearchFilterResponse("User not authenticated");
+            return new SearchFilterResponse("You must be logged to save a filter.");
         }
     }
 
@@ -68,12 +65,16 @@ public class SearchFilterController {
         SearchFilterPojo pojo = new SearchFilterPojo();
         pojo.setId(searchFilter.getId());
         pojo.setName(searchFilter.getName());
-        pojo.setMediaTypes(MediaType.getMalCode(searchFilter.getMediaTypes()));
-        pojo.setStatusList(Status.getMalCodes(searchFilter.getStatusList()));
+        if (searchFilter.getMediaTypes() != null)
+            pojo.setMediaTypes(MediaType.getMalCode(searchFilter.getMediaTypes()));
+        if (searchFilter.getStatusList() != null)
+            pojo.setStatusList(Status.getMalCodes(searchFilter.getStatusList()));
         pojo.setMinSeasonYear(searchFilter.getMinSeasonYear());
         pojo.setMaxSeasonYear(searchFilter.getMaxSeasonYear());
-        pojo.setGenres(Genre.getGenresIds(searchFilter.getGenres()));
-        pojo.setNegativeGenres(Genre.getGenresIds(searchFilter.getNegativeGenres()));
+        if (searchFilter.getGenres() != null)
+            pojo.setGenres(Genre.getGenresIds(searchFilter.getGenres()));
+        if (searchFilter.getNegativeGenres() != null)
+            pojo.setNegativeGenres(Genre.getGenresIds(searchFilter.getNegativeGenres()));
         return pojo;
     }
 }

@@ -68,10 +68,17 @@ public class JobTaskService {
         return create(sub, name, author, new Date());
     }
 
-    public JobTask getLastOccurrence(String sub, JobName name) {
+    public JobTask getLastOccurrence(String sub, JobName name, JobStatus status) {
         List<JobTask> taskList = repo.findByProfileSubAndName(sub, name, Sort.by(Sort.Direction.DESC, "updatedAt"));
         if (taskList != null && !taskList.isEmpty()) {
-            return taskList.get(0);
+            if (status == null) {
+                return taskList.get(0);
+            }
+            for (JobTask task : taskList) {
+                if (task.getStatus() == status) {
+                    return task;
+                }
+            }
         }
         return null;
     }
@@ -85,8 +92,8 @@ public class JobTaskService {
                     throw new AnimeRecoException("Profile isn't linked to a user");
                 break;
             case PROCESS_ANIME_RECOMMENDATION:
-                JobTask lastPUS = getLastOccurrence(profile.getSub(), JobName.PROCESS_USER_SIMILARITY);
-                if (lastPUS == null || lastPUS.getStatus() != JobStatus.COMPLETED)
+                JobTask lastPUS = getLastOccurrence(profile.getSub(), JobName.PROCESS_USER_SIMILARITY, JobStatus.COMPLETED);
+                if (lastPUS == null)
                     throw new AnimeRecoException("Please complete the user similarities before");
                 break;
             case CLEAR_OLD_DATA:

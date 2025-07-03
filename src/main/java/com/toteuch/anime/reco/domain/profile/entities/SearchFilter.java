@@ -4,11 +4,15 @@ import com.toteuch.anime.reco.domain.anime.MediaType;
 import com.toteuch.anime.reco.domain.anime.Status;
 import com.toteuch.anime.reco.domain.anime.entity.Genre;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"profile_id", "name"})})
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"profile_id", "name"}),
+        @UniqueConstraint(columnNames = {"profile_id", "filter_index"})
+})
 public class SearchFilter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +21,7 @@ public class SearchFilter {
     private String name;
     private String title;
     @ManyToOne
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
     private List<MediaType> mediaTypes;
     private List<Status> statusList;
@@ -35,6 +39,9 @@ public class SearchFilter {
             joinColumns = @JoinColumn(name = "search_filter_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "negative_genre_id", nullable = false))
     private List<Genre> negativeGenres;
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer filterIndex;
 
     public Long getId() {
         return id;
@@ -114,5 +121,13 @@ public class SearchFilter {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Integer getFilterIndex() {
+        return filterIndex;
+    }
+
+    public void setFilterIndex(Integer filterIndex) {
+        this.filterIndex = filterIndex;
     }
 }

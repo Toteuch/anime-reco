@@ -4,7 +4,7 @@ $(function() {
     html += '           <input class="form-control" id="filterTitleInput" placeholder="Title" type="text">';
     html += '       </div>';
     html += '       <div class="p-2">';
-    html += '           <button class="btn btn-primary" type="button" onclick="saveSearchFilter();">';
+    html += '           <button class="btn btn-primary" type="button" data-bs-target="#filterNameModal" data-bs-toggle="modal">';
     html += '               <svg class="bi bi-floppy" fill="currentColor" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">';
     html += '                   <path d="M11 2H9v3h2z"/>';
     html += '                   <path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V1H4zM3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"/>';
@@ -45,6 +45,38 @@ $(function() {
         activate2States();
     });
 });
+
+function cancelFilterNameModal() {
+    $("#filterNameModal").modal('hide');
+    $("#filterModal").modal('show');
+}
+
+function updateSearchFilter() {
+    let id = $("#filterNameId").val();
+    saveSearchFilter(id);
+}
+
+function saveSearchFilter(id) {
+    let filter = getSearchFilter(undefined, id);
+    $.ajax({
+        type: "POST",
+        headers: {"X-CSRF-Token": $('#csrf-token').val()},
+        url: window.location.protocol + "//" + window.location.host + "/search-filter",
+        data: JSON.stringify(filter),
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function(data) {
+            if (data.error != null) {
+                showErrorModal(data.error);
+            } else {
+                $("#filterNameId").val(data.searchFilter.id);
+                $("#updateFilterButton").prop({disabled: false});
+                $("#filterNameModal").modal('hide');
+                $("#filterModal").modal('show');
+            }
+        }
+    });
+}
 
 function activate2States() {
     $('button[type="button"][class~="btn-filter-2"]').on('click', function() {
@@ -159,7 +191,8 @@ function activate2States() {
      return response;
  }
 
- function getSearchFilter(pageNumber) {
+ function getSearchFilter(pageNumber, id) {
+    var name = $('#filterNameInput').val();
     var animeTitle = $('#filterTitleInput').val();
     if (animeTitle != null) {
         animeTitle = animeTitle.trim();
@@ -188,6 +221,8 @@ function activate2States() {
         }
     });
     return {
+        id: id,
+        name: name,
         title: animeTitle,
         minSeasonYear: selectedMinSeasonYear,
         maxSeasonYear: selectedMaxSeasonYear,

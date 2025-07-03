@@ -75,4 +75,42 @@
         </div>
     </div>
 </div>
+<span th:fragment="searchFilter">
+        <div class="modal" id="filterModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body" id="modalBodyFilter"></div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
+                    <button class="btn btn-primary" onclick="applyFilter(0);" type="button">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="filterNameModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <input id="filterNameId" type="hidden">
+                    <form>
+                        <div class="form-group">
+                            <label for="filterNameInput">Filter name</label>
+                            <input aria-describedby="filterNameHelp" class="form-control" id="filterNameInput"
+                                   type="text"/>
+                            <small class="form-text text-muted" id="filterNameHelp">Filter name must be unique.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="cancelFilterNameModal()" type="button">Cancel</button>
+                    <button class="btn btn-primary" disabled id="updateFilterButton"
+                            onclick="updateSearchFilter();" type="button">Update
+                    </button>
+                    <button class="btn btn-primary" onclick="saveSearchFilter(undefined);" type="button">New</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</span>
 </html>

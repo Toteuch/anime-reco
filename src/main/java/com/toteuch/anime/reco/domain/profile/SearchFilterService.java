@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,76 +26,93 @@ public class SearchFilterService {
     @Autowired
     private SearchFilterRepository repo;
     @Autowired
-    private ProfileService profileService;
-    @Autowired
     private AnimeService animeService;
 
-    public SearchFilter createFilter(String sub, String name, List<MediaType> mediaTypes, List<Status> statusList,
-                                     Integer minSeasonYear, Integer maxSeasonYear, List<Long> genreIds,
-                                     List<Long> negativeGenreIds) throws AnimeRecoException {
-        Profile profile = profileService.findBySub(sub);
-        if (profile == null) throw new AnimeRecoException("Profile not found");
-        SearchFilter searchFilter = repo.findByProfileAndName(profile, name);
-        if (searchFilter != null) throw new AnimeRecoException("Name already used");
-        searchFilter = new SearchFilter();
+    public SearchFilter saveSearchFilter(Profile profile, SearchFilterPojo pojo) throws AnimeRecoException {
+        if (profile == null) throw new AnimeRecoException("Profile is not found");
+        SearchFilter searchFilter = validate(pojo);
+        if (searchFilter.getProfile() != null && searchFilter.getProfile() != profile)
+            throw new AnimeRecoException("Internal error.");
         searchFilter.setProfile(profile);
-        searchFilter.setName(name);
-        searchFilter.setMediaTypes(mediaTypes);
-        searchFilter.setStatusList(statusList);
-        List<Genre> genres = new ArrayList<>();
-        if (genreIds != null) genreIds.forEach(g -> genres.add(animeService.getGenreById(g)));
-        searchFilter.setGenres(genres);
-        List<Genre> negativeGenres = new ArrayList<>();
-        if (negativeGenreIds != null) negativeGenreIds.forEach((g -> negativeGenres.add(animeService.getGenreById(g))));
-        searchFilter.setNegativeGenres(negativeGenres);
-        searchFilter.setMinSeasonYear(minSeasonYear == null || minSeasonYear == 0 ? null : minSeasonYear);
-        searchFilter.setMaxSeasonYear(maxSeasonYear == null || maxSeasonYear == 0 ? null : maxSeasonYear);
-        searchFilter = repo.save(searchFilter);
-        log.debug("SearchFilter {} created for user {}", name, profile.getUser().getUsername());
-        return searchFilter;
+        if (searchFilter.getName() == null) throw new AnimeRecoException("Filter name is required.");
+        SearchFilter existingSF = isSearchFilterNameAlreadyUsed(profile, searchFilter.getName());
+        if (existingSF != null && !existingSF.getId().equals(searchFilter.getId())) {
+            throw new AnimeRecoException("Filter name must be unique");
+        }
+        if (searchFilter.getFilterIndex() == null) {
+            searchFilter.setFilterIndex(getNextOrderAvailable(profile));
+        }
+        return repo.save(searchFilter);
+    }
+
+    private int getNextOrderAvailable(Profile profile) {
+        SearchFilter maxOrder = repo.findByProfileOrderByFilterIndexDesc(profile, Limit.of(1));
+        if (maxOrder == null) return 0;
+        return maxOrder.getFilterIndex() + 1;
+    }
+
+    public SearchFilter isSearchFilterNameAlreadyUsed(Profile profile, String name) {
+        if (name == null) return null;
+        return repo.findByProfileAndName(profile, name.trim());
     }
 
     public SearchFilter validate(SearchFilterPojo searchFilterPojo) throws AnimeRecoException {
-        if (searchFilterPojo.getId() != null) {
-            throw new AnimeRecoException("Not implemented yet");
+        SearchFilter searchFilter = null;
+        if (searchFilterPojo.getId() != null && searchFilterPojo.getId() != 0L) {
+            searchFilter = repo.getReferenceById(searchFilterPojo.getId());
+        } else {
+            searchFilter = new SearchFilter();
         }
-        SearchFilter searchFilter = new SearchFilter();
-        if (searchFilterPojo.getName() != null) {
-            throw new AnimeRecoException("Not implemented yet");
+        if (searchFilterPojo.getName() != null && !StringUtils.isAllBlank(searchFilterPojo.getName()))
+            searchFilter.setName(searchFilterPojo.getName().trim());
+        if (searchFilterPojo.getTitle() != null) searchFilter.setTitle(searchFilterPojo.getTitle().trim());
+        if (searchFilterPojo.getMediaTypes() != null && !searchFilterPojo.getMediaTypes().isEmpty()) {
+            List<MediaType> mediaTypes = new ArrayList<>();
+            for (String mediaTypeCode : searchFilterPojo.getMediaTypes()) {
+                MediaType mediaType = MediaType.getByMalCode(mediaTypeCode);
+                if (mediaType == null)
+                    throw new AnimeRecoException("Media type %1$s unknown.".formatted(mediaTypeCode));
+                mediaTypes.add(mediaType);
+            }
+            searchFilter.setMediaTypes(mediaTypes);
         }
-        if (StringUtils.isAllBlank(searchFilterPojo.getTitle())) searchFilterPojo.setTitle(null);
-        searchFilter.setTitle(searchFilterPojo.getTitle());
-        if (searchFilterPojo.getMinSeasonYear() != null
-                && searchFilterPojo.getMinSeasonYear() == 0) searchFilterPojo.setMaxSeasonYear(null);
-        if (searchFilterPojo.getMaxSeasonYear() != null
-                && searchFilterPojo.getMaxSeasonYear() == 0) searchFilterPojo.setMaxSeasonYear(null);
+        if (searchFilterPojo.getStatusList() != null && !searchFilterPojo.getStatusList().isEmpty()) {
+            List<Status> statusList = new ArrayList<>();
+            for (String statusCode : searchFilterPojo.getStatusList()) {
+                Status status = Status.getByMalCode(statusCode);
+                if (status == null) throw new AnimeRecoException("Status %1$s unknown.".formatted(statusCode));
+                statusList.add(status);
+            }
+            searchFilter.setStatusList(statusList);
+        }
+        if (searchFilterPojo.getMinSeasonYear() == null || searchFilterPojo.getMinSeasonYear() == 0)
+            searchFilterPojo.setMinSeasonYear(null);
+        if (searchFilterPojo.getMaxSeasonYear() == null || searchFilterPojo.getMaxSeasonYear() == 0)
+            searchFilterPojo.setMaxSeasonYear(null);
         if (searchFilterPojo.getMinSeasonYear() != null && searchFilterPojo.getMaxSeasonYear() != null
                 && searchFilterPojo.getMinSeasonYear() > searchFilterPojo.getMaxSeasonYear()) {
-            throw new AnimeRecoException("Inconsistent Min/Max season year");
+            throw new AnimeRecoException("Inconsistent Min/Max season year.");
         }
         searchFilter.setMinSeasonYear(searchFilterPojo.getMinSeasonYear());
         searchFilter.setMaxSeasonYear(searchFilterPojo.getMaxSeasonYear());
-        if (searchFilterPojo.getMediaTypes() == null) searchFilterPojo.setMediaTypes(new ArrayList<>());
-        searchFilter.setMediaTypes(MediaType.parseMediaTypes(searchFilterPojo.getMediaTypes()));
-        if (searchFilterPojo.getStatusList() == null) searchFilterPojo.setStatusList(new ArrayList<>());
-        searchFilter.setStatusList(Status.parseStatusList(searchFilterPojo.getStatusList()));
-        if (searchFilterPojo.getGenres() == null) searchFilterPojo.setGenres(new ArrayList<>());
-        searchFilter.setGenres(parseGenreList(searchFilterPojo.getGenres()));
-        if (searchFilterPojo.getNegativeGenres() == null) searchFilterPojo.setNegativeGenres(new ArrayList<>());
-        searchFilter.setNegativeGenres(parseGenreList(searchFilterPojo.getNegativeGenres()));
-        return searchFilter;
-    }
-
-    private List<Genre> parseGenreList(List<Long> genreIds) throws AnimeRecoException {
-        List<Genre> genres = new ArrayList<>();
-        for (Long genreId : genreIds) {
-            Genre genre = animeService.getGenreById(genreId);
-            if (genre == null) {
-                log.error("Genre %s not found".formatted(genreId));
-                throw new AnimeRecoException("Genre %s not found".formatted(genreId));
+        if (searchFilterPojo.getGenres() != null && !searchFilterPojo.getGenres().isEmpty()) {
+            List<Genre> genres = new ArrayList<>();
+            for (Long genreId : searchFilterPojo.getGenres()) {
+                Genre genre = animeService.getGenreById(genreId);
+                if (genre == null) throw new AnimeRecoException("Genre %1$s unknown.".formatted(genreId));
+                genres.add(genre);
             }
-            genres.add(genre);
+            searchFilter.setGenres(genres);
         }
-        return genres;
+        if (searchFilterPojo.getNegativeGenres() != null && !searchFilterPojo.getNegativeGenres().isEmpty()) {
+            List<Genre> genres = new ArrayList<>();
+            for (Long genreId : searchFilterPojo.getNegativeGenres()) {
+                Genre genre = animeService.getGenreById(genreId);
+                if (genre == null) throw new AnimeRecoException("Genre %1$s unknown.".formatted(genreId));
+                genres.add(genre);
+            }
+            searchFilter.setNegativeGenres(genres);
+        }
+        return searchFilter;
     }
 }

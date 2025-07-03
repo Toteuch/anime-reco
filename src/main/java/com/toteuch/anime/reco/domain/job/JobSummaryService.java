@@ -21,7 +21,7 @@ public class JobSummaryService {
     private JobTaskService jobTaskService;
 
     public JobSummaryPojo getSummary(String sub, JobName jobName) {
-        JobTask lastOccurrence = jobTaskService.getLastOccurrence(sub, jobName);
+        JobTask lastOccurrence = jobTaskService.getLastOccurrence(sub, jobName, null);
         JobSummaryPojo pojo = mapJobTask(lastOccurrence);
         if (pojo == null) {
             pojo = new JobSummaryPojo();

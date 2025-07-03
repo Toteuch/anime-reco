@@ -22,18 +22,7 @@
 
     </div>
     <span class="span-pagination"></span>
-    <div class="modal" id="filterModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-body" id="modalBodyFilter"></div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
-                    <button class="btn btn-primary" onclick="applyFilter(0);" type="button">Apply</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <span th:replace="~{fragments/general.html :: searchFilter}"></span>
     <div class="modal" id="animeDetailsModal" tabindex="-1">
 
     </div>
@@ -50,16 +39,12 @@
         applyFilter(0);
     });
 
-    function saveSearchFilter() {
-        showErrorModal("Not implemented yet.");
-    }
-
     function openSearchFilter() {
         showErrorModal("Not implemented yet.");
     }
 
     function applyFilter(pageNumber) {
-        var filter = getSearchFilter(pageNumber);
+        var filter = getSearchFilter(pageNumber, undefined);
         $.ajax({
             type: "POST",
             headers: {"X-CSRF-Token": $('#csrf-token').val()},

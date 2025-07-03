@@ -1,5 +1,11 @@
 # Anime-Reco
 
+#### NEXT
+
+* Search filter save
+* Fix
+  * Scheduled task wasn't processing recommendations
+
 #### 0.5.0
 
 * Allow anonymous session
