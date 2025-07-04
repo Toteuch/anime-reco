@@ -1,6 +1,6 @@
 # Anime-Reco
 
-#### NEXT
+#### 0.6.0
 
 * Search filter save
 * Home page : Notifications
