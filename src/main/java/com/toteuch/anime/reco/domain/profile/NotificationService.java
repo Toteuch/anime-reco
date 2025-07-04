@@ -66,7 +66,7 @@ public class NotificationService {
      *
      * @return
      */
-    public List<Notification> getAllNotifications(String sub) {
-        return repo.findByProfileSub(sub, Sort.by(Sort.Direction.DESC, "createdAt"));
+    public List<Notification> getAllNotifications(String sub, int limit) {
+        return repo.findByProfileSub(sub, limit);
     }
 }

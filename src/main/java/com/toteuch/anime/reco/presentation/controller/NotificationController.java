@@ -19,6 +19,8 @@ import java.util.List;
 @RestController
 public class NotificationController {
 
+    private static final int NOTIF_DISPLAYED_COUNT = 5;
+
     @Autowired
     private NotificationService notificationService;
 
@@ -26,7 +28,7 @@ public class NotificationController {
     public NotificationResponse getNotificationList() {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             // List all notifications for user
-            List<Notification> notifications = notificationService.getAllNotifications(oidcUser.getSubject());
+            List<Notification> notifications = notificationService.getAllNotifications(oidcUser.getSubject(), NOTIF_DISPLAYED_COUNT);
             return getNotificationsResponse(notifications);
         } else {
             return new NotificationResponse("Not authenticated");
@@ -69,6 +71,8 @@ public class NotificationController {
         pojo.setCreatedAt(notification.getCreatedAt());
         pojo.setType(notification.getType());
         pojo.setReadAt(notification.getReadAt());
+        pojo.setMainMediumUrl(notification.getAnime().getMainPictureMediumUrl());
+        pojo.setAnimeId(notification.getAnime().getId());
         return pojo;
     }
 }

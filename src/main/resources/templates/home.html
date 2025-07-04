@@ -15,12 +15,103 @@
     <i>Incoming...</i>
     <h2>Current season</h2>
     <i>Incoming...</i>
-    <h2>Last Notifications</h2>
-    <i>Incoming...</i>
+    <h2>Notifications</h2>
+    <div id="notificationContainer">
+        <div class="alert alert-info" role="alert">
+            You must be logged in to view your notifications.
+        </div>
+    </div>
+    <!-- Modal -->
+    <div th:replace="~{fragments/general.html :: errorModal}"></div>
+    <div class="modal" id="animeDetailsModal" tabindex="-1">
+
+    </div>
 </main>
 <script th:src="@{/js/jquery-3.7.1.js}"></script>
 <script th:src="@{/js/popper-1.14.3.min.js}"></script>
 <script th:src="@{/js/bootstrap-5.3.3.bundle.min.js}"></script>
 <script th:src="@{/js/anime-reco.js}"></script>
+<script th:src="@{/js/anime-details.js}"></script>
+<script>
+    $(document).ready(function() {
+        if ($('#isAuthenticated').val() == "true") {
+            getNotifications();
+        }
+    });
+
+    function getNotifications() {
+        $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/notifications/list",
+            success: function(data){
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    displayNotifications(data.notifications);
+                }
+            }
+        });
+    }
+
+    function read(id, animeId) {
+        $.ajax({
+            type: "POST",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/notifications/"+id+"/read",
+            success: function(data){
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    getNotifications();
+                    openAnimeDetails(animeId);
+                }
+            }
+        });
+    }
+
+    function displayNotifications(notifications) {
+        let html = `<div class="flex d-flex">`;
+        for (let i in Object.entries(notifications)) {
+            if (notifications[i].readAt == null) {
+                html += `<div class="card mx-2 text-bg-primary" onclick="read(${notifications[i].id},
+                    ${notifications[i].animeId});">`;
+            } else {
+                html += `<div class="card mx-2" onclick="read(${notifications[i].id},
+                    ${notifications[i].animeId});">`;
+            }
+            html += `        <img src="${notifications[i].mainMediumUrl}" class="card-img img-wrapper"/>
+                    <div class="card-body">
+                        <p class="card-text">`+getNotificationCardBody(notifications[i])+`</p>
+                    </div>
+                </div>`;
+        }
+        if (notifications.length == 0) {
+            html += "<i>No new notifications. There's 3 types of notifications: New sequel, New status, New date.</i>";
+        }
+        html += `</div>`;
+        $('#notificationContainer').html(html);
+    }
+
+    function getNotificationCardBody(notification) {
+        let html = "";
+        let createdAt = new Date(notification.createdAt).toLocaleDateString(undefined);
+        switch (notification.type) {
+            case "NEW_RELATED_ANIME":
+                html += "NEW sequel";
+                break;
+            case "STATUS_CHANGED":
+                html += "NEW status";
+                break;
+            case "START_DATE_CHANGED":
+                html += "NEW date";
+                break;
+            default:
+                html += " ";
+        }
+        html += "<br/>" + createdAt;
+        return html;
+    }
+</script>
 </body>
 </html>

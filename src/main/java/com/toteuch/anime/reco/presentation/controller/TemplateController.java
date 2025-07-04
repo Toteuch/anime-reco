@@ -43,17 +43,6 @@ public class TemplateController {
         return "profile";
     }
 
-    @GetMapping("notifications")
-    public String showNotification(Model model) {
-        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
-            model.addAttribute("isAuthenticated", "true");
-        } else {
-            model.addAttribute("isAuthenticated", "false");
-        }
-        model.addAttribute("currentPage", TemplateName.NOTIFICATIONS.getCode());
-        return "notifications";
-    }
-
     @GetMapping("search")
     public String showSearch(Model model) {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {

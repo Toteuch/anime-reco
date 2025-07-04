@@ -3,6 +3,7 @@
 #### NEXT
 
 * Search filter save
+* Home page : Notifications
 * Fix
   * Scheduled task wasn't processing recommendations
 
