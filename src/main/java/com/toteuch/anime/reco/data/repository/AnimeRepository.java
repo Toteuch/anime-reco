@@ -1,7 +1,10 @@
 package com.toteuch.anime.reco.data.repository;
 
 import com.toteuch.anime.reco.domain.anime.entity.Anime;
+import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import org.springframework.data.domain.Limit;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -18,4 +21,12 @@ public interface AnimeRepository extends JpaRepository<Anime, Long>, JpaSpecific
 
     @Query("SELECT ani.id FROM Anime ani WHERE ani.detailsUpdate < :detailsUpdate")
     List<Long> findByDetailsUpdateBefore(Date detailsUpdate, Sort sort, Limit limit);
+
+    @Query("SELECT ani FROM MalUserScore mus " +
+            "INNER JOIN Anime ani ON ani = mus.anime " +
+            "INNER JOIN MalUser mu ON mus.user = mu " +
+            "INNER JOIN Profile p ON p.user = mu " +
+            "WHERE p = :profile " +
+            "ORDER BY mus.score DESC")
+    Page<Anime> findWatchedByProfile(Profile profile, Pageable pageable);
 }

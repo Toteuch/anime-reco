@@ -4,6 +4,7 @@
 
 * Small security configuration changes
 * Open search filter
+* Watchlist page - Watched
 
 #### 0.6.0
 

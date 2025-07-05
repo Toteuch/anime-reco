@@ -57,6 +57,18 @@ public class AnimeController {
         }
     }
 
+    @GetMapping("/anime/watched/{index}")
+    public AnimeListResultResponse getWatched(@PathVariable int index) {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            Page<Anime> animePage = animeService.getWatched(profile, index);
+            return new AnimeListResultResponse(getAnimeListPojo(animePage), animePage.getNumber(),
+                    animePage.getTotalPages());
+        } else {
+            return new AnimeListResultResponse("You must be logged in.");
+        }
+    }
+
     @PostMapping("/anime/{id}/notifications")
     public AnimeDetailsResponse setNotifications(@PathVariable Long id, @PathParam("enable") boolean enable) {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {

@@ -60,101 +60,13 @@
     }
 
     function displayResult(data) {
-        var spanPaginationHtml = getPagination(data.totalPages, data.pageNumber);
+        var spanPaginationHtml = getPagination(data.totalPages, data.pageNumber, 'applyFilter');
         $('.span-pagination').each(function() {
             $(this).html(spanPaginationHtml);
         });
-        let animeList = data.animeList;
-        let html = "";
-        for(let i = 0; i < animeList.length; i++) {
-            let altTitleContent = "<p>";
-            for (let y = 0; y < animeList[i].altTitles.length; y++) {
-                altTitleContent += animeList[i].altTitles[y];
-                if (y+1 < animeList[i].altTitles.length) {
-                    altTitleContent += "</br>";
-                }
-            }
-            altTitleContent += "</p>";
-            html += `
-                <div class="col">
-                    <div class="card mb-3" onclick="openAnimeDetails(`+animeList[i].id+`);">
-                        <img class="card-img-top img-wrapper" src="` + animeList[i].mainMediumUrl + `" alt="` + animeList[i].title + `">
-                        <div class="card-footer" data-toggle="tooltip"
-                            data-bs-title="`+altTitleContent+`"
-                            data-bs-html="true"
-                            data-bs-custom-class="alt-titles-tooltip"
-                            <p class="card-text text-truncate">` + animeList[i].title + `</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+        let html = getAnimeCards(data.animeList);
         $('#animeListResult').html(html);
         $('[data-toggle="tooltip"]').tooltip();
-    }
-
-    function getPagination(totalPages, currentPage) {
-        var spanPagination = '';
-        var lastPageTriggered = false;
-        var firstPageTriggered = false;
-        if (totalPages > 0) {
-            spanPagination += '<nav aria-label="...">';
-            spanPagination += ' <ul class="pagination">';
-            if (currentPage == 0) {
-                spanPagination += '  <li class="page-item disabled">';
-                spanPagination += '   <span class="page-link">Previous</span>';
-                spanPagination += '  </li>';
-            } else {
-                spanPagination += '  <li class="page-item">';
-                spanPagination += '   <a class="page-link" href="#a" onclick="applyFilter('
-                    + (currentPage - 1) + ')">Previous</a>';
-                spanPagination += '  </li>';
-            }
-            if (currentPage - 3 > 1) {
-                spanPagination += getPaginationLink(currentPage, 1);
-                spanPagination += '  <li class="page-item disabled">';
-                spanPagination += '   <span class="page-link">...</span>';
-                spanPagination += '  </li>';
-            }
-            for (var i = currentPage - 3; i < currentPage + 4; i++) {
-                if (i <= totalPages) {
-                    if (i == totalPages) {
-                        lastPageTriggered = true;
-                    }
-                    spanPagination += getPaginationLink(currentPage, i);
-                }
-            }
-            if (!lastPageTriggered) {
-                spanPagination += '  <li class="page-item disabled">';
-                spanPagination += '   <span class="page-link">...</span>';
-                spanPagination += '  </li>';
-                spanPagination += getPaginationLink(currentPage, totalPages);
-            }
-            if (currentPage+1 == totalPages) {
-                spanPagination += '  <li class="page-item disabled">';
-                spanPagination += '   <span class="page-link">Next</span>';
-                spanPagination += '  </li>';
-            } else {
-                spanPagination += '  <li class="page-item">';
-                spanPagination += '   <a class="page-link" href="#" onclick="applyFilter('
-                    + (currentPage + 1) + ')">Next</a>';
-                spanPagination += '  </li>';
-            }
-            spanPagination += ' </ul>';
-            spanPagination += '</nav>';
-        }
-        return spanPagination;
-    }
-
-    function getPaginationLink(currentPage, displayPage) {
-        if (displayPage <= 0) {
-            return '';
-        }
-        if (currentPage + 1 == displayPage) {
-            return '<li class="page-item active" aria-current="page"><span class="page-link">' + displayPage + '</span></li>';
-        }
-        return '<li class="page-item"><a class="page-link" href="#" onclick="applyFilter('+ (displayPage - 1) + '); ">' +
-        displayPage + '</a></li>';
     }
 </script>
 </body>

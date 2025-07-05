@@ -34,6 +34,7 @@ public class AnimeService {
     private static final SimpleDateFormat SDF_YM = new SimpleDateFormat("yyyy-MM");
     private static final SimpleDateFormat SDF_Y = new SimpleDateFormat("yyyy");
     private static final int PAGE_SIZE = 20;
+    private static final int WATCHLIST_PAGE_SIZE = 8;
 
     @Autowired
     private AnimeRepository repo;
@@ -91,6 +92,10 @@ public class AnimeService {
         limitDate.add(Calendar.DAY_OF_MONTH, -refreshIntervalInDays);
         return repo.findByDetailsUpdateBefore(limitDate.getTime(), Sort.by(Sort.Direction.ASC, "detailsUpdate"),
                 Limit.of(20));
+    }
+
+    public Page<Anime> getWatched(Profile profile, int index) {
+        return repo.findWatchedByProfile(profile, PageRequest.of(index, WATCHLIST_PAGE_SIZE));
     }
 
     public void collectAnimeDetails() {
