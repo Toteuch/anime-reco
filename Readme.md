@@ -3,6 +3,7 @@
 #### Next
 
 * Small security configuration changes
+* Open search filter
 
 #### 0.6.0
 

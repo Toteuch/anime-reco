@@ -45,6 +45,14 @@ public class SearchFilterService {
         return repo.save(searchFilter);
     }
 
+    public SearchFilter getSearchFilter(Profile profile, Long id) {
+        return repo.findByProfileAndId(profile, id);
+    }
+
+    public List<SearchFilter> getAllSearchFilter(Profile profile) {
+        return repo.findByProfileOrderByFilterIndex(profile);
+    }
+
     private int getNextOrderAvailable(Profile profile) {
         SearchFilter maxOrder = repo.findByProfileOrderByFilterIndexDesc(profile, Limit.of(1));
         if (maxOrder == null) return 0;
@@ -65,7 +73,8 @@ public class SearchFilterService {
         }
         if (searchFilterPojo.getName() != null && !StringUtils.isAllBlank(searchFilterPojo.getName()))
             searchFilter.setName(searchFilterPojo.getName().trim());
-        if (searchFilterPojo.getTitle() != null) searchFilter.setTitle(searchFilterPojo.getTitle().trim());
+        if (!StringUtils.isAllBlank(searchFilterPojo.getTitle()))
+            searchFilter.setTitle(searchFilterPojo.getTitle().trim());
         if (searchFilterPojo.getMediaTypes() != null && !searchFilterPojo.getMediaTypes().isEmpty()) {
             List<MediaType> mediaTypes = new ArrayList<>();
             for (String mediaTypeCode : searchFilterPojo.getMediaTypes()) {

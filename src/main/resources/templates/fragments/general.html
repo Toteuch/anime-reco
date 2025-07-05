@@ -84,7 +84,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <input id="filterNameId" type="hidden">
+                    <input id="filterId" type="hidden">
                     <form>
                         <div class="form-group">
                             <label for="filterNameInput">Filter name</label>
@@ -100,6 +100,18 @@
                             onclick="updateSearchFilter();" type="button">Update
                     </button>
                     <button class="btn btn-primary" onclick="saveSearchFilter(undefined);" type="button">New</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="searchFilterListModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body" id="searchFilterListModalBody">
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeOpenSearchFilters()" type="button">Cancel</button>
                 </div>
             </div>
         </div>
