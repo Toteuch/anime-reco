@@ -32,6 +32,7 @@ public class AnimeDetailsPojo {
     String statusLabel;
 
     // buttons
+    boolean isAddableToWatchlist;
     boolean inWatchlist;
     boolean notificationsEnabled;
 
@@ -185,5 +186,13 @@ public class AnimeDetailsPojo {
 
     public void setSeasonLabel(String seasonLabel) {
         this.seasonLabel = seasonLabel;
+    }
+
+    public boolean isAddableToWatchlist() {
+        return isAddableToWatchlist;
+    }
+
+    public void setAddableToWatchlist(boolean addableToWatchlist) {
+        isAddableToWatchlist = addableToWatchlist;
     }
 }

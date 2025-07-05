@@ -11,6 +11,7 @@ import com.toteuch.anime.reco.domain.anime.AnimeService;
 import com.toteuch.anime.reco.domain.anime.entity.Anime;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUser;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUserScore;
+import com.toteuch.anime.reco.domain.profile.WatchlistService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class MalUserScoreService {
     private MalApi malApi;
     @Autowired
     private AnimeService animeService;
+    @Autowired
+    private WatchlistService watchlistService;
 
     public List<MalUserScore> getByUser(MalUser user) {
         return repo.findByUser(user);
@@ -185,6 +188,7 @@ public class MalUserScoreService {
                 });
                 MalUserScore score = existingScoresMap.get(animeId);
                 if (score == null) {
+                    watchlistService.removeFromWatchlist(user, anime);
                     score = new MalUserScore();
                     score.setUser(user);
                     score.setAnime(anime);

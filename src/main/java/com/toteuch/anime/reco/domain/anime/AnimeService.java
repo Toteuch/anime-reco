@@ -29,13 +29,12 @@ import java.util.*;
 
 @Service
 public class AnimeService {
+    public static final int WATCHLIST_PAGE_SIZE = 8;
     private static final Logger log = LoggerFactory.getLogger(AnimeService.class);
     private static final SimpleDateFormat SDF_FULL = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat SDF_YM = new SimpleDateFormat("yyyy-MM");
     private static final SimpleDateFormat SDF_Y = new SimpleDateFormat("yyyy");
     private static final int PAGE_SIZE = 20;
-    private static final int WATCHLIST_PAGE_SIZE = 8;
-
     @Autowired
     private AnimeRepository repo;
     @Autowired

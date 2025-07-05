@@ -11,8 +11,10 @@ import com.toteuch.anime.reco.domain.anime.pojo.AnimePojo;
 import com.toteuch.anime.reco.domain.profile.NotificationSettingService;
 import com.toteuch.anime.reco.domain.profile.ProfileService;
 import com.toteuch.anime.reco.domain.profile.SearchFilterService;
+import com.toteuch.anime.reco.domain.profile.WatchlistService;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import com.toteuch.anime.reco.domain.profile.entities.SearchFilter;
+import com.toteuch.anime.reco.domain.profile.entities.WatchlistAnime;
 import com.toteuch.anime.reco.domain.profile.pojo.SearchFilterPojo;
 import com.toteuch.anime.reco.presentation.controller.response.AnimeDetailsResponse;
 import com.toteuch.anime.reco.presentation.controller.response.AnimeListResultResponse;
@@ -43,6 +45,8 @@ public class AnimeController {
     private ProfileService profileService;
     @Autowired
     private NotificationSettingService notificationSettingService;
+    @Autowired
+    private WatchlistService watchlistService;
 
     @PostMapping("/anime/search")
     public AnimeListResultResponse search(@RequestBody SearchFilterPojo searchFilterPojo) {
@@ -118,6 +122,37 @@ public class AnimeController {
         return new AnimeDetailsResponse(getAnimeDetailsPojo(anime, profile));
     }
 
+    @PostMapping("/anime/{id}/watchlist")
+    public AnimeDetailsResponse addToWatchlist(@PathVariable Long id) {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            try {
+                WatchlistAnime watchlistAnime = watchlistService.save(profile, id);
+                return new AnimeDetailsResponse(getAnimeDetailsPojo(watchlistAnime.getAnime(), profile));
+            } catch (AnimeRecoException ex) {
+                return new AnimeDetailsResponse(ex.getMessage());
+            }
+        } else {
+            return new AnimeDetailsResponse("You must be logged in.");
+        }
+    }
+
+    @DeleteMapping("/anime/{id}/watchlist")
+    public AnimeDetailsResponse removeFromWatchlist(@PathVariable Long id) {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            try {
+                watchlistService.delete(profile, id);
+                Anime anime = animeService.getById(id);
+                return new AnimeDetailsResponse(getAnimeDetailsPojo(anime, profile));
+            } catch (AnimeRecoException ex) {
+                return new AnimeDetailsResponse(ex.getMessage());
+            }
+        } else {
+            return new AnimeDetailsResponse("You must be logged in.");
+        }
+    }
+
     private AnimeDetailsPojo getAnimeDetailsPojo(Anime anime, Profile profile) {
         AnimeDetailsPojo pojo = new AnimeDetailsPojo();
         pojo.setId(anime.getId());
@@ -141,9 +176,10 @@ public class AnimeController {
         List<String> picLinks = new ArrayList<>();
         anime.getPictureLinks().forEach(pl -> picLinks.add(pl.getMedium()));
         pojo.setPictureLinks(picLinks);
-        pojo.setInWatchlist(false);
+        pojo.setInWatchlist(profile != null && watchlistService.getByProfileAndAnime(profile, anime) != null);
         AtomicBoolean notifications = new AtomicBoolean(false);
         if (profile != null) {
+            pojo.setAddableToWatchlist(profile.getUser() == null || watchlistService.canBeAdded(profile.getUser(), anime));
             profile.getNotificationSettings().forEach(ns -> {
                 if (ns.getAnime() == anime) {
                     notifications.set(true);
