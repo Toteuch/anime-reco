@@ -25,14 +25,13 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/logout").authenticated();
+                    auth.requestMatchers("/logout", "/profile", "/notifications", "/watchlist").authenticated();
                     auth.anyRequest().permitAll();
                 })
                 .oauth2Login(oauth2login -> {
                     oauth2login
                             .userInfoEndpoint(userInfo -> userInfo
-                                    .oidcUserService(this.oidcUserService()))
-                            .defaultSuccessUrl("/", false);
+                                    .oidcUserService(this.oidcUserService()));
                 })
                 .logout(logout -> logout.logoutSuccessUrl("/"));
 
@@ -51,7 +50,7 @@ public class SecurityConfig {
             Profile profile = profileService.findBySub(oidcUser.getSubject());
             if (profile == null) {
                 profile = new Profile(oidcUser.getSubject(), oidcUser.getEmail(), oidcUser.getPicture());
-                profile = profileService.save(profile);
+                profileService.save(profile);
             }
 
             return oidcUser;

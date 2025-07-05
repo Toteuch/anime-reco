@@ -1,5 +1,9 @@
 # Anime-Reco
 
+#### Next
+
+* Small security configuration changes
+
 #### 0.6.0
 
 * Search filter save
