@@ -6,7 +6,6 @@
 * Change the pagination display (fixed size)
 * Set the pageSize in ajax call (and put page param in path params)
 * Rationalize the card generation with custom tags (watched/Notification/watchlist)
-* Randomize the current season' animes home overview
 * See all notifications from Home (link in the title, show a modal with all notifications)
 * blacklist an anime from recommendations results (and manage this blacklist, probably in profile page)
 * Add usefull information on how to use the app
