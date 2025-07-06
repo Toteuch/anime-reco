@@ -88,14 +88,14 @@ function getAnimeCards(animeList) {
         }
         altTitleContent += "</p>";
         html += `
-            <div class="col">
-                <div class="card mb-3" onclick="openAnimeDetails(`+animeList[i].id+`);">
+            <div class="col me-2 my-2">
+                <div class="card" onclick="openAnimeDetails(`+animeList[i].id+`);">
                     <img class="card-img-top img-wrapper" src="` + animeList[i].mainMediumUrl + `" alt="` + animeList[i].title + `">
-                    <div class="card-footer" data-toggle="tooltip"
+                    <div class="card-footer limit-text-card" data-toggle="tooltip"
                         data-bs-title="`+altTitleContent+`"
                         data-bs-html="true"
                         data-bs-custom-class="alt-titles-tooltip"
-                        <p class="card-text text-truncate">` + animeList[i].title + `</p>
+                        <p class="card-text">` + animeList[i].title + `</p>
                     </div>
                 </div>
             </div>

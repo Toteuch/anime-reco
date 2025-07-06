@@ -97,6 +97,10 @@ public class AnimeService {
         return repo.findWatchedByProfile(profile, PageRequest.of(index, WATCHLIST_PAGE_SIZE));
     }
 
+    public Page<Anime> getWatchlist(Profile profile, int index) {
+        return repo.findWatchlistByProfile(profile, PageRequest.of(index, WATCHLIST_PAGE_SIZE));
+    }
+
     public void collectAnimeDetails() {
         log.debug("collectAnimeDetails starting...");
         List<Long> animeIds = getNewAnimes();

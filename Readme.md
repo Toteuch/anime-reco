@@ -18,6 +18,7 @@
 * Watchlist page - Watched
 * Add/Remove from watchlist
 * Add pagination on Home's notifications
+* Watchlist page - Watchlist
 
 #### 0.6.0
 

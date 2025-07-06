@@ -11,14 +11,15 @@
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
     <h1>Watchlist</h1>
-    <div class="flex d-flex flex-wrap" id="watchlist">
-        <i>Incoming...</i>
-    </div>
-    <h1>Watched</h1>
-    <span id="pagination-watched"></span>
-    <div class="flex d-flex flex-wrap" id="watched">
+    <div class="d-inline-flex" id="watchlist">
 
     </div>
+    <span id="pagination-watchlist"></span>
+    <h1>Watched</h1>
+    <div class="d-inline-flex" id="watched">
+
+    </div>
+    <span id="pagination-watched"></span>
     <div class="modal" id="animeDetailsModal" tabindex="-1">
 
     </div>
@@ -32,8 +33,39 @@
     $(function() {
         if ($('#isAuthenticated').val() == "true") {
             getWatchedList(0);
+            getWatchlist(0);
         }
     });
+    function getWatchlist(index) {
+        $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/anime/watchlist/" + index,
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function(data) {
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    displayWatchlist(data);
+                }
+            }
+        });
+    }
+
+    function displayWatchlist(data) {
+        let html = "";
+        if (data.animeList == undefined || data.animeList.length == 0) {
+            html = "<i>No results</i>";
+        } else {
+            var spanPagination = getPagination(data.totalPages, data.pageNumber, 'getWatchlist');
+            $("#pagination-watchlist").html(spanPagination);
+            html = getAnimeCards(data.animeList);
+        }
+        $("#watchlist").html(html);
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+
     function getWatchedList(index) {
         $.ajax({
             type: "GET",
@@ -45,14 +77,13 @@
                 if (data.error != null) {
                     showErrorModal(data.error);
                 } else {
-                    displayWatchlist(data);
-                    $('#filterModal').modal('hide');
+                    displayWatchedList(data);
                 }
             }
         });
     }
 
-    function displayWatchlist(data) {
+    function displayWatchedList(data) {
         let html = "";
         if (data.animeList == undefined || data.animeList.length == 0) {
             html = "<i>No results</i>";

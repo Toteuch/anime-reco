@@ -71,14 +71,14 @@
 
     function displayNotifications(data) {
         let html = "";
-        html += `<div class="flex d-flex">`;
+        html += `<div class="d-inline-flex">`;
         let notifications = data.notifications;
         for (let i in Object.entries(notifications)) {
             if (notifications[i].readAt == null) {
-                html += `<div class="card mx-2 text-bg-primary" onclick="read(${notifications[i].id},
+                html += `<div class="card me-2 text-bg-primary" onclick="read(${notifications[i].id},
                     ${notifications[i].animeId});">`;
             } else {
-                html += `<div class="card mx-2" onclick="read(${notifications[i].id},
+                html += `<div class="card me-2" onclick="read(${notifications[i].id},
                     ${notifications[i].animeId});">`;
             }
             html += `        <img src="${notifications[i].mainMediumUrl}" class="card-img img-wrapper"/>
@@ -92,7 +92,7 @@
         }
         html += `</div>`;
         if (notifications.length > 0) {
-            html += `<div class="mx-2 my-1">`;
+            html += `<div class="me-2 my-1">`;
             html += getPagination(data.totalElements, data.pageNumber, 'getNotifications');
             html += `</div>`;
         }
