@@ -17,6 +17,7 @@
 * Open search filter
 * Watchlist page - Watched
 * Add/Remove from watchlist
+* Add pagination on Home's notifications
 
 #### 0.6.0
 

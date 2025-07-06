@@ -9,6 +9,8 @@ import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import java.util.List;
 @Service
 public class NotificationService {
     private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
+
+    private static final int NOTIF_DISPLAYED_COUNT = 5;
 
     @Autowired
     private NotificationRepository repo;
@@ -66,7 +70,7 @@ public class NotificationService {
      *
      * @return
      */
-    public List<Notification> getAllNotifications(String sub, int limit) {
-        return repo.findByProfileSub(sub, limit);
+    public Page<Notification> getAllNotifications(String sub, int pageNumber) {
+        return repo.findByProfileSub(sub, PageRequest.of(pageNumber, NOTIF_DISPLAYED_COUNT));
     }
 }

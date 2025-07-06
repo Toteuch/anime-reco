@@ -5,7 +5,9 @@ import com.toteuch.anime.reco.domain.profile.NotificationService;
 import com.toteuch.anime.reco.domain.profile.entities.Notification;
 import com.toteuch.anime.reco.domain.profile.pojo.NotificationPojo;
 import com.toteuch.anime.reco.presentation.controller.response.NotificationResponse;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,16 +21,14 @@ import java.util.List;
 @RestController
 public class NotificationController {
 
-    private static final int NOTIF_DISPLAYED_COUNT = 5;
-
     @Autowired
     private NotificationService notificationService;
 
     @GetMapping("notifications/list")
-    public NotificationResponse getNotificationList() {
+    public NotificationResponse getNotificationList(@PathParam("pageNumber") Integer pageNumber) {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             // List all notifications for user
-            List<Notification> notifications = notificationService.getAllNotifications(oidcUser.getSubject(), NOTIF_DISPLAYED_COUNT);
+            Page<Notification> notifications = notificationService.getAllNotifications(oidcUser.getSubject(), pageNumber);
             return getNotificationsResponse(notifications);
         } else {
             return new NotificationResponse("Not authenticated");
@@ -53,15 +53,15 @@ public class NotificationController {
         return new NotificationResponse(getNotificationPojo(notification));
     }
 
-    private NotificationResponse getNotificationsResponse(List<Notification> notifications) {
+    private NotificationResponse getNotificationsResponse(Page<Notification> notifications) {
         if (notifications == null || notifications.isEmpty()) {
-            return new NotificationResponse(new ArrayList<>());
+            return new NotificationResponse(new ArrayList<>(), 0, 0);
         }
         List<NotificationPojo> pojos = new ArrayList<>();
         for (Notification notification : notifications) {
             pojos.add(getNotificationPojo(notification));
         }
-        return new NotificationResponse(pojos);
+        return new NotificationResponse(pojos, notifications.getTotalPages(), notifications.getNumber());
     }
 
     private NotificationPojo getNotificationPojo(Notification notification) {

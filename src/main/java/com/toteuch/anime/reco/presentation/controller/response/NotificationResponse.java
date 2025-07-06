@@ -7,6 +7,8 @@ import java.util.List;
 public class NotificationResponse extends ExceptionResponse {
     List<NotificationPojo> notifications;
     NotificationPojo notification;
+    Integer pageNumber;
+    Integer totalElements;
 
     public NotificationResponse() {
     }
@@ -15,9 +17,11 @@ public class NotificationResponse extends ExceptionResponse {
         super(error);
     }
 
-    public NotificationResponse(List<NotificationPojo> notifications) {
+    public NotificationResponse(List<NotificationPojo> notifications, Integer totalElements, Integer pageNumber) {
         super(null);
         this.notifications = notifications;
+        this.totalElements = totalElements;
+        this.pageNumber = pageNumber;
     }
 
     public NotificationResponse(NotificationPojo notification) {
@@ -26,5 +30,17 @@ public class NotificationResponse extends ExceptionResponse {
 
     public List<NotificationPojo> getNotifications() {
         return this.notifications;
+    }
+
+    public NotificationPojo getNotification() {
+        return notification;
+    }
+
+    public Integer getPageNumber() {
+        return pageNumber;
+    }
+
+    public Integer getTotalElements() {
+        return totalElements;
     }
 }
