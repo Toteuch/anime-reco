@@ -10,7 +10,7 @@
 * blacklist an anime from recommendations results (and manage this blacklist, probably in profile page)
 * Add usefull information on how to use the app
 
-#### Next
+#### 0.7.0
 
 * Small security configuration changes
 * Open search filter
