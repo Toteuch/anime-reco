@@ -10,6 +10,8 @@
 * blacklist an anime from recommendations results (and manage this blacklist, probably in profile page)
 * Add usefull information on how to use the app
 * Restrict the watchlist on home page to completed animes
+* Put Notifications on top on the Homepage if there is at least one unread
+* Add scores (user and MAL) in anime details
 
 #### 0.7.1
 
