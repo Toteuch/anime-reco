@@ -13,7 +13,7 @@
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
     <h1>
         <i class="bi bi-bookmark"></i>
-        Watchlist
+        &nbsp;Watchlist
     </h1>
     <div class="d-inline-flex" id="watchlist">
 
@@ -40,22 +40,6 @@
             getWatchlist(0);
         }
     });
-    function getWatchlist(index) {
-        $.ajax({
-            type: "GET",
-            headers: {"X-CSRF-Token": $('#csrf-token').val()},
-            url: window.location.protocol + "//" + window.location.host + "/anime/watchlist/" + index,
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function(data) {
-                if (data.error != null) {
-                    showErrorModal(data.error);
-                } else {
-                    displayWatchlist(data);
-                }
-            }
-        });
-    }
 
     function displayWatchlist(data) {
         let html = "";

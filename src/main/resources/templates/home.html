@@ -11,11 +11,15 @@
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
-    <h2>Watchlist</h2>
-    <i>Incoming...</i>
+    <h2><i class="bi bi-bookmark"></i>&nbsp;Watchlist</h2>
+    <div id="watchlistContainer">
+        <div class="alert alert-info" role="alert">
+            You must be logged in to view your watchlist.
+        </div>
+    </div>
     <h2>Current season</h2>
     <i>Incoming...</i>
-    <h2>Notifications</h2>
+    <h2><i class="bi bi-bell"></i>&nbsp;Notifications</h2>
     <div id="notificationContainer">
         <div class="alert alert-info" role="alert">
             You must be logged in to view your notifications.
@@ -36,6 +40,7 @@
     $(document).ready(function() {
         if ($('#isAuthenticated').val() == "true") {
             getNotifications(0);
+            getWatchlist(0);
         }
     });
 
@@ -98,6 +103,24 @@
             html += `</div>`;
         }
         $('#notificationContainer').html(html);
+    }
+
+    function displayWatchlist(data) {
+        let html = "";
+        html += `<div class="d-inline-flex">`;
+        if (data.animeList == undefined || data.animeList.length == 0) {
+            html += "<i>No results</i>";
+        } else {
+            html += getAnimeCards(data.animeList);
+        }
+        html += `</div>`;
+        if (data.animeList.length > 0) {
+            html += `<div class="me-2 my-1">`;
+            html += getPagination(data.totalPages, data.pageNumber, 'getWatchlist');
+            html += `</div>`;
+        }
+        $("#watchlistContainer").html(html);
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
     function getNotificationCardBody(notification) {

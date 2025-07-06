@@ -20,6 +20,7 @@
 * Add pagination on Home's notifications
 * Watchlist page - Watchlist
 * Use bootstrap icons css
+* Home page - Watchlist
 
 #### 0.6.0
 
