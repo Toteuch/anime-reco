@@ -12,6 +12,7 @@
 * Restrict the watchlist on home page to completed animes
 * Put Notifications on top on the Homepage if there is at least one unread
 * Add scores (user and MAL) in anime details
+* Only raise new_date notification when existing anime status is not completed
 
 #### 0.7.1
 
