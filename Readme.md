@@ -19,6 +19,7 @@
 * Add/Remove from watchlist
 * Add pagination on Home's notifications
 * Watchlist page - Watchlist
+* Use bootstrap icons css
 
 #### 0.6.0
 
