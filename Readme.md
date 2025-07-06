@@ -9,6 +9,7 @@
 * See all notifications from Home (link in the title, show a modal with all notifications)
 * blacklist an anime from recommendations results (and manage this blacklist, probably in profile page)
 * Add usefull information on how to use the app
+* Restrict the watchlist on home page to completed animes
 
 #### 0.7.1
 
