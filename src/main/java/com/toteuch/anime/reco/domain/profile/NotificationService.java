@@ -21,7 +21,7 @@ import java.util.List;
 public class NotificationService {
     private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
 
-    private static final int NOTIF_DISPLAYED_COUNT = 5;
+    private static final int NOTIF_DISPLAYED_COUNT = 8;
 
     @Autowired
     private NotificationRepository repo;

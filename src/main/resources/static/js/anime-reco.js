@@ -55,7 +55,7 @@ function getPagination(totalPages, currentPage, functionName) {
             spanPagination += '  </li>';
         } else {
             spanPagination += '  <li class="page-item">';
-            spanPagination += '   <a class="page-link" href="#" onclick="'+functionName+'('
+            spanPagination += '   <a class="page-link" href="#a" onclick="'+functionName+'('
                 + (currentPage + 1) + ')">Next</a>';
             spanPagination += '  </li>';
         }
@@ -72,7 +72,7 @@ function getPaginationLink(currentPage, displayPage, functionName) {
     if (currentPage + 1 == displayPage) {
         return '<li class="page-item active" aria-current="page"><span class="page-link">' + displayPage + '</span></li>';
     }
-    return '<li class="page-item"><a class="page-link" href="#" onclick="'+functionName+'('+ (displayPage - 1) + '); ">' +
+    return '<li class="page-item"><a class="page-link" href="#a" onclick="'+functionName+'('+ (displayPage - 1) + '); ">' +
     displayPage + '</a></li>';
 }
 

@@ -21,6 +21,7 @@
 * Watchlist page - Watchlist
 * Use bootstrap icons css
 * Home page - Watchlist
+* Home page - Current season
 
 #### 0.6.0
 

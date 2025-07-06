@@ -18,6 +18,7 @@ import com.toteuch.anime.reco.domain.profile.entities.WatchlistAnime;
 import com.toteuch.anime.reco.domain.profile.pojo.SearchFilterPojo;
 import com.toteuch.anime.reco.presentation.controller.response.AnimeDetailsResponse;
 import com.toteuch.anime.reco.presentation.controller.response.AnimeListResultResponse;
+import com.toteuch.anime.reco.presentation.controller.response.CurrentSeasonResponse;
 import jakarta.websocket.server.PathParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -104,6 +105,21 @@ public class AnimeController {
         Anime anime = animeService.getById(id);
         Profile profile = profileService.findBySub(oidcUser.getSubject());
         return new AnimeDetailsResponse(getAnimeDetailsPojo(anime, profile));
+    }
+
+    @GetMapping("/anime/current-season/{index}")
+    public CurrentSeasonResponse getCurrentSeasonAnimeList(@PathVariable int index) {
+        try {
+            Page<Anime> animePage = animeService.getCurrentSeasonAnimePage(index);
+            return new CurrentSeasonResponse(
+                    getAnimeListPojo(animePage),
+                    animeService.getCurrentSeason().getLabel() + " " + animeService.getCurrentSeasonYear(),
+                    animePage.getTotalPages(),
+                    animePage.getNumber()
+            );
+        } catch (AnimeRecoException ex) {
+            return new CurrentSeasonResponse(ex.getMessage());
+        }
     }
 
     private List<AnimePojo> getAnimeListPojo(Page<Anime> animeList) {

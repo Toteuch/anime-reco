@@ -27,9 +27,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.toteuch.anime.reco.domain.anime.SeasonLabel.*;
+
 @Service
 public class AnimeService {
     public static final int WATCHLIST_PAGE_SIZE = 8;
+    public static final int SEASON_PAGE_SIZE = 8;
     private static final Logger log = LoggerFactory.getLogger(AnimeService.class);
     private static final SimpleDateFormat SDF_FULL = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat SDF_YM = new SimpleDateFormat("yyyy-MM");
@@ -329,5 +332,63 @@ public class AnimeService {
 
     public Page<Anime> search(SearchFilter searchFilter, int page) throws AnimeRecoException {
         return repo.findAll(AnimeSpecification.getSpecification(searchFilter), PageRequest.of(page, PAGE_SIZE));
+    }
+
+    public Page<Anime> getCurrentSeasonAnimePage(int page) throws AnimeRecoException {
+        Season currentSeason = seasonRepository.findByYearAndSeason(getCurrentSeasonYear(), getCurrentSeason().getMalCode());
+        if (currentSeason != null) {
+            return repo.findBySeason(currentSeason, PageRequest.of(page, SEASON_PAGE_SIZE));
+        }
+        return null;
+    }
+
+    public SeasonLabel getCurrentSeason() throws AnimeRecoException {
+        return getSeasonFromDate(new Date());
+    }
+
+    public Integer getCurrentSeasonYear() {
+        Calendar cal = Calendar.getInstance();
+        int seasonYear = cal.get(Calendar.YEAR);
+        Calendar previousWinterStart = getStartSeason(WINTER);
+        previousWinterStart.add(Calendar.YEAR, -1);
+        Calendar springStart = getStartSeason(SPRING);
+        if (cal.after(previousWinterStart) && cal.before(springStart)) {
+            seasonYear--;
+        }
+        return seasonYear;
+    }
+
+    private SeasonLabel getSeasonFromDate(Date date) throws AnimeRecoException {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        Calendar previousWinterStart = getStartSeason(WINTER);
+        previousWinterStart.add(Calendar.YEAR, -1);
+        Calendar springStart = getStartSeason(SPRING);
+        Calendar summerStart = getStartSeason(SUMMER);
+        Calendar fallStart = getStartSeason(FALL);
+        Calendar winterStart = getStartSeason(WINTER);
+        if ((cal.after(previousWinterStart) && cal.before(springStart))
+                || cal.after(winterStart)) {
+            return WINTER;
+        } else if (cal.after(springStart) && cal.before(summerStart)) {
+            return SPRING;
+        } else if (cal.after(summerStart) && cal.before(fallStart)) {
+            return SUMMER;
+        } else if (cal.after(fallStart) && cal.before(winterStart)) {
+            return FALL;
+        } else {
+            throw new AnimeRecoException("Couldn't find the current season");
+        }
+    }
+
+    private Calendar getStartSeason(SeasonLabel season) {
+        Calendar start = Calendar.getInstance();
+        start.set(Calendar.MONTH, season.getFromMonth());
+        start.set(Calendar.DAY_OF_MONTH, season.getFromDay());
+        start.set(Calendar.HOUR, 0);
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.MILLISECOND, 0);
+        return start;
     }
 }

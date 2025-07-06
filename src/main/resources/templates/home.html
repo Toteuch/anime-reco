@@ -17,8 +17,8 @@
             You must be logged in to view your watchlist.
         </div>
     </div>
-    <h2>Current season</h2>
-    <i>Incoming...</i>
+    <h2 id="seasonTitle">Current season</h2>
+    <div id="currentSeasonContainer"></div>
     <h2><i class="bi bi-bell"></i>&nbsp;Notifications</h2>
     <div id="notificationContainer">
         <div class="alert alert-info" role="alert">
@@ -38,11 +38,46 @@
 <script th:src="@{/js/anime-details.js}"></script>
 <script>
     $(document).ready(function() {
+        getCurrentSeasonAnimeList(0);
         if ($('#isAuthenticated').val() == "true") {
             getNotifications(0);
             getWatchlist(0);
         }
     });
+
+    function getCurrentSeasonAnimeList(index) {
+        $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/anime/current-season/" + index,
+            success: function(data){
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    displayCurrentSeasonAnimeList(data);
+                }
+            }
+        });
+    }
+
+    function displayCurrentSeasonAnimeList(data) {
+        let html = "";
+        html += `<div class="d-inline-flex">`;
+        if (data.animeList == undefined || data.animeList.length == 0) {
+            html += "<i>No results</i>";
+        } else {
+            html += getAnimeCards(data.animeList);
+        }
+        html += `</div>`;
+        if (data.animeList.length > 0) {
+            html += `<div class="me-2 my-1">`;
+            html += getPagination(data.totalPages, data.pageNumber, 'getCurrentSeasonAnimeList');
+            html += `</div>`;
+        }
+        $("#currentSeasonContainer").html(html);
+        $('[data-toggle="tooltip"]').tooltip();
+        $("#seasonTitle").html(data.seasonLabel);
+    }
 
     function getNotifications(index) {
         $.ajax({

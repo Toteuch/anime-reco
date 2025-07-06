@@ -1,6 +1,7 @@
 package com.toteuch.anime.reco.data.repository;
 
 import com.toteuch.anime.reco.domain.anime.entity.Anime;
+import com.toteuch.anime.reco.domain.anime.entity.Season;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Page;
@@ -35,4 +36,6 @@ public interface AnimeRepository extends JpaRepository<Anime, Long>, JpaSpecific
             "WHERE wa.profile = :profile " +
             "ORDER BY wa.createdAt")
     Page<Anime> findWatchlistByProfile(Profile profile, Pageable pageable);
+
+    Page<Anime> findBySeason(Season season, Pageable pageable);
 }
