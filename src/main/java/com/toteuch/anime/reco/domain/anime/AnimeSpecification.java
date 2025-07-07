@@ -60,7 +60,7 @@ public class AnimeSpecification {
             }
             // Media Types
             if (searchFilter.getMediaTypes() != null && !searchFilter.getMediaTypes().isEmpty()) {
-                predicates.add(root.get("mediaType").in(MediaType.getMalCode(searchFilter.getMediaTypes())));
+                predicates.add(root.get("mediaType").in(MediaType.getMalCodes(searchFilter.getMediaTypes())));
             }
             // Status
             if (searchFilter.getStatusList() != null && !searchFilter.getStatusList().isEmpty()) {
@@ -91,8 +91,8 @@ public class AnimeSpecification {
                 // Subquery retrieving all anime with genresOut
                 Subquery<Long> subquery = query.subquery(Long.class);
                 Root<Anime> subRoot = subquery.from(Anime.class);
-                Predicate inGenres = subRoot.join("genres").get("id").in(negativeGenreIds);
-                subquery.select(subRoot.get("id")).where(inGenres);
+                Predicate outGenres = subRoot.join("genres").get("id").in(negativeGenreIds);
+                subquery.select(subRoot.get("id")).where(outGenres);
                 // excluding the anime retrieved by subquery
                 predicates.add(root.get("id").in(subquery).not());
             }

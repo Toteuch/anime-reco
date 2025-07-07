@@ -53,7 +53,7 @@ public enum MediaType {
         return mediaTypes;
     }
 
-    public static List<String> getMalCode(List<MediaType> mediaTypes) {
+    public static List<String> getMalCodes(List<MediaType> mediaTypes) {
         List<String> malCodes = new ArrayList<>();
         mediaTypes.forEach(mt -> malCodes.add(mt.getMalCode()));
         return malCodes;

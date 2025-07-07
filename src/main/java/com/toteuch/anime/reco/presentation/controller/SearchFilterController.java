@@ -99,7 +99,7 @@ public class SearchFilterController {
         pojo.setName(searchFilter.getName());
         pojo.setTitle(searchFilter.getTitle());
         if (searchFilter.getMediaTypes() != null)
-            pojo.setMediaTypes(MediaType.getMalCode(searchFilter.getMediaTypes()));
+            pojo.setMediaTypes(MediaType.getMalCodes(searchFilter.getMediaTypes()));
         if (searchFilter.getStatusList() != null)
             pojo.setStatusList(Status.getMalCodes(searchFilter.getStatusList()));
         pojo.setMinSeasonYear(searchFilter.getMinSeasonYear());
