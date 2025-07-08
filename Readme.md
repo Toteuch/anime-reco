@@ -3,6 +3,7 @@
 #### Next
 
 * Recommendations page - default (logged in and anonymous) recommendations
+* Delete user_id column in recommendation table
 
 #### 0.7.1
 
