@@ -15,6 +15,7 @@ import com.toteuch.anime.reco.domain.profile.WatchlistService;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import com.toteuch.anime.reco.domain.profile.entities.SearchFilter;
 import com.toteuch.anime.reco.domain.profile.entities.WatchlistAnime;
+import com.toteuch.anime.reco.domain.profile.pojo.RecommendationPojo;
 import com.toteuch.anime.reco.domain.profile.pojo.SearchFilterPojo;
 import com.toteuch.anime.reco.presentation.controller.response.AnimeDetailsResponse;
 import com.toteuch.anime.reco.presentation.controller.response.AnimeListResultResponse;
@@ -132,19 +133,34 @@ public class AnimeController {
                 profile = profileService.findBySub(oidcUser.getSubject());
                 List<SearchFilter> searchFilters = searchFilterService.getAllSearchFilter(profile);
                 if (searchFilters != null && !searchFilters.isEmpty()) {
-                    response = new RecommendationsResponse("Not implemented yet");
+                    List<RecommendationPojo> recoList = new ArrayList<>();
+                    for (SearchFilter searchFilter : searchFilters) {
+                        Page<Anime> animePage = animeService.getRecommendations(searchFilter);
+                        recoList.add(getRecommendationPojo(animePage, searchFilter.getName(), searchFilter.getId()));
+                    }
+                    response = new RecommendationsResponse(recoList);
                 }
             }
             if (response == null) {
                 SearchFilter defaultFilter = new SearchFilter();
                 defaultFilter.setProfile(profile);
                 Page<Anime> animePage = animeService.getRecommendations(defaultFilter);
-                response = new RecommendationsResponse(getAnimeListPojo(animePage), "Default filter");
+                List<RecommendationPojo> recoList = new ArrayList<>();
+                recoList.add(getRecommendationPojo(animePage, "Default filter", 0L));
+                response = new RecommendationsResponse(recoList);
             }
         } catch (AnimeRecoException ex) {
             return new RecommendationsResponse(ex.getMessage());
         }
         return response;
+    }
+
+    private RecommendationPojo getRecommendationPojo(Page<Anime> animePage, String label, Long idFilter) {
+        RecommendationPojo reco = new RecommendationPojo();
+        reco.setAnimeList(getAnimeListPojo(animePage));
+        reco.setRecoLabel(label);
+        reco.setFilterId(idFilter);
+        return reco;
     }
 
     private List<AnimePojo> getAnimeListPojo(Page<Anime> animeList) {

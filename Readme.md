@@ -4,6 +4,7 @@
 
 * Recommendations page - default (logged in and anonymous) recommendations
 * Delete user_id column in recommendation table
+* Recommendations page - Handle profile's filters
 
 #### 0.7.1
 

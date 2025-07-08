@@ -46,32 +46,38 @@
     }
 
     function displayRecommendations(data) {
-        let idFilter = 0;
-        let html = `
-            <div class="container-carousel">
-                <div>
-                    <p><b>${data.filterLabel}</b></p>
-                </div>
-                <button class="btn-nav-carousel move-left" id="moveLeft_${idFilter}" type="button">
-                    ᐊ
-                </button>
-                <div class="slider-carousel" id="slider-carousel_${idFilter}">
-        `;
-        for (let i = 0; i < data.animeList.length; i++) {
+        let html = "";
+        for (let reco = 0; reco < data.recoList.length; reco++) {
+            let idFilter = data.recoList[reco].filterId;
+            let labelFilter = data.recoList[reco].recoLabel;
+            let animeList = data.recoList[reco].animeList;
+
             html += `
-                    <div class="anime-carousel" id="${idFilter}_anime-carousel_${i}">
-                        <img onclick="openAnimeDetails(${data.animeList[i].id});"
-                             src="${data.animeList[i].mainMediumUrl}">
+                <div class="container-carousel">
+                    <div>
+                        <p><b>${labelFilter}</b></p>
                     </div>
+                    <button class="btn-nav-carousel move-left" id="moveLeft_${idFilter}" type="button">
+                        ᐊ
+                    </button>
+                    <div class="slider-carousel" id="slider-carousel_${idFilter}">
+            `;
+            for (let i = 0; i < animeList.length; i++) {
+                html += `
+                        <div class="anime-carousel" id="${idFilter}_anime-carousel_${i}">
+                            <img onclick="openAnimeDetails(${animeList[i].id});"
+                                 src="${animeList[i].mainMediumUrl}">
+                        </div>
+                `;
+            }
+            html += `
+                    </div>
+                    <button class="btn-nav-carousel move-right" id="moveRight_${idFilter}" type="button">
+                        ᐅ
+                    </button>
+                </div>
             `;
         }
-        html += `
-                </div>
-                <button class="btn-nav-carousel move-right" id="moveRight_${idFilter}" type="button">
-                    ᐅ
-                </button>
-            </div>
-        `;
         $("#recommendationsSpan").html(html);
 
         // Scroll Left button
