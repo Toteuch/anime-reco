@@ -10,6 +10,10 @@
 * blacklist an anime from recommendations results (and manage this blacklist, probably in profile page)
 * Add usefull information on how to use the app
 
+#### 0.7.1
+
+* Raise new date notification only on non-completed anime
+
 #### 0.7.0
 
 * Small security configuration changes

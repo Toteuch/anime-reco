@@ -15,19 +15,20 @@ import com.toteuch.anime.reco.domain.profile.NotificationType;
 import com.toteuch.anime.reco.domain.profile.entities.NotificationSetting;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import com.toteuch.anime.reco.domain.profile.entities.SearchFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.toteuch.anime.reco.domain.anime.SeasonLabel.*;
+import static com.toteuch.anime.reco.domain.anime.Status.FINISHED;
 
 @Service
 public class AnimeService {
@@ -284,7 +285,8 @@ public class AnimeService {
                     log.error(e.getMessage());
                 }
             }
-        } else if (previousStartDate != anime.getStartDate() && anime.getNotificationSettings() != null) {
+        } else if (!StringUtils.equals(previousStatus, FINISHED.getMalCode())
+                && previousStartDate != anime.getStartDate() && anime.getNotificationSettings() != null) {
             // NOTIFICATION - Start date changed
             for (NotificationSetting notificationSetting : anime.getNotificationSettings()) {
                 try {
