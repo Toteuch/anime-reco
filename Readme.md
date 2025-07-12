@@ -1,6 +1,6 @@
 # Anime-Reco
 
-#### Next
+#### 0.8.0
 
 * Recommendations page - default (logged in and anonymous) recommendations
 * Delete user_id column in recommendation table
