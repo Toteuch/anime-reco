@@ -300,7 +300,7 @@ public class AnimeService {
     }
 
     private Date parseRawDate(String sDate) {
-        if (!StringUtils.hasText(sDate)) {
+        if (StringUtils.isAllBlank(sDate)) {
             return null;
         }
         try {
