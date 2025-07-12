@@ -12,6 +12,7 @@ import com.toteuch.anime.reco.domain.anime.entity.*;
 import com.toteuch.anime.reco.domain.profile.NotificationService;
 import com.toteuch.anime.reco.domain.profile.NotificationSettingService;
 import com.toteuch.anime.reco.domain.profile.NotificationType;
+import com.toteuch.anime.reco.domain.profile.RecommendationService;
 import com.toteuch.anime.reco.domain.profile.entities.NotificationSetting;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
 import com.toteuch.anime.reco.domain.profile.entities.SearchFilter;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -39,6 +41,7 @@ public class AnimeService {
     private static final SimpleDateFormat SDF_YM = new SimpleDateFormat("yyyy-MM");
     private static final SimpleDateFormat SDF_Y = new SimpleDateFormat("yyyy");
     private static final int PAGE_SIZE = 20;
+    private static final int RECO_PAGE_SIZE = 20;
     @Autowired
     private AnimeRepository repo;
     @Autowired
@@ -53,6 +56,8 @@ public class AnimeService {
     private NotificationService notificationService;
     @Autowired
     private NotificationSettingService notificationSettingService;
+    @Autowired
+    private RecommendationService recommendationService;
 
     @Autowired
     private MalApi malApi;
@@ -333,7 +338,8 @@ public class AnimeService {
     }
 
     public Page<Anime> search(SearchFilter searchFilter, int page) throws AnimeRecoException {
-        return repo.findAll(AnimeSpecification.getSpecification(searchFilter), PageRequest.of(page, PAGE_SIZE));
+        Specification<Anime> specs = AnimeSpecification.getSpecification(searchFilter, true);
+        return repo.findAll(specs, PageRequest.of(page, PAGE_SIZE));
     }
 
     public Page<Anime> getCurrentSeasonAnimePage(int page) throws AnimeRecoException {
@@ -392,5 +398,22 @@ public class AnimeService {
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
         return start;
+    }
+
+    public Page<Anime> getRecommendations(SearchFilter searchFilter) throws AnimeRecoException {
+        if (searchFilter == null) throw new AnimeRecoException("Filter for recommendations null.");
+        Specification<Anime> specs = null;
+        Profile profile = searchFilter.getProfile();
+        if (profile == null || recommendationService.getRecommendationsCount(profile) < RECO_PAGE_SIZE) {
+            specs = AnimeSpecification.getSpecification(searchFilter, true);
+        } else {
+            specs = AnimeSpecification.getSpecification(searchFilter, false);
+        }
+
+        if (profile != null) {
+            specs = specs.and(AnimeSpecification.notWatchedAnime(profile));
+            specs = specs.and(AnimeSpecification.notWatchlistedAnime(profile));
+        }
+        return repo.findAll(specs, PageRequest.of(0, RECO_PAGE_SIZE));
     }
 }

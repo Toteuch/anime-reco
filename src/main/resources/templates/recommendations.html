@@ -7,15 +7,105 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap-5.3.3.min.css}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/anime-reco.css}">
+    <link rel="stylesheet" th:href="@{/css/anime-reco-carousel.css}">
 </head>
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
-    <i>Incoming...</i>
+    <span id="recommendationsSpan"></span>
+    <div class="modal" id="animeDetailsModal" tabindex="-1">
+
+    </div>
+    <div th:replace="~{fragments/general.html :: errorModal}"></div>
 </main>
 <script th:src="@{/js/jquery-3.7.1.js}"></script>
 <script th:src="@{/js/popper-1.14.3.min.js}"></script>
 <script th:src="@{/js/bootstrap-5.3.3.bundle.min.js}"></script>
 <script th:src="@{/js/anime-reco.js}"></script>
+<script th:src="@{/js/anime-details.js}"></script>
+<script>
+    $(function() {
+        getRecommendations();
+    });
+
+    function getRecommendations() {
+        $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/anime/recommendations",
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data) {
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    displayRecommendations(data);
+                }
+            }
+        });
+    }
+
+    function displayRecommendations(data) {
+        let idFilter = 0;
+        let html = `
+            <div class="container-carousel">
+                <div>
+                    <p><b>${data.filterLabel}</b></p>
+                </div>
+                <button class="btn-nav-carousel move-left" id="moveLeft_${idFilter}" type="button">
+                    ᐊ
+                </button>
+                <div class="slider-carousel" id="slider-carousel_${idFilter}">
+        `;
+        for (let i = 0; i < data.animeList.length; i++) {
+            html += `
+                    <div class="anime-carousel" id="${idFilter}_anime-carousel_${i}">
+                        <img onclick="openAnimeDetails(${data.animeList[i].id});"
+                             src="${data.animeList[i].mainMediumUrl}">
+                    </div>
+            `;
+        }
+        html += `
+                </div>
+                <button class="btn-nav-carousel move-right" id="moveRight_${idFilter}" type="button">
+                    ᐅ
+                </button>
+            </div>
+        `;
+        $("#recommendationsSpan").html(html);
+
+        // Scroll Left button
+        $('.move-left').each(function() {
+            $(this).on("click", function() {
+                var buttonId = $(this).attr('id');
+                var recoIndex = parseInt(buttonId.replace('moveLeft_', ''));
+                var slider = document.getElementById('slider-carousel_' + recoIndex);
+                var movieWidth = slider.getBoundingClientRect().width;
+                let scrollDistance = movieWidth * 10;
+                slider.scrollBy({
+                    top: 0,
+                    left: -scrollDistance,
+                    behavior: "smooth"
+                });
+            });
+        });
+
+        // Scroll Right button
+        $('.move-right').each(function() {
+            $(this).on("click", function() {
+                var buttonId = $(this).attr('id');
+                var recoIndex = parseInt(buttonId.replace('moveRight_', ''));
+                var slider = document.getElementById('slider-carousel_' + recoIndex);
+                var movieWidth = slider.getBoundingClientRect().width;
+                let scrollDistance = movieWidth * 10;
+                slider.scrollBy({
+                    top: 0,
+                    left: +scrollDistance,
+                    behavior: "smooth"
+                });
+            });
+        });
+    }
+</script>
 </body>
 </html>

@@ -19,6 +19,7 @@ import com.toteuch.anime.reco.domain.profile.pojo.SearchFilterPojo;
 import com.toteuch.anime.reco.presentation.controller.response.AnimeDetailsResponse;
 import com.toteuch.anime.reco.presentation.controller.response.AnimeListResultResponse;
 import com.toteuch.anime.reco.presentation.controller.response.CurrentSeasonResponse;
+import com.toteuch.anime.reco.presentation.controller.response.RecommendationsResponse;
 import jakarta.websocket.server.PathParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -120,6 +121,30 @@ public class AnimeController {
         } catch (AnimeRecoException ex) {
             return new CurrentSeasonResponse(ex.getMessage());
         }
+    }
+
+    @GetMapping("/anime/recommendations")
+    public RecommendationsResponse getRecommendations() {
+        RecommendationsResponse response = null;
+        try {
+            Profile profile = null;
+            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+                profile = profileService.findBySub(oidcUser.getSubject());
+                List<SearchFilter> searchFilters = searchFilterService.getAllSearchFilter(profile);
+                if (searchFilters != null && !searchFilters.isEmpty()) {
+                    response = new RecommendationsResponse("Not implemented yet");
+                }
+            }
+            if (response == null) {
+                SearchFilter defaultFilter = new SearchFilter();
+                defaultFilter.setProfile(profile);
+                Page<Anime> animePage = animeService.getRecommendations(defaultFilter);
+                response = new RecommendationsResponse(getAnimeListPojo(animePage), "Default filter");
+            }
+        } catch (AnimeRecoException ex) {
+            return new RecommendationsResponse(ex.getMessage());
+        }
+        return response;
     }
 
     private List<AnimePojo> getAnimeListPojo(Page<Anime> animeList) {

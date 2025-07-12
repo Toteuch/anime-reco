@@ -1,18 +1,8 @@
 # Anime-Reco
 
-#### TODO
+#### Next
 
-* Harmonize buttons' behavior in details modal
-* Change the pagination display (fixed size)
-* Set the pageSize in ajax call (and put page param in path params)
-* Rationalize the card generation with custom tags (watched/Notification/watchlist)
-* See all notifications from Home (link in the title, show a modal with all notifications)
-* blacklist an anime from recommendations results (and manage this blacklist, probably in profile page)
-* Add usefull information on how to use the app
-* Restrict the watchlist on home page to completed animes
-* Put Notifications on top on the Homepage if there is at least one unread
-* Add scores (user and MAL) in anime details
-* Only raise new_date notification when existing anime status is not completed
+* Recommendations page - default (logged in and anonymous) recommendations
 
 #### 0.7.1
 

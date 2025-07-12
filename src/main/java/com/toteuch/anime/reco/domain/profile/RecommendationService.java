@@ -23,6 +23,10 @@ public class RecommendationService {
         repo.save(reco);
     }
 
+    public Integer getRecommendationsCount(Profile profile) {
+        return repo.countByProfile(profile);
+    }
+
     public Double processRecommendationRate(Map<MalUser, Double> relevantUserMap, Anime animeToProcess, Map<MalUser,
             Map<Long, Double>> usersScores) {
         double recommendationRate = 0.0;
