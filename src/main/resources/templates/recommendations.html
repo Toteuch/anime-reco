@@ -12,9 +12,27 @@
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
+    <button class="btn btn-primary mb-2" onclick="openRecoConfig()" type="button">
+        Configure&nbsp;<i class="bi bi-gear"></i>
+    </button>
     <span id="recommendationsSpan"></span>
     <div class="modal" id="animeDetailsModal" tabindex="-1">
 
+    </div>
+    <div class="modal" id="recommendationsConfig" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h2>Configuration</h2>
+                    <div class="p-2" id="profileConfig"></div>
+                    <h2>Sort filters</h2>
+                    <div class="p-2" id="filtersSorting"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div th:replace="~{fragments/general.html :: errorModal}"></div>
 </main>
@@ -23,10 +41,148 @@
 <script th:src="@{/js/bootstrap-5.3.3.bundle.min.js}"></script>
 <script th:src="@{/js/anime-reco.js}"></script>
 <script th:src="@{/js/anime-details.js}"></script>
+</body>
 <script>
     $(function() {
         getRecommendations();
     });
+
+    function openRecoConfig() {
+        let errors = 0;
+        var profileResponse = $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/profile/details",
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data) {
+                if (data.error != null) {
+                    errors++;
+                    showErrorModal(data.error);
+                } else {
+                    setProfileConfig(data);
+                }
+            }
+        });
+
+        var filtersResponse = $.ajax({
+            type: "GET",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host + "/search-filter",
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data) {
+                if (data.error != null) {
+                    errors++;
+                    showErrorModal(data.error);
+                } else {
+                    setFilterList(data);
+                }
+            }
+        });
+
+        $.when(profileResponse).then(function() {
+            if (errors == 0) {
+                $('#recommendationsConfig').modal('show');
+            }
+        });
+    }
+
+    function setFilterList(data) {
+        let searchFilters = data.searchFilters;
+        let content = "";
+         for (let i = 0; i < searchFilters.length; i++) {
+             content += `
+                 <div class="row my-1">
+                     <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary" style="flex: 0 0;"
+                            onclick="moveDown(${searchFilters[i].id});">
+                            <i class="bi bi-arrow-bar-down"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary" disabled>${searchFilters[i]
+                        .name}</button>
+                        <button type="button" class="btn btn-primary" style="flex: 0 0;"
+                            onclick="moveUp(${searchFilters[i].id});">
+                            <i class="bi bi-arrow-bar-up"></i>
+                        </button>
+                     </div>
+                 </div>
+             `;
+         }
+         $('#filtersSorting').html(content);
+    }
+
+    function moveUp(id) {
+        $.ajax({
+            type: "PUT",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host +
+            "/search-filter/" + id + "/up",
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data) {
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    setFilterList(data);
+                }
+            }
+        });
+    }
+
+    function moveDown(id) {
+        $.ajax({
+            type: "PUT",
+            headers: {"X-CSRF-Token": $('#csrf-token').val()},
+            url: window.location.protocol + "//" + window.location.host +
+            "/search-filter/" + id + "/down",
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function(data) {
+                if (data.error != null) {
+                    showErrorModal(data.error);
+                } else {
+                    setFilterList(data);
+                }
+            }
+        });
+    }
+
+    function setProfileConfig(data) {
+        let html = `
+            <div class="form-check">
+        `;
+        if (data.excludeWatchlistFromRecommendations) {
+            html += `<input class="form-check-input" type="checkbox"
+            id="excludeWatchlistFromRecommendationsInput" checked>`;
+        } else {
+            html += `<input class="form-check-input" type="checkbox"
+            id="excludeWatchlistFromRecommendationsInput">`;
+        }
+        html += `
+                <label class="form-check-label" for="excludeWatchlistFromRecommendationsInput">
+                    Exclude watchlist from recommendations results
+                </label>
+            </div>
+        `;
+        $('#profileConfig').html(html);
+        $('#excludeWatchlistFromRecommendationsInput').on('click', function() {
+            let value = $('#excludeWatchlistFromRecommendationsInput').prop('checked');
+            $.ajax({
+                type: "PUT",
+                headers: {"X-CSRF-Token": $('#csrf-token').val()},
+                url: window.location.protocol + "//" + window.location.host +
+                "/profile/exclude-watchlist-from-recommendations?excludeWatchlistFromRecommendations=" + value,
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.error != null) {
+                        showErrorModal(data.error);
+                    }
+                }
+            });
+        });
+    }
 
     function getRecommendations() {
         $.ajax({
@@ -57,24 +213,32 @@
                     <div>
                         <p><b>${labelFilter}</b></p>
                     </div>
-                    <button class="btn-nav-carousel move-left" id="moveLeft_${idFilter}" type="button">
-                        ᐊ
-                    </button>
-                    <div class="slider-carousel" id="slider-carousel_${idFilter}">
             `;
-            for (let i = 0; i < animeList.length; i++) {
+            if (animeList.length == 0) {
+                html += `<i>No results.</i>`;
+            } else {
                 html += `
-                        <div class="anime-carousel" id="${idFilter}_anime-carousel_${i}">
-                            <img onclick="openAnimeDetails(${animeList[i].id});"
-                                 src="${animeList[i].mainMediumUrl}">
+                        <button class="btn-nav-carousel move-left" id="moveLeft_${idFilter}" type="button">
+                            ᐊ
+                        </button>
+                        <div class="slider-carousel" id="slider-carousel_${idFilter}">
+                `;
+                for (let i = 0; i < animeList.length; i++) {
+                    html += `
+                            <div class="anime-carousel" id="${idFilter}_anime-carousel_${i}">
+                                <img onclick="openAnimeDetails(${animeList[i].id});"
+                                     src="${animeList[i].mainMediumUrl}">
+                            </div>
+                    `;
+                }
+                html += `
                         </div>
+                        <button class="btn-nav-carousel move-right" id="moveRight_${idFilter}" type="button">
+                            ᐅ
+                        </button>
                 `;
             }
             html += `
-                    </div>
-                    <button class="btn-nav-carousel move-right" id="moveRight_${idFilter}" type="button">
-                        ᐅ
-                    </button>
                 </div>
             `;
         }
@@ -113,5 +277,4 @@
         });
     }
 </script>
-</body>
 </html>

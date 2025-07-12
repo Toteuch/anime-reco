@@ -5,10 +5,12 @@ public class ProfileDetailsResponse extends ExceptionResponse {
     private String sub;
     private String email;
     private String username;
+    private Boolean excludeWatchlistFromRecommendations;
 
     public ProfileDetailsResponse(String error) {
         super(error);
     }
+
 
     public ProfileDetailsResponse() {
         super(null);
@@ -36,5 +38,13 @@ public class ProfileDetailsResponse extends ExceptionResponse {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Boolean getExcludeWatchlistFromRecommendations() {
+        return excludeWatchlistFromRecommendations;
+    }
+
+    public void setExcludeWatchlistFromRecommendations(Boolean excludeWatchlistFromRecommendations) {
+        this.excludeWatchlistFromRecommendations = excludeWatchlistFromRecommendations;
     }
 }

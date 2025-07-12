@@ -34,6 +34,8 @@ public class Profile {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "profile_id")
     private List<Recommendation> recommendations;
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean excludeWatchListFromRecommendation;
 
     public Profile(String sub, String email, String avatarUrl) {
         this.sub = sub;
@@ -123,5 +125,13 @@ public class Profile {
 
     public void setRecommendations(List<Recommendation> recommendations) {
         this.recommendations = recommendations;
+    }
+
+    public Boolean getExcludeWatchListFromRecommendation() {
+        return excludeWatchListFromRecommendation;
+    }
+
+    public void setExcludeWatchListFromRecommendation(Boolean excludeWatchListFromRecommendation) {
+        this.excludeWatchListFromRecommendation = excludeWatchListFromRecommendation;
     }
 }

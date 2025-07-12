@@ -5,6 +5,9 @@
 * Recommendations page - default (logged in and anonymous) recommendations
 * Delete user_id column in recommendation table
 * Recommendations page - Handle profile's filters
+* Recommendations page - Configuration
+  * Sort filters
+  * Ignore (or not) watchlisted animes
 
 #### 0.7.1
 

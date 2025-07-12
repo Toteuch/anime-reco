@@ -124,4 +124,52 @@ public class SearchFilterService {
         }
         return searchFilter;
     }
+
+    public List<SearchFilter> moveUp(Profile profile, Long idSearchFilter) {
+        SearchFilter searchFilter = null;
+        SearchFilter altSearchFilter = null;
+        for (SearchFilter cur : getAllSearchFilter(profile)) {
+            if (!cur.getId().equals(idSearchFilter)) {
+                altSearchFilter = cur;
+            } else {
+                searchFilter = cur;
+                break;
+            }
+        }
+        if (searchFilter != null && altSearchFilter != null) {
+            Integer sfIndex = searchFilter.getFilterIndex();
+            Integer altIndex = altSearchFilter.getFilterIndex();
+            searchFilter.setFilterIndex(-1);
+            repo.save(searchFilter);
+            altSearchFilter.setFilterIndex(sfIndex);
+            repo.save(altSearchFilter);
+            searchFilter.setFilterIndex(altIndex);
+            repo.save(searchFilter);
+        }
+        return getAllSearchFilter(profile);
+    }
+
+    public List<SearchFilter> moveDown(Profile profile, Long idSearchFilter) {
+        SearchFilter searchFilter = null;
+        SearchFilter altSearchFilter = null;
+        for (SearchFilter cur : getAllSearchFilter(profile)) {
+            if (cur.getId().equals(idSearchFilter)) {
+                searchFilter = cur;
+            } else if (searchFilter != null) {
+                altSearchFilter = cur;
+                break;
+            }
+        }
+        if (searchFilter != null && altSearchFilter != null) {
+            Integer sfIndex = searchFilter.getFilterIndex();
+            Integer altIndex = altSearchFilter.getFilterIndex();
+            searchFilter.setFilterIndex(-1);
+            repo.save(searchFilter);
+            altSearchFilter.setFilterIndex(sfIndex);
+            repo.save(altSearchFilter);
+            searchFilter.setFilterIndex(altIndex);
+            repo.save(searchFilter);
+        }
+        return getAllSearchFilter(profile);
+    }
 }

@@ -68,6 +68,11 @@ public class ProfileService {
         return repo.save(profile);
     }
 
+    public Profile setExcludeWatchlistFromRecommendations(Profile profile, boolean exclude) {
+        profile.setExcludeWatchListFromRecommendation(exclude);
+        return repo.save(profile);
+    }
+
     public Profile findBySub(String sub) {
         return repo.findBySub(sub);
     }

@@ -412,7 +412,9 @@ public class AnimeService {
 
         if (profile != null) {
             specs = specs.and(AnimeSpecification.notWatchedAnime(profile));
-            specs = specs.and(AnimeSpecification.notWatchlistedAnime(profile));
+            if (profile.getExcludeWatchListFromRecommendation()) {
+                specs = specs.and(AnimeSpecification.notWatchlistedAnime(profile));
+            }
         }
         return repo.findAll(specs, PageRequest.of(0, RECO_PAGE_SIZE));
     }

@@ -46,6 +46,26 @@ public class SearchFilterController {
         }
     }
 
+    @PutMapping("/search-filter/{id}/up")
+    public ListSearchFilterResponse moveUp(@PathVariable Long id) {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            return new ListSearchFilterResponse(getListSearchFilterPojo(searchFilterService.moveUp(profile, id)));
+        } else {
+            return new ListSearchFilterResponse("You must be logged in.");
+        }
+    }
+
+    @PutMapping("/search-filter/{id}/down")
+    public ListSearchFilterResponse moveDown(@PathVariable Long id) {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            return new ListSearchFilterResponse(getListSearchFilterPojo(searchFilterService.moveDown(profile, id)));
+        } else {
+            return new ListSearchFilterResponse("You must be logged in.");
+        }
+    }
+
     @GetMapping("/search-filter")
     public ListSearchFilterResponse getSearchFilterList() {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
