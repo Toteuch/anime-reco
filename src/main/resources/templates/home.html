@@ -131,9 +131,7 @@
         let html = "";
         html += `<div class="d-inline-flex">`;
         let notifications = data.notifications;
-        for (let i in Object.entries(notifications)) {
-            html += getAnimeCards(notifications);
-        }
+        html += getAnimeCards(notifications);
         if (notifications.length == 0) {
             html += "<i>No new notifications. There's 3 types of notifications: New sequel, New status, New date.</i>";
         }
