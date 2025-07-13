@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -51,5 +52,15 @@ public class RecommendationService {
 
     public Recommendation getRecommendation(Profile profile, Anime anime) {
         return repo.findByProfileAndAnime(profile, anime);
+    }
+
+    public Recommendation excludeRecommendation(Profile profile, Anime anime, boolean exclude) {
+        Recommendation recommendation = repo.findByProfileAndAnime(profile, anime);
+        recommendation.setExclude(exclude);
+        return repo.save(recommendation);
+    }
+
+    public List<Recommendation> getExcludedRecommendations(Profile profile) {
+        return repo.findByProfileAndExcludeIsTrue(profile);
     }
 }

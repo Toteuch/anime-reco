@@ -34,7 +34,9 @@ public class AnimeDetailsPojo {
 
     // buttons
     boolean isAddableToWatchlist;
+    boolean isExcludable;
     boolean inWatchlist;
+    boolean isExcluded;
     boolean notificationsEnabled;
 
     public Long getId() {
@@ -203,5 +205,21 @@ public class AnimeDetailsPojo {
 
     public void setSynopsis(String synopsis) {
         this.synopsis = synopsis;
+    }
+
+    public boolean isExcludable() {
+        return isExcludable;
+    }
+
+    public void setExcludable(boolean excludable) {
+        isExcludable = excludable;
+    }
+
+    public boolean isExcluded() {
+        return isExcluded;
+    }
+
+    public void setExcluded(boolean excluded) {
+        isExcluded = excluded;
     }
 }

@@ -4,6 +4,7 @@
 
 * Set the pageSize in ajax call (and put page param in path params)
 * Put notitifications on top of Home page
+* Handle recommendations exclusion
 
 #### 0.10.0
 

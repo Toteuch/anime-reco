@@ -32,6 +32,19 @@ public class AnimeSpecification {
         };
     }
 
+    public static Specification<Anime> notExcluded(Profile profile) {
+        return (root, query, builder) -> {
+            Subquery<Integer> subquery = query.subquery(Integer.class);
+            Root<Recommendation> subRoot = subquery.from(Recommendation.class);
+            Predicate forProfile = builder.equal(subRoot.join("profile").get("id"), profile.getId());
+            Predicate notExcluded = builder.isTrue(subRoot.get("exclude"));
+            Predicate inNotExcluded =
+                    root.get("id").in(subquery.select(subRoot.join("anime").get("id")).where(forProfile,
+                            notExcluded.not()));
+            return builder.and(inNotExcluded);
+        };
+    }
+
     public static Specification<Anime> notWatchlistedAnime(Profile profile) {
         return ((root, query, builder) -> {
             Subquery<Integer> subquery = query.subquery(Integer.class);

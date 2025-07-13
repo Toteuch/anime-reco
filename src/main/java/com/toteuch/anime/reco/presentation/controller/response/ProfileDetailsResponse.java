@@ -1,11 +1,16 @@
 package com.toteuch.anime.reco.presentation.controller.response;
 
+import com.toteuch.anime.reco.domain.anime.pojo.AnimePojo;
+
+import java.util.List;
+
 public class ProfileDetailsResponse extends ExceptionResponse {
 
     private String sub;
     private String email;
     private String username;
     private Boolean excludeWatchlistFromRecommendations;
+    private List<AnimePojo> excludedRecommendations;
 
     public ProfileDetailsResponse(String error) {
         super(error);
@@ -46,5 +51,13 @@ public class ProfileDetailsResponse extends ExceptionResponse {
 
     public void setExcludeWatchlistFromRecommendations(Boolean excludeWatchlistFromRecommendations) {
         this.excludeWatchlistFromRecommendations = excludeWatchlistFromRecommendations;
+    }
+
+    public List<AnimePojo> getExcludedRecommendations() {
+        return excludedRecommendations;
+    }
+
+    public void setExcludedRecommendations(List<AnimePojo> excludedRecommendations) {
+        this.excludedRecommendations = excludedRecommendations;
     }
 }

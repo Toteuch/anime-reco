@@ -9,11 +9,9 @@ import com.toteuch.anime.reco.domain.anime.entity.Genre;
 import com.toteuch.anime.reco.domain.anime.pojo.AnimeDetailsPojo;
 import com.toteuch.anime.reco.domain.anime.pojo.AnimePojo;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUserScore;
-import com.toteuch.anime.reco.domain.profile.NotificationSettingService;
-import com.toteuch.anime.reco.domain.profile.ProfileService;
-import com.toteuch.anime.reco.domain.profile.SearchFilterService;
-import com.toteuch.anime.reco.domain.profile.WatchlistService;
+import com.toteuch.anime.reco.domain.profile.*;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
+import com.toteuch.anime.reco.domain.profile.entities.Recommendation;
 import com.toteuch.anime.reco.domain.profile.entities.SearchFilter;
 import com.toteuch.anime.reco.domain.profile.entities.WatchlistAnime;
 import com.toteuch.anime.reco.domain.profile.pojo.RecommendationPojo;
@@ -54,6 +52,8 @@ public class AnimeController {
     private NotificationSettingService notificationSettingService;
     @Autowired
     private WatchlistService watchlistService;
+    @Autowired
+    private RecommendationService recommendationService;
 
     @PostMapping("/anime/search")
     public AnimeListResultResponse search(@RequestBody SearchFilterPojo searchFilterPojo,
@@ -260,6 +260,18 @@ public class AnimeController {
         }
     }
 
+    @PutMapping("/anime/{id}")
+    public AnimeDetailsResponse editRecommendation(@PathVariable Long id, @PathParam("exclude") boolean exclude) {
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            Anime anime = animeService.getById(id);
+            recommendationService.excludeRecommendation(profile, anime, exclude);
+            return new AnimeDetailsResponse(getAnimeDetailsPojo(anime, profile));
+        } else {
+            return new AnimeDetailsResponse("You must be logged in.");
+        }
+    }
+
     private AnimeDetailsPojo getAnimeDetailsPojo(Anime anime, Profile profile) {
         AnimeDetailsPojo pojo = new AnimeDetailsPojo();
         pojo.setId(anime.getId());
@@ -299,6 +311,9 @@ public class AnimeController {
                     }
                 }
             }
+            Recommendation reco = recommendationService.getRecommendation(profile, anime);
+            pojo.setExcludable(reco != null);
+            pojo.setExcluded(reco != null && reco.getExclude());
         }
         pojo.setNotificationsEnabled(notifications.get());
         pojo.setSynopsis(anime.getSynopsis());

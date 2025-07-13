@@ -164,6 +164,27 @@ function getAnimeDetailsContent(animeDetails) {
                 <i class="bi bi-bookmark"></i>
             </button>`;
     }
+    if (animeDetails.excluded == true) {
+        html += `
+            <button class="btn btn-primary me-2" type="button"
+                onclick="excludeRecommendation(${animeDetails.id}, false)">
+                <i class="bi bi-ban"></i>
+            </button>
+        `;
+    } else if (animeDetails.excludable == true) {
+        html += `
+            <button class="btn btn-outline-primary me-2" type="button"
+                onclick="excludeRecommendation(${animeDetails.id}, true)">
+                <i class="bi bi-ban"></i>
+            </button>
+        `;
+    } else {
+        html += `
+            <button class="btn btn-outline-primary me-2" type="button" disabled>
+                <i class="bi bi-ban"></i>
+            </button>
+        `;
+    }
     html += `<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
             </div>`;
     if (animeDetails.sequelAnimeId != null) {
@@ -178,4 +199,22 @@ function getAnimeDetailsContent(animeDetails) {
     return html;
 }
 
-
+function excludeRecommendation(animeId, exclude) {
+    $.ajax({
+        type: "PUT",
+        headers: {"X-CSRF-Token": $('#csrf-token').val()},
+        url: window.location.protocol + "//" + window.location.host + "/anime/" + animeId + "?exclude=" +
+        exclude,
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function(data) {
+            if (data.error != null) {
+                showErrorModal(data.error);
+            } else {
+                let html = getAnimeDetailsContent(data.animeDetails);
+                $('#animeDetailsModal').html(html);
+                $('#animeDetailsModal').modal('show');
+            }
+        }
+    });
+}

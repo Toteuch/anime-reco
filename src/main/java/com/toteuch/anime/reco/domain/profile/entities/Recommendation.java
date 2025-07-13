@@ -22,11 +22,13 @@ public class Recommendation {
     private Double score;
     @Column(columnDefinition = "DATETIME (3)", nullable = false)
     private Date updatedAt;
+    private Boolean exclude = false;
 
     public Recommendation(Profile profile, Anime anime) {
         this.profile = profile;
         this.anime = anime;
         this.updatedAt = new Date();
+        this.exclude = false;
     }
 
     public Recommendation() {
@@ -70,5 +72,13 @@ public class Recommendation {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Boolean getExclude() {
+        return exclude;
+    }
+
+    public void setExclude(Boolean exclude) {
+        this.exclude = exclude;
     }
 }
