@@ -12,6 +12,7 @@ public class NotificationPojo {
     Date readAt;
     String mainMediumUrl;
     Long animeId;
+    String tag;
 
     public NotificationPojo() {
     }
@@ -70,5 +71,13 @@ public class NotificationPojo {
 
     public void setAnimeId(Long animeId) {
         this.animeId = animeId;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

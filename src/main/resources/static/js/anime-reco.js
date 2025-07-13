@@ -108,13 +108,16 @@ function getAnimeCards(animeList) {
         let textContent = "";
         let tooltip = "";
         let onclickMethod = "";
+        let tag = undefined;
         if (isNotification) {
             mainMediumUrl = animeList[i].mainMediumUrl;
+            tag = animeList[i].tag;
             textContent = getNotificationCardBody(animeList[i]);
             tooltip = "<p>" + animeList[i].animeTitle + "</p>";
             onclickMethod = "openNotification("+animeList[i].id+", "+animeList[i].animeId+");";
         } else {
             mainMediumUrl = animeList[i].mainMediumUrl;
+            tag = animeList[i].tag;
             textContent = animeList[i].title;
             tooltip = "<p>";
             for (let y = 0; y < animeList[i].altTitles.length; y++) {
@@ -126,25 +129,35 @@ function getAnimeCards(animeList) {
             tooltip += "</p>";
             onclickMethod = "openAnimeDetails("+animeList[i].id+");";
         }
-        html += getAnimeCard(mainMediumUrl, textContent, tooltip, onclickMethod);
+        html += getAnimeCard(mainMediumUrl, textContent, tooltip, onclickMethod, tag);
     }
     return html;
 }
 
-function getAnimeCard(mainMediumUrl, textContent, tooltip, onclickMethod) {
-    return `
+function getAnimeCard(mainMediumUrl, textContent, tooltip, onclickMethod, tag) {
+    html = `
         <div class="col me-2 my-2">
             <div class="card" onclick="`+onclickMethod+`">
                 <img class="card-img-top img-wrapper" src="` + mainMediumUrl + `" alt="` + textContent + `">
+    `;
+    if (tag != undefined) {
+        html += `
+            <div class="card-img-overlay px-0 opacity-75">
+                <h4 class="card-title bg-primary text-light">&nbsp;`+tag+`</h4>
+            </div>
+        `;
+    }
+    html += `
                 <div class="card-footer limit-text-card" data-toggle="tooltip"
                     data-bs-title="`+tooltip+`"
                     data-bs-html="true"
-                    data-bs-custom-class="alt-titles-tooltip"
+                    data-bs-custom-class="alt-titles-tooltip">
                     <p class="card-text">` + textContent + `</p>
                 </div>
             </div>
         </div>
     `;
+    return html;
 }
 
 function getNotificationCardBody(notification) {

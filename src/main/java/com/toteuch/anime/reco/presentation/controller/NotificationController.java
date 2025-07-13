@@ -73,6 +73,7 @@ public class NotificationController {
         pojo.setReadAt(notification.getReadAt());
         pojo.setMainMediumUrl(notification.getAnime().getMainPictureMediumUrl());
         pojo.setAnimeId(notification.getAnime().getId());
+        pojo.setTag(notification.getReadAt() == null ? "New" : null);
         return pojo;
     }
 }

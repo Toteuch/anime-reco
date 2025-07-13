@@ -8,6 +8,7 @@ import com.toteuch.anime.reco.domain.anime.entity.Anime;
 import com.toteuch.anime.reco.domain.anime.entity.Genre;
 import com.toteuch.anime.reco.domain.anime.pojo.AnimeDetailsPojo;
 import com.toteuch.anime.reco.domain.anime.pojo.AnimePojo;
+import com.toteuch.anime.reco.domain.maluser.entity.MalUserScore;
 import com.toteuch.anime.reco.domain.profile.NotificationSettingService;
 import com.toteuch.anime.reco.domain.profile.ProfileService;
 import com.toteuch.anime.reco.domain.profile.SearchFilterService;
@@ -53,10 +54,14 @@ public class AnimeController {
 
     @PostMapping("/anime/search")
     public AnimeListResultResponse search(@RequestBody SearchFilterPojo searchFilterPojo) {
+        Profile profile = null;
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            profile = profileService.findBySub(oidcUser.getSubject());
+        }
         try {
             SearchFilter searchFilter = searchFilterService.validate(searchFilterPojo);
             Page<Anime> animeList = animeService.search(searchFilter, searchFilterPojo.getPageNumber());
-            return new AnimeListResultResponse(getAnimeListPojo(animeList), animeList.getNumber(),
+            return new AnimeListResultResponse(getAnimeListPojo(animeList, profile), animeList.getNumber(),
                     animeList.getTotalPages());
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -69,7 +74,7 @@ public class AnimeController {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             Profile profile = profileService.findBySub(oidcUser.getSubject());
             Page<Anime> animePage = animeService.getWatched(profile, index);
-            return new AnimeListResultResponse(getAnimeListPojo(animePage), animePage.getNumber(),
+            return new AnimeListResultResponse(getAnimeListPojo(animePage, null), animePage.getNumber(),
                     animePage.getTotalPages());
         } else {
             return new AnimeListResultResponse("You must be logged in.");
@@ -81,7 +86,7 @@ public class AnimeController {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             Profile profile = profileService.findBySub(oidcUser.getSubject());
             Page<Anime> animePage = animeService.getWatchlist(profile, index);
-            return new AnimeListResultResponse(getAnimeListPojo(animePage), animePage.getNumber(),
+            return new AnimeListResultResponse(getAnimeListPojo(animePage, null), animePage.getNumber(),
                     animePage.getTotalPages());
         } else {
             return new AnimeListResultResponse("You must be logged in.");
@@ -111,10 +116,14 @@ public class AnimeController {
 
     @GetMapping("/anime/current-season/{index}")
     public CurrentSeasonResponse getCurrentSeasonAnimeList(@PathVariable int index) {
+        Profile profile = null;
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
+            profile = profileService.findBySub(oidcUser.getSubject());
+        }
         try {
             Page<Anime> animePage = animeService.getCurrentSeasonAnimePage(index);
             return new CurrentSeasonResponse(
-                    getAnimeListPojo(animePage),
+                    getAnimeListPojo(animePage, profile),
                     animeService.getCurrentSeason().getLabel() + " " + animeService.getCurrentSeasonYear(),
                     animePage.getTotalPages(),
                     animePage.getNumber()
@@ -136,7 +145,8 @@ public class AnimeController {
                     List<RecommendationPojo> recoList = new ArrayList<>();
                     for (SearchFilter searchFilter : searchFilters) {
                         Page<Anime> animePage = animeService.getRecommendations(searchFilter);
-                        recoList.add(getRecommendationPojo(animePage, searchFilter.getName(), searchFilter.getId()));
+                        recoList.add(getRecommendationPojo(animePage, searchFilter.getName(), searchFilter.getId(),
+                                profile));
                     }
                     response = new RecommendationsResponse(recoList);
                 }
@@ -146,7 +156,7 @@ public class AnimeController {
                 defaultFilter.setProfile(profile);
                 Page<Anime> animePage = animeService.getRecommendations(defaultFilter);
                 List<RecommendationPojo> recoList = new ArrayList<>();
-                recoList.add(getRecommendationPojo(animePage, "Default filter", 0L));
+                recoList.add(getRecommendationPojo(animePage, "Default filter", 0L, profile));
                 response = new RecommendationsResponse(recoList);
             }
         } catch (AnimeRecoException ex) {
@@ -155,15 +165,15 @@ public class AnimeController {
         return response;
     }
 
-    private RecommendationPojo getRecommendationPojo(Page<Anime> animePage, String label, Long idFilter) {
+    private RecommendationPojo getRecommendationPojo(Page<Anime> animePage, String label, Long idFilter, Profile profile) {
         RecommendationPojo reco = new RecommendationPojo();
-        reco.setAnimeList(getAnimeListPojo(animePage));
+        reco.setAnimeList(getAnimeListPojo(animePage, profile));
         reco.setRecoLabel(label);
         reco.setFilterId(idFilter);
         return reco;
     }
 
-    private List<AnimePojo> getAnimeListPojo(Page<Anime> animeList) {
+    private List<AnimePojo> getAnimeListPojo(Page<Anime> animeList, Profile profile) {
         List<AnimePojo> animeListPojo = new ArrayList<>();
         if (animeList != null && !animeList.isEmpty()) {
             for (Anime anime : animeList.stream().toList()) {
@@ -172,6 +182,20 @@ public class AnimeController {
                 pojo.setMainMediumUrl(anime.getMainPictureMediumUrl());
                 pojo.setTitle(getMainTitle(anime));
                 pojo.setAltTitles(getAltTitles(anime));
+                String tag = null;
+                if (profile != null) {
+                    if (watchlistService.getByProfileAndAnime(profile, anime) != null) {
+                        tag = "Watchlist";
+                    } else if (profile.getUser() != null && profile.getUser().getScores() != null) {
+                        for (MalUserScore mus : profile.getUser().getScores()) {
+                            if (mus.getAnime() == anime) {
+                                tag = "Watched";
+                                break;
+                            }
+                        }
+                    }
+                }
+                pojo.setTag(tag);
                 animeListPojo.add(pojo);
             }
         }

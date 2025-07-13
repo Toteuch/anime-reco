@@ -7,6 +7,7 @@ public class AnimePojo {
     String title;
     String mainMediumUrl;
     List<String> altTitles;
+    String tag;
 
     public Long getId() {
         return id;
@@ -38,5 +39,13 @@ public class AnimePojo {
 
     public void setAltTitles(List<String> altTitles) {
         this.altTitles = altTitles;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

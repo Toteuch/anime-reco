@@ -44,7 +44,7 @@ public class NotificationService {
         if (null == profile) throw new AnimeRecoException("readNotification failed, Profile doesn't exist");
         Notification notification = repo.findByProfileAndId(profile, id);
         if (null == notification) throw new AnimeRecoException("readNotification failed, Notification doesn't exist");
-        if (notification.getAnime() == null) {
+        if (notification.getReadAt() == null) {
             notification.setReadAt(new Date());
             log.debug("Notification {} read for Profile {}", id, sub);
             return repo.save(notification);
