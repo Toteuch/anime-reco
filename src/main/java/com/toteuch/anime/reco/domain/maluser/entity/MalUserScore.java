@@ -3,6 +3,8 @@ package com.toteuch.anime.reco.domain.maluser.entity;
 import com.toteuch.anime.reco.domain.anime.entity.Anime;
 import jakarta.persistence.*;
 
+import java.util.Date;
+
 @Entity
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "unique_user_anime", columnNames = {"user_id", "anime_id"})
@@ -19,6 +21,8 @@ public class MalUserScore {
     private Anime anime;
     @Column(nullable = false)
     private Double score;
+    @Column(columnDefinition = "DATETIME (3)")
+    private Date updatedAt;
 
     public MalUserScore(MalUser user, Anime anime) {
         this.user = user;
@@ -58,5 +62,13 @@ public class MalUserScore {
 
     public void setScore(Double score) {
         this.score = score;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

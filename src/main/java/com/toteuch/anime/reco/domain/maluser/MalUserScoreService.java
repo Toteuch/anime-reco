@@ -12,11 +12,14 @@ import com.toteuch.anime.reco.domain.anime.entity.Anime;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUser;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUserScore;
 import com.toteuch.anime.reco.domain.profile.WatchlistService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +28,9 @@ import java.util.Map;
 @Service
 public class MalUserScoreService {
     private static final Logger log = LoggerFactory.getLogger(MalUserScoreService.class);
+    private static final SimpleDateFormat SDF_FULL = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat SDF_YM = new SimpleDateFormat("yyyy-MM");
+    private static final SimpleDateFormat SDF_Y = new SimpleDateFormat("yyyy");
 
     @Autowired
     private MalUserScoreRepository repo;
@@ -193,10 +199,12 @@ public class MalUserScoreService {
                     score.setUser(user);
                     score.setAnime(anime);
                     score.setScore(rawScore.getUserScore());
+                    score.setUpdatedAt(parseRawDate(rawScore.getUpdatedAt()));
                     repo.save(score);
                     countRatedAnime++;
                 } else {
                     score.setScore(rawScore.getUserScore());
+                    score.setUpdatedAt(parseRawDate(rawScore.getUpdatedAt()));
                     repo.save(score);
                     countRatedAnime++;
                 }
@@ -211,5 +219,23 @@ public class MalUserScoreService {
         user.setAnimeRatedCount(countRatedAnime);
         userService.save(user);
         log.trace("User scores refresh for user {} is complete", username);
+    }
+
+    private Date parseRawDate(String sDate) {
+        if (StringUtils.isAllBlank(sDate)) {
+            return null;
+        }
+        try {
+            if (sDate.length() > 7) {
+                return SDF_FULL.parse(sDate);
+            } else if (sDate.length() > 4) {
+                return SDF_YM.parse(sDate);
+            } else {
+                return SDF_Y.parse(sDate);
+            }
+        } catch (ParseException e) {
+            log.error("Couldn't parse date {}", sDate);
+            return null;
+        }
     }
 }

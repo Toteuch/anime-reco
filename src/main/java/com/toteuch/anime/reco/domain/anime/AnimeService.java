@@ -179,6 +179,11 @@ public class AnimeService {
         anime.setEndDate(parseRawDate(rawDetails.getEndDate()));
         anime.setSource(rawDetails.getSource());
         anime.setRating(rawDetails.getRating());
+        anime.setSourceCreatedAt(parseRawDate(rawDetails.getCreatedAt()));
+        anime.setSourceUpdatedAt(parseRawDate(rawDetails.getUpdatedAt()));
+        anime.setBackground(rawDetails.getBackground());
+        anime.setSynopsis(rawDetails.getSynopsis());
+        anime.setNsfw(rawDetails.getNsfw());
         // GENRES
         List<Genre> genres = genreRepository.findByAnime(anime);
         if (genres == null) genres = new ArrayList<>();

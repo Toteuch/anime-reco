@@ -7,12 +7,14 @@ public class UserAnimeScoreRaw implements Serializable {
     private Long animeId;
     private String animeTitle;
     private Double userScore;
+    private String updatedAt;
 
-    public UserAnimeScoreRaw(String username, Long animeId, String animeTitle, Double userScore) {
+    public UserAnimeScoreRaw(String username, Long animeId, String animeTitle, Double userScore, String updatedAt) {
         this.username = username;
         this.animeId = animeId;
         this.animeTitle = animeTitle;
         this.userScore = userScore;
+        this.updatedAt = updatedAt;
     }
 
     public String getUsername() {
@@ -45,5 +47,13 @@ public class UserAnimeScoreRaw implements Serializable {
 
     public void setUserScore(Double userScore) {
         this.userScore = userScore;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

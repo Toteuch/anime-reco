@@ -27,6 +27,13 @@ public class AnimeDetailsResponse {
     private String source;
     private String rating;
     private PictureResponse[] pictures;
+    private String background;
+    private String synopsis;
+    @JsonProperty("created_at")
+    private String createdAt;
+    @JsonProperty("updated_at")
+    private String updatedAt;
+    private String nsfw;
 
     public AnimeDetailsResponse() {
     }
@@ -165,5 +172,45 @@ public class AnimeDetailsResponse {
 
     public void setPictures(PictureResponse[] pictures) {
         this.pictures = pictures;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getNsfw() {
+        return nsfw;
+    }
+
+    public void setNsfw(String nsfw) {
+        this.nsfw = nsfw;
     }
 }

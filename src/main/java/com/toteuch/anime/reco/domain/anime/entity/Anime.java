@@ -54,6 +54,15 @@ public class Anime {
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "anime_id")
     private List<Recommendation> recommendations;
+    @Lob
+    private String background;
+    @Lob
+    private String synopsis;
+    @Column(columnDefinition = "DATETIME (3)")
+    private Date sourceCreatedAt;
+    @Column(columnDefinition = "DATETIME (3)")
+    private Date sourceUpdatedAt;
+    private String nsfw;
 
     public Anime() {
     }
@@ -241,5 +250,45 @@ public class Anime {
 
     public void setRecommendations(List<Recommendation> recommendations) {
         this.recommendations = recommendations;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
+    }
+
+    public Date getSourceCreatedAt() {
+        return sourceCreatedAt;
+    }
+
+    public void setSourceCreatedAt(Date sourceCreatedAt) {
+        this.sourceCreatedAt = sourceCreatedAt;
+    }
+
+    public Date getSourceUpdatedAt() {
+        return sourceUpdatedAt;
+    }
+
+    public void setSourceUpdatedAt(Date sourceUpdatedAt) {
+        this.sourceUpdatedAt = sourceUpdatedAt;
+    }
+
+    public String getNsfw() {
+        return nsfw;
+    }
+
+    public void setNsfw(String nsfw) {
+        this.nsfw = nsfw;
     }
 }

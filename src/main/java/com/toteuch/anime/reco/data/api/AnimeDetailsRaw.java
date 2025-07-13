@@ -22,6 +22,11 @@ public class AnimeDetailsRaw {
     private String source;
     private String rating;
     private List<String> pictureUrlsMedium;
+    private String background;
+    private String synopsis;
+    private String createdAt;
+    private String updatedAt;
+    private String nsfw;
 
     public AnimeDetailsRaw() {
     }
@@ -168,5 +173,45 @@ public class AnimeDetailsRaw {
 
     public void setPictureUrlsMedium(List<String> pictureUrlsMedium) {
         this.pictureUrlsMedium = pictureUrlsMedium;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getNsfw() {
+        return nsfw;
+    }
+
+    public void setNsfw(String nsfw) {
+        this.nsfw = nsfw;
     }
 }

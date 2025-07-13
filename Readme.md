@@ -1,5 +1,12 @@
 # Anime-Reco
 
+#### NEXT
+
+* Get more data from MAL
+  * enable nsfw tag
+  * anime details: created_at, updated_at, synopsis, background, nsfw
+  * user score: updated_at
+
 #### 0.8.0
 
 * Recommendations page - default (logged in and anonymous) recommendations

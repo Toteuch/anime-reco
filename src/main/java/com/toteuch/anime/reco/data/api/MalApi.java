@@ -13,6 +13,7 @@ import com.toteuch.anime.reco.data.api.response.animedetails.RelatedAnimeRespons
 import com.toteuch.anime.reco.data.api.response.animelistuser.AnimeListUserResponse;
 import com.toteuch.anime.reco.data.api.response.animelistuser.Data;
 import com.toteuch.anime.reco.domain.anime.AlternativeTitleType;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -191,6 +192,7 @@ public class MalApi {
                                 .queryParam("offset", "{offset}")
                                 .queryParam("limit", "{limit}")
                                 .queryParam("fields", "{fields}")
+                                .queryParam("nsfw", "true")
                                 .build(username, (page - 1) * ANIME_LIST_PAGE_SIZE, ANIME_LIST_PAGE_SIZE, "list_status"))
                         .retrieve()
                         .bodyToMono(AnimeListUserResponse.class)
@@ -213,6 +215,7 @@ public class MalApi {
                         .uri(uriBuilder -> uriBuilder
                                 .path("/anime/{animeId}")
                                 .queryParam("fields", "{fields}")
+                                .queryParam("nsfw", "true")
                                 .build(animeId, animeDetailFields))
                         .retrieve()
                         .bodyToMono(AnimeDetailsResponse.class)
@@ -229,7 +232,8 @@ public class MalApi {
                     username,
                     data.getNode().getId(),
                     data.getNode().getTitle(),
-                    data.getListStatus().getScore()
+                    data.getListStatus().getScore(),
+                    data.getListStatus().getUpdatedAt()
             ));
         }
         return retVal;
@@ -293,6 +297,18 @@ public class MalApi {
             }
             animeDetailsRaw.setPictureUrlsMedium(pictureUrlsMedium);
         }
+
+        if (!StringUtils.isAllBlank(animeDetailsResponse.getSynopsis())) {
+            animeDetailsRaw.setSynopsis(animeDetailsResponse.getSynopsis());
+        }
+        if (!StringUtils.isAllBlank(animeDetailsResponse.getBackground())) {
+            animeDetailsRaw.setBackground(animeDetailsResponse.getBackground());
+        }
+
+        animeDetailsRaw.setCreatedAt(animeDetailsResponse.getCreatedAt());
+        animeDetailsRaw.setUpdatedAt(animeDetailsResponse.getUpdatedAt());
+        animeDetailsRaw.setNsfw(animeDetailsResponse.getNsfw());
+
         return animeDetailsRaw;
     }
 
