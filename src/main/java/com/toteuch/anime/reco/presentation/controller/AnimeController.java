@@ -278,8 +278,16 @@ public class AnimeController {
                     notifications.set(true);
                 }
             });
+            if (profile.getUser() != null && profile.getUser().getScores() != null) {
+                for (MalUserScore mus : profile.getUser().getScores()) {
+                    if (mus.getAnime() == anime) {
+                        pojo.setUserScore(mus.getScore().intValue());
+                    }
+                }
+            }
         }
         pojo.setNotificationsEnabled(notifications.get());
+        pojo.setSynopsis(anime.getSynopsis());
         return pojo;
     }
 

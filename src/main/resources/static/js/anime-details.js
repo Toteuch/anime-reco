@@ -65,7 +65,10 @@ function getAnimeDetailsContent(animeDetails) {
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="flex d-flex">
-                        <img src="${animeDetails.mainPictureMediumUrl}" class="img-wrapper-xl mx-2"/>
+                        <div class="d-flex flex-column justify-content-center">
+                            <img src="${animeDetails.mainPictureMediumUrl}" class="img-wrapper-xl mx-2"/>
+                        </div>
+                        <div class="flex flex-column">
                         <div>
                             <h2>${animeDetails.mainTitle}</h2>
                             <p><i>`;
@@ -77,10 +80,10 @@ function getAnimeDetailsContent(animeDetails) {
     }
     html += `               </i></p>
                             <p>${animeDetails.mediaTypeLabel} | ${animeDetails.numEpisodes} episodes |
-                            ${animeDetails.statusLabel}</p>`;
+                            ${animeDetails.statusLabel}`;
     if (animeDetails.seasonLabel != null
         || animeDetails.startDate != null) {
-        html += "<p>";
+        html += " | ";
         let elements = 0;
         if (animeDetails.seasonLabel != null) {
             html += animeDetails.seasonLabel;
@@ -94,7 +97,20 @@ function getAnimeDetailsContent(animeDetails) {
                 html += new Date(animeDetails.endDate).toLocaleDateString(undefined);
             }
         }
-        html += "</p>";
+    }
+    html += "</p><p>";
+    if (animeDetails.animeScore != null) {
+        html += '<i class="bi bi-globe"></i> ' + animeDetails.animeScore;
+    }
+    if (animeDetails.userScore != null) {
+        html += ' | <i class="bi bi-person-fill"></i> ' + animeDetails.userScore;
+    }
+    html += ' | <a href="https://myanimelist.net/anime/'+animeDetails.id+'">MAL page</a>'
+    html += ' | <i>last update : ' + (animeDetails.lastUpdate != null ? new Date(animeDetails.lastUpdate)
+    .toLocaleDateString(undefined) : "") + '</i>';
+    html += "</p>";
+    if (animeDetails.synopsis != null) {
+        html += "<p>" + animeDetails.synopsis + "</p>";
     }
     if (animeDetails.genreLabels != null && animeDetails.genreLabels.length > 0) {
         html += `<p>`;
@@ -110,7 +126,9 @@ function getAnimeDetailsContent(animeDetails) {
             }
         html += `</div>`;
     }
-    html += `           </div>
+    html += `
+                            </div>
+                        </div>
                     </div>
                 </div>
             <div class="modal-footer d-flex justify-content-between">`;

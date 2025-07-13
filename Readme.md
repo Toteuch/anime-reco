@@ -7,6 +7,7 @@
 * Prevent notification readAt value to be overwritten
 * Add tags on anime cards
 * Restrict the watchlist on home page to completed animes
+* Add data in the modal animeDetails
 
 #### 0.9.0
 

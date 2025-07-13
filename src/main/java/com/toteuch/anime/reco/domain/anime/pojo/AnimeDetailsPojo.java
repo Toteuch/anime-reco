@@ -13,6 +13,7 @@ public class AnimeDetailsPojo {
     Date startDate;
     Date endDate;
     String seasonLabel;
+    String synopsis;
 
     Double animeScore;
     Integer userScore;
@@ -194,5 +195,13 @@ public class AnimeDetailsPojo {
 
     public void setAddableToWatchlist(boolean addableToWatchlist) {
         isAddableToWatchlist = addableToWatchlist;
+    }
+
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
     }
 }
