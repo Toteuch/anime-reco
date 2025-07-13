@@ -94,7 +94,7 @@
         });
     }
 
-    function read(id, animeId) {
+    function openNotification(id, animeId) {
         $.ajax({
             type: "POST",
             headers: {"X-CSRF-Token": $('#csrf-token').val()},
@@ -115,18 +115,7 @@
         html += `<div class="d-inline-flex">`;
         let notifications = data.notifications;
         for (let i in Object.entries(notifications)) {
-            if (notifications[i].readAt == null) {
-                html += `<div class="card me-2 text-bg-primary" onclick="read(${notifications[i].id},
-                    ${notifications[i].animeId});">`;
-            } else {
-                html += `<div class="card me-2" onclick="read(${notifications[i].id},
-                    ${notifications[i].animeId});">`;
-            }
-            html += `        <img src="${notifications[i].mainMediumUrl}" class="card-img img-wrapper"/>
-                    <div class="card-body">
-                        <p class="card-text">`+getNotificationCardBody(notifications[i])+`</p>
-                    </div>
-                </div>`;
+            html += getAnimeCards(notifications);
         }
         if (notifications.length == 0) {
             html += "<i>No new notifications. There's 3 types of notifications: New sequel, New status, New date.</i>";
@@ -156,26 +145,6 @@
         }
         $("#watchlistContainer").html(html);
         $('[data-toggle="tooltip"]').tooltip();
-    }
-
-    function getNotificationCardBody(notification) {
-        let html = "";
-        let createdAt = new Date(notification.createdAt).toLocaleDateString(undefined);
-        switch (notification.type) {
-            case "NEW_RELATED_ANIME":
-                html += "NEW sequel";
-                break;
-            case "STATUS_CHANGED":
-                html += "NEW status";
-                break;
-            case "START_DATE_CHANGED":
-                html += "NEW date";
-                break;
-            default:
-                html += " ";
-        }
-        html += "<br/>" + createdAt;
-        return html;
     }
 </script>
 </body>

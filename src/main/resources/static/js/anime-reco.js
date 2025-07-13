@@ -100,30 +100,70 @@ function getPaginationLink(currentPage, displayPage, functionName) {
 }
 
 function getAnimeCards(animeList) {
+    if (animeList.length == 0) return null;
     let html = "";
-    for(let i = 0; i < animeList.length; i++) {
-        let altTitleContent = "<p>";
-        for (let y = 0; y < animeList[i].altTitles.length; y++) {
-            altTitleContent += animeList[i].altTitles[y];
-            if (y+1 < animeList[i].altTitles.length) {
-                altTitleContent += "</br>";
+    for (let i = 0; i < animeList.length; i++) {
+        let isNotification = animeList[i].animeId != undefined;
+        let mainMediumUrl = "";
+        let textContent = "";
+        let tooltip = "";
+        let onclickMethod = "";
+        if (isNotification) {
+            mainMediumUrl = animeList[i].mainMediumUrl;
+            textContent = getNotificationCardBody(animeList[i]);
+            tooltip = "<p>" + animeList[i].animeTitle + "</p>";
+            onclickMethod = "openNotification("+animeList[i].id+", "+animeList[i].animeId+");";
+        } else {
+            mainMediumUrl = animeList[i].mainMediumUrl;
+            textContent = animeList[i].title;
+            tooltip = "<p>";
+            for (let y = 0; y < animeList[i].altTitles.length; y++) {
+                tooltip += animeList[i].altTitles[y];
+                if (y+1 < animeList[i].altTitles.length) {
+                    tooltip += "</br>";
+                }
             }
+            tooltip += "</p>";
+            onclickMethod = "openAnimeDetails("+animeList[i].id+");";
         }
-        altTitleContent += "</p>";
-        html += `
-            <div class="col me-2 my-2">
-                <div class="card" onclick="openAnimeDetails(`+animeList[i].id+`);">
-                    <img class="card-img-top img-wrapper" src="` + animeList[i].mainMediumUrl + `" alt="` + animeList[i].title + `">
-                    <div class="card-footer limit-text-card" data-toggle="tooltip"
-                        data-bs-title="`+altTitleContent+`"
-                        data-bs-html="true"
-                        data-bs-custom-class="alt-titles-tooltip"
-                        <p class="card-text">` + animeList[i].title + `</p>
-                    </div>
+        html += getAnimeCard(mainMediumUrl, textContent, tooltip, onclickMethod);
+    }
+    return html;
+}
+
+function getAnimeCard(mainMediumUrl, textContent, tooltip, onclickMethod) {
+    return `
+        <div class="col me-2 my-2">
+            <div class="card" onclick="`+onclickMethod+`">
+                <img class="card-img-top img-wrapper" src="` + mainMediumUrl + `" alt="` + textContent + `">
+                <div class="card-footer limit-text-card" data-toggle="tooltip"
+                    data-bs-title="`+tooltip+`"
+                    data-bs-html="true"
+                    data-bs-custom-class="alt-titles-tooltip"
+                    <p class="card-text">` + textContent + `</p>
                 </div>
             </div>
-        `;
+        </div>
+    `;
+}
+
+function getNotificationCardBody(notification) {
+    let html = "";
+    let createdAt = new Date(notification.createdAt).toLocaleDateString(undefined);
+    switch (notification.type) {
+        case "NEW_RELATED_ANIME":
+            html += "NEW sequel";
+            break;
+        case "STATUS_CHANGED":
+            html += "NEW status";
+            break;
+        case "START_DATE_CHANGED":
+            html += "NEW date";
+            break;
+        default:
+            html += " ";
     }
+    html += "<br/>" + createdAt;
     return html;
 }
 
