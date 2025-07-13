@@ -3,6 +3,8 @@
 #### NEXT
 
 * Change the pagination display (fixed size)
+* Rationalize anime card generation
+* Prevent notification readAt value to be overwritten
 
 #### 0.9.0
 
