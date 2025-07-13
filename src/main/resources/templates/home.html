@@ -11,6 +11,12 @@
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
+    <h2><i class="bi bi-bell"></i>&nbsp;Notifications</h2>
+    <div id="notificationContainer">
+        <div class="alert alert-info" role="alert">
+            You must be logged in to view your notifications.
+        </div>
+    </div>
     <h2><i class="bi bi-bookmark"></i>&nbsp;Watchlist</h2>
     <div id="watchlistContainer">
         <div class="alert alert-info" role="alert">
@@ -19,12 +25,6 @@
     </div>
     <h2 id="seasonTitle">Current season</h2>
     <div id="currentSeasonContainer"></div>
-    <h2><i class="bi bi-bell"></i>&nbsp;Notifications</h2>
-    <div id="notificationContainer">
-        <div class="alert alert-info" role="alert">
-            You must be logged in to view your notifications.
-        </div>
-    </div>
     <!-- Modal -->
     <div th:replace="~{fragments/general.html :: errorModal}"></div>
     <div class="modal" id="animeDetailsModal" tabindex="-1">

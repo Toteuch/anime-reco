@@ -3,6 +3,7 @@
 #### NEXT
 
 * Set the pageSize in ajax call (and put page param in path params)
+* Put notitifications on top of Home page
 
 #### 0.10.0
 
