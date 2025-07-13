@@ -1,6 +1,6 @@
 # Anime-Reco
 
-#### NEXT
+#### 0.10.0
 
 * Change the pagination display (fixed size)
 * Rationalize anime card generation
