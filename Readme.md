@@ -8,6 +8,7 @@
 * Add tags on anime cards
 * Restrict the watchlist on home page to completed animes
 * Add data in the modal animeDetails
+* Sort watched anime by user's update date
 
 #### 0.9.0
 

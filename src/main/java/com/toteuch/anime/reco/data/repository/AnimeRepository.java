@@ -28,7 +28,7 @@ public interface AnimeRepository extends JpaRepository<Anime, Long>, JpaSpecific
             "INNER JOIN MalUser mu ON mus.user = mu " +
             "INNER JOIN Profile p ON p.user = mu " +
             "WHERE p = :profile " +
-            "ORDER BY mus.score DESC")
+            "ORDER BY mus.updatedAt DESC")
     Page<Anime> findWatchedByProfile(Profile profile, Pageable pageable);
 
     @Query("SELECT ani FROM WatchlistAnime wa " +
