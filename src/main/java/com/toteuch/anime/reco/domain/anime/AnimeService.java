@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -62,9 +61,6 @@ public class AnimeService {
     @Autowired
     private MalApi malApi;
 
-    @Value("${app.domain.anime.refresh.interval}")
-    private int refreshIntervalInDays;
-
     public Anime getById(Long id) {
         Anime anime = repo.findById(id).orElse(null);
         if (anime == null) {
@@ -96,9 +92,7 @@ public class AnimeService {
     }
 
     public List<Long> getOldAnimes() {
-        Calendar limitDate = Calendar.getInstance();
-        limitDate.add(Calendar.DAY_OF_MONTH, -refreshIntervalInDays);
-        return repo.findByDetailsUpdateBefore(limitDate.getTime(), Sort.by(Sort.Direction.ASC, "detailsUpdate"),
+        return repo.findByDetailsUpdateBefore(Sort.by(Sort.Direction.ASC, "detailsUpdate"),
                 Limit.of(20));
     }
 

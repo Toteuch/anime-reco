@@ -9,6 +9,8 @@
 * Restrict the watchlist on home page to completed animes
 * Add data in the modal animeDetails
 * Sort watched anime by user's update date
+* Remove the interval for anime refresh
+  * the scheduled job now refreshs the 20 last updated anime
 
 #### 0.9.0
 
