@@ -1,5 +1,9 @@
 # Anime-Reco
 
+#### NEXT
+
+* Set the pageSize in ajax call (and put page param in path params)
+
 #### 0.10.0
 
 * Change the pagination display (fixed size)

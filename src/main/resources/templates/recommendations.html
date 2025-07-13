@@ -185,10 +185,11 @@
     }
 
     function getRecommendations() {
+        var pageSize = 20;
         $.ajax({
             type: "GET",
             headers: {"X-CSRF-Token": $('#csrf-token').val()},
-            url: window.location.protocol + "//" + window.location.host + "/anime/recommendations",
+            url: window.location.protocol + "//" + window.location.host + "/anime/recommendations?pageSize="+pageSize,
             contentType: 'application/json',
             dataType: 'json',
             success: function(data) {

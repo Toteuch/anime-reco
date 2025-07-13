@@ -33,14 +33,10 @@ import static com.toteuch.anime.reco.domain.anime.Status.FINISHED;
 
 @Service
 public class AnimeService {
-    public static final int WATCHLIST_PAGE_SIZE = 8;
-    public static final int SEASON_PAGE_SIZE = 8;
     private static final Logger log = LoggerFactory.getLogger(AnimeService.class);
     private static final SimpleDateFormat SDF_FULL = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat SDF_YM = new SimpleDateFormat("yyyy-MM");
     private static final SimpleDateFormat SDF_Y = new SimpleDateFormat("yyyy");
-    private static final int PAGE_SIZE = 20;
-    private static final int RECO_PAGE_SIZE = 20;
     @Autowired
     private AnimeRepository repo;
     @Autowired
@@ -96,15 +92,15 @@ public class AnimeService {
                 Limit.of(20));
     }
 
-    public Page<Anime> getWatched(Profile profile, int index) {
-        return repo.findWatchedByProfile(profile, PageRequest.of(index, WATCHLIST_PAGE_SIZE));
+    public Page<Anime> getWatched(Profile profile, int pageSize, int page) {
+        return repo.findWatchedByProfile(profile, PageRequest.of(page, pageSize));
     }
 
-    public Page<Anime> getWatchlist(Profile profile, boolean full, int index) {
+    public Page<Anime> getWatchlist(Profile profile, boolean full, int pageSize, int page) {
         if (full) {
-            return repo.findWatchlistByProfile(profile, PageRequest.of(index, WATCHLIST_PAGE_SIZE));
+            return repo.findWatchlistByProfile(profile, PageRequest.of(page, pageSize));
         } else {
-            return repo.findWatchlistByProfileAndCompleted(profile, PageRequest.of(index, WATCHLIST_PAGE_SIZE));
+            return repo.findWatchlistByProfileAndCompleted(profile, PageRequest.of(page, pageSize));
         }
     }
 
@@ -340,15 +336,15 @@ public class AnimeService {
         return genresMap;
     }
 
-    public Page<Anime> search(SearchFilter searchFilter, int page) throws AnimeRecoException {
+    public Page<Anime> search(SearchFilter searchFilter, int pageSize, int page) throws AnimeRecoException {
         Specification<Anime> specs = AnimeSpecification.getSpecification(searchFilter, true);
-        return repo.findAll(specs, PageRequest.of(page, PAGE_SIZE));
+        return repo.findAll(specs, PageRequest.of(page, pageSize));
     }
 
-    public Page<Anime> getCurrentSeasonAnimePage(int page) throws AnimeRecoException {
+    public Page<Anime> getCurrentSeasonAnimePage(int pageSize, int page) throws AnimeRecoException {
         Season currentSeason = seasonRepository.findByYearAndSeason(getCurrentSeasonYear(), getCurrentSeason().getMalCode());
         if (currentSeason != null) {
-            return repo.findBySeason(currentSeason, PageRequest.of(page, SEASON_PAGE_SIZE));
+            return repo.findBySeason(currentSeason, PageRequest.of(page, pageSize));
         }
         return null;
     }
@@ -403,11 +399,11 @@ public class AnimeService {
         return start;
     }
 
-    public Page<Anime> getRecommendations(SearchFilter searchFilter) throws AnimeRecoException {
+    public Page<Anime> getRecommendations(SearchFilter searchFilter, int pageSize) throws AnimeRecoException {
         if (searchFilter == null) throw new AnimeRecoException("Filter for recommendations null.");
         Specification<Anime> specs = null;
         Profile profile = searchFilter.getProfile();
-        if (profile == null || recommendationService.getRecommendationsCount(profile) < RECO_PAGE_SIZE) {
+        if (profile == null || recommendationService.getRecommendationsCount(profile) < pageSize) {
             specs = AnimeSpecification.getSpecification(searchFilter, true);
         } else {
             specs = AnimeSpecification.getSpecification(searchFilter, false);
@@ -419,6 +415,6 @@ public class AnimeService {
                 specs = specs.and(AnimeSpecification.notWatchlistedAnime(profile));
             }
         }
-        return repo.findAll(specs, PageRequest.of(0, RECO_PAGE_SIZE));
+        return repo.findAll(specs, PageRequest.of(0, pageSize));
     }
 }

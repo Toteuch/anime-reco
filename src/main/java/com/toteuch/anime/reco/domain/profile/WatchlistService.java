@@ -11,13 +11,9 @@ import com.toteuch.anime.reco.domain.profile.entities.WatchlistAnime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static com.toteuch.anime.reco.domain.anime.AnimeService.WATCHLIST_PAGE_SIZE;
 
 @Service
 public class WatchlistService {
@@ -53,10 +49,6 @@ public class WatchlistService {
         repo.delete(watchlistAnime);
         log.debug("Anime {} removed from the watchlist of Profile {}",
                 anime.getId(), profile.getSub());
-    }
-
-    public Page<Anime> getWatchlist(Profile profile, int index) {
-        return repo.getWatchlist(profile, PageRequest.of(index, WATCHLIST_PAGE_SIZE));
     }
 
     public boolean canBeAdded(MalUser user, Anime anime) {

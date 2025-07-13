@@ -40,11 +40,13 @@
     });
 
     function applyFilter(pageNumber) {
+        var pageSize = 24;
         var filter = getSearchFilter(pageNumber, undefined);
         $.ajax({
             type: "POST",
             headers: {"X-CSRF-Token": $('#csrf-token').val()},
-            url: window.location.protocol + "//" + window.location.host + "/anime/search",
+            url: window.location.protocol + "//" + window.location.host +
+            "/anime/search?pageSize="+pageSize+"&page="+pageNumber,
             data: JSON.stringify(filter),
             contentType: 'application/json',
             dataType: 'json',

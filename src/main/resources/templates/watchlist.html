@@ -55,10 +55,12 @@
     }
 
     function getWatchlist(index) {
+        var pageSize = 8;
         $.ajax({
             type: "GET",
             headers: {"X-CSRF-Token": $('#csrf-token').val()},
-            url: window.location.protocol + "//" + window.location.host + "/anime/watchlist/" + index + "?full=true",
+            url: window.location.protocol + "//" + window.location.host +
+            "/anime/watchlist?pageSize="+pageSize+"&page="+index+"&full=true",
             dataType: 'json',
             contentType: 'application/json',
             success: function(data) {
@@ -72,10 +74,11 @@
     }
 
     function getWatchedList(index) {
+        var pageSize = 8;
         $.ajax({
             type: "GET",
             headers: {"X-CSRF-Token": $('#csrf-token').val()},
-            url: window.location.protocol + "//" + window.location.host + "/anime/watched/" + index,
+            url: window.location.protocol + "//" + window.location.host + "/anime/watched?pageSize="+pageSize+"&page="+index,
             dataType: 'json',
             contentType: 'application/json',
             success: function(data) {

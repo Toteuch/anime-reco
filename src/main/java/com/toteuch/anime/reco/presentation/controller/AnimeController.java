@@ -40,7 +40,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AnimeController {
 
     private static final Logger log = LoggerFactory.getLogger(AnimeController.class);
-
+    private static final int WATCHLIST_PAGE_SIZE = 8;
+    private static final int HOME_PAGE_SIZE = 8;
+    private static final int SEARCH_PAGE_SIZE = 24;
+    private static final int RECO_PAGE_SIZE = 20;
     @Autowired
     private SearchFilterService searchFilterService;
     @Autowired
@@ -53,14 +56,18 @@ public class AnimeController {
     private WatchlistService watchlistService;
 
     @PostMapping("/anime/search")
-    public AnimeListResultResponse search(@RequestBody SearchFilterPojo searchFilterPojo) {
+    public AnimeListResultResponse search(@RequestBody SearchFilterPojo searchFilterPojo,
+                                          @PathParam("pageSize") Integer pageSize,
+                                          @PathParam("page") Integer page) {
         Profile profile = null;
+        if (pageSize == null) pageSize = SEARCH_PAGE_SIZE;
+        if (page == null || page < 0) page = 0;
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             profile = profileService.findBySub(oidcUser.getSubject());
         }
         try {
             SearchFilter searchFilter = searchFilterService.validate(searchFilterPojo);
-            Page<Anime> animeList = animeService.search(searchFilter, searchFilterPojo.getPageNumber());
+            Page<Anime> animeList = animeService.search(searchFilter, pageSize, page);
             return new AnimeListResultResponse(getAnimeListPojo(animeList, profile), animeList.getNumber(),
                     animeList.getTotalPages());
         } catch (Exception ex) {
@@ -69,11 +76,13 @@ public class AnimeController {
         }
     }
 
-    @GetMapping("/anime/watched/{index}")
-    public AnimeListResultResponse getWatched(@PathVariable int index) {
+    @GetMapping("/anime/watched")
+    public AnimeListResultResponse getWatched(@PathParam("pageSize") Integer pageSize, @PathParam("page") int page) {
+        if (pageSize == null) pageSize = WATCHLIST_PAGE_SIZE;
+        if (page == 0 || page < 0) page = 0;
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             Profile profile = profileService.findBySub(oidcUser.getSubject());
-            Page<Anime> animePage = animeService.getWatched(profile, index);
+            Page<Anime> animePage = animeService.getWatched(profile, pageSize, page);
             return new AnimeListResultResponse(getAnimeListPojo(animePage, null), animePage.getNumber(),
                     animePage.getTotalPages());
         } else {
@@ -81,11 +90,13 @@ public class AnimeController {
         }
     }
 
-    @GetMapping("/anime/watchlist/{index}")
-    public AnimeListResultResponse getWatchlist(@PathVariable int index, @PathParam("full") boolean full) {
+    @GetMapping("/anime/watchlist")
+    public AnimeListResultResponse getWatchlist(@PathParam("full") boolean full, @PathParam("pageSize") Integer pageSize, @PathParam("page") int page) {
+        if (pageSize == null) pageSize = WATCHLIST_PAGE_SIZE;
+        if (page == 0 || page < 0) page = 0;
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             Profile profile = profileService.findBySub(oidcUser.getSubject());
-            Page<Anime> animePage = animeService.getWatchlist(profile, full, index);
+            Page<Anime> animePage = animeService.getWatchlist(profile, full, pageSize, page);
             return new AnimeListResultResponse(getAnimeListPojo(animePage, null), animePage.getNumber(),
                     animePage.getTotalPages());
         } else {
@@ -114,14 +125,16 @@ public class AnimeController {
         return new AnimeDetailsResponse(getAnimeDetailsPojo(anime, profile));
     }
 
-    @GetMapping("/anime/current-season/{index}")
-    public CurrentSeasonResponse getCurrentSeasonAnimeList(@PathVariable int index) {
+    @GetMapping("/anime/current-season")
+    public CurrentSeasonResponse getCurrentSeasonAnimeList(@PathParam("pageSize") Integer pageSize, @PathParam("page") int page) {
+        if (pageSize == null) pageSize = HOME_PAGE_SIZE;
+        if (page == 0 || page < 0) page = 0;
         Profile profile = null;
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             profile = profileService.findBySub(oidcUser.getSubject());
         }
         try {
-            Page<Anime> animePage = animeService.getCurrentSeasonAnimePage(index);
+            Page<Anime> animePage = animeService.getCurrentSeasonAnimePage(pageSize, page);
             return new CurrentSeasonResponse(
                     getAnimeListPojo(animePage, profile),
                     animeService.getCurrentSeason().getLabel() + " " + animeService.getCurrentSeasonYear(),
@@ -134,7 +147,8 @@ public class AnimeController {
     }
 
     @GetMapping("/anime/recommendations")
-    public RecommendationsResponse getRecommendations() {
+    public RecommendationsResponse getRecommendations(@PathParam("pageSize") Integer pageSize) {
+        if (pageSize == null) pageSize = RECO_PAGE_SIZE;
         RecommendationsResponse response = null;
         try {
             Profile profile = null;
@@ -144,7 +158,7 @@ public class AnimeController {
                 if (searchFilters != null && !searchFilters.isEmpty()) {
                     List<RecommendationPojo> recoList = new ArrayList<>();
                     for (SearchFilter searchFilter : searchFilters) {
-                        Page<Anime> animePage = animeService.getRecommendations(searchFilter);
+                        Page<Anime> animePage = animeService.getRecommendations(searchFilter, pageSize);
                         recoList.add(getRecommendationPojo(animePage, searchFilter.getName(), searchFilter.getId(),
                                 profile));
                     }
@@ -154,7 +168,7 @@ public class AnimeController {
             if (response == null) {
                 SearchFilter defaultFilter = new SearchFilter();
                 defaultFilter.setProfile(profile);
-                Page<Anime> animePage = animeService.getRecommendations(defaultFilter);
+                Page<Anime> animePage = animeService.getRecommendations(defaultFilter, pageSize);
                 List<RecommendationPojo> recoList = new ArrayList<>();
                 recoList.add(getRecommendationPojo(animePage, "Default filter", 0L, profile));
                 response = new RecommendationsResponse(recoList);
