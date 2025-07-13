@@ -6,6 +6,7 @@
 * Rationalize anime card generation
 * Prevent notification readAt value to be overwritten
 * Add tags on anime cards
+* Restrict the watchlist on home page to completed animes
 
 #### 0.9.0
 

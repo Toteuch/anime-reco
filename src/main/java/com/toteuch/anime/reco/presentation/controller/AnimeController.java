@@ -82,10 +82,10 @@ public class AnimeController {
     }
 
     @GetMapping("/anime/watchlist/{index}")
-    public AnimeListResultResponse getWatchlist(@PathVariable int index) {
+    public AnimeListResultResponse getWatchlist(@PathVariable int index, @PathParam("full") boolean full) {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             Profile profile = profileService.findBySub(oidcUser.getSubject());
-            Page<Anime> animePage = animeService.getWatchlist(profile, index);
+            Page<Anime> animePage = animeService.getWatchlist(profile, full, index);
             return new AnimeListResultResponse(getAnimeListPojo(animePage, null), animePage.getNumber(),
                     animePage.getTotalPages());
         } else {

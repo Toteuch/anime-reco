@@ -37,5 +37,12 @@ public interface AnimeRepository extends JpaRepository<Anime, Long>, JpaSpecific
             "ORDER BY wa.createdAt")
     Page<Anime> findWatchlistByProfile(Profile profile, Pageable pageable);
 
+    @Query("SELECT ani FROM WatchlistAnime wa " +
+            "INNER JOIN Anime ani ON ani = wa.anime " +
+            "WHERE wa.profile = :profile " +
+            "AND ani.status = 'finished_airing' " +
+            "ORDER BY wa.createdAt")
+    Page<Anime> findWatchlistByProfileAndCompleted(Profile profile, Pageable pageable);
+
     Page<Anime> findBySeason(Season season, Pageable pageable);
 }

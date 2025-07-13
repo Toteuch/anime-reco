@@ -179,20 +179,3 @@ function getNotificationCardBody(notification) {
     html += "<br/>" + createdAt;
     return html;
 }
-
-function getWatchlist(index) {
-    $.ajax({
-        type: "GET",
-        headers: {"X-CSRF-Token": $('#csrf-token').val()},
-        url: window.location.protocol + "//" + window.location.host + "/anime/watchlist/" + index,
-        dataType: 'json',
-        contentType: 'application/json',
-        success: function(data) {
-            if (data.error != null) {
-                showErrorModal(data.error);
-            } else {
-                displayWatchlist(data);
-            }
-        }
-    });
-}
