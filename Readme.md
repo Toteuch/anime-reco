@@ -1,5 +1,9 @@
 # Anime-Reco
 
+#### NEXT
+
+* Change the pagination display (fixed size)
+
 #### 0.9.0
 
 * Get more data from MAL

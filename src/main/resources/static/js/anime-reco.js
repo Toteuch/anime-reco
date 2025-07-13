@@ -14,12 +14,11 @@ function showModal(title, message) {
 
 function getPagination(totalPages, currentPage, functionName) {
     var spanPagination = '';
-    var lastPageTriggered = false;
-    var firstPageTriggered = false;
+    var _page_displayed = 10;
     if (totalPages > 0) {
         spanPagination += '<nav aria-label="...">';
         spanPagination += ' <ul class="pagination">';
-        if (currentPage == 0) {
+       if (currentPage == 0) {
             spanPagination += '  <li class="page-item disabled">';
             spanPagination += '   <span class="page-link">Previous</span>';
             spanPagination += '  </li>';
@@ -29,26 +28,49 @@ function getPagination(totalPages, currentPage, functionName) {
                 + (currentPage - 1) + ')">Previous</a>';
             spanPagination += '  </li>';
         }
-        if (currentPage - 3 > 1) {
-            spanPagination += getPaginationLink(currentPage, 1, functionName);
-            spanPagination += '  <li class="page-item disabled">';
-            spanPagination += '   <span class="page-link">...</span>';
-            spanPagination += '  </li>';
-        }
-        for (var i = currentPage - 3; i < currentPage + 4; i++) {
-            if (i <= totalPages) {
-                if (i == totalPages) {
-                    lastPageTriggered = true;
-                }
+
+        let startPageWithDot = currentPage > 4;
+        let endPageWithDot = currentPage < totalPages - 1 - 5;
+
+        spanPagination += getPaginationLink(currentPage, 0, functionName);
+
+        if (totalPages > _page_displayed) {
+            if (startPageWithDot) {
+                spanPagination += '  <li class="page-item disabled">';
+                spanPagination += '   <span class="page-link">...</span>';
+                spanPagination += '  </li>';
+            }
+
+            // TODO : pages
+            let startPage = 0;
+            let endPage = 0
+            if (!startPageWithDot && endPageWithDot) {
+                startPage = 1;
+                endPage = startPage + 7;
+            } else if (startPageWithDot && endPageWithDot) {
+                startPage = currentPage - 2;
+                endPage = startPage + 6;
+            } else if (startPageWithDot && !endPageWithDot) {
+                endPage = totalPages - 1;
+                startPage = endPage - 7;
+            }
+
+            for (let i = startPage; i < endPage; i++) {
+                spanPagination += getPaginationLink(currentPage, i, functionName);
+            }
+
+            if (endPageWithDot) {
+                spanPagination += '  <li class="page-item disabled">';
+                spanPagination += '   <span class="page-link">...</span>';
+                spanPagination += '  </li>';
+            }
+            spanPagination += getPaginationLink(currentPage, totalPages - 1, functionName);
+        } else {
+            for (let i = 1; i < totalPages; i++) {
                 spanPagination += getPaginationLink(currentPage, i, functionName);
             }
         }
-        if (!lastPageTriggered) {
-            spanPagination += '  <li class="page-item disabled">';
-            spanPagination += '   <span class="page-link">...</span>';
-            spanPagination += '  </li>';
-            spanPagination += getPaginationLink(currentPage, totalPages, functionName);
-        }
+
         if (currentPage+1 == totalPages) {
             spanPagination += '  <li class="page-item disabled">';
             spanPagination += '   <span class="page-link">Next</span>';
@@ -66,14 +88,15 @@ function getPagination(totalPages, currentPage, functionName) {
 }
 
 function getPaginationLink(currentPage, displayPage, functionName) {
-    if (displayPage <= 0) {
+    if (displayPage < 0) {
         return '';
     }
-    if (currentPage + 1 == displayPage) {
-        return '<li class="page-item active" aria-current="page"><span class="page-link">' + displayPage + '</span></li>';
+    if (currentPage == displayPage) {
+        return '<li class="page-item active" aria-current="page"><span class="page-link">' + (displayPage + 1) +
+        '</span></li>';
     }
-    return '<li class="page-item"><a class="page-link" href="#a" onclick="'+functionName+'('+ (displayPage - 1) + '); ">' +
-    displayPage + '</a></li>';
+    return '<li class="page-item"><a class="page-link" href="#a" onclick="'+functionName+'('+ displayPage + '); ">' +
+    (displayPage + 1) + '</a></li>';
 }
 
 function getAnimeCards(animeList) {
