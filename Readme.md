@@ -1,6 +1,6 @@
 # Anime-Reco
 
-#### NEXT
+#### 0.9.0
 
 * Get more data from MAL
   * enable nsfw tag
