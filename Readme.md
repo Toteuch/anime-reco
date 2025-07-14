@@ -9,6 +9,7 @@
 * Refresh linked user lists each scheduled job
 * Handle user list visibility's log and info for profile
 * Change the displayed notification sorting
+* Harmonize buttons' behavior
 
 #### 0.10.0
 

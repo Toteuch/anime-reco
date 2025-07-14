@@ -12,7 +12,10 @@
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
-    <button class="btn btn-primary mb-2" onclick="openRecoConfig()" type="button">
+    <button class="btn btn-primary mb-2" onclick="openRecoConfig()" th:if="${isAuthenticated == 'true'}" type="button">
+        Configure&nbsp;<i class="bi bi-gear"></i>
+    </button>
+    <button class="btn btn-primary mb-2" disabled th:if="${isAuthenticated != 'true'}" type="button">
         Configure&nbsp;<i class="bi bi-gear"></i>
     </button>
     <span id="recommendationsSpan"></span>

@@ -102,33 +102,38 @@ function getAnimeDetailsContent(animeDetails) {
     html += `               </i></p>
                             <p>${animeDetails.mediaTypeLabel} | ${animeDetails.numEpisodes} episodes |
                             ${animeDetails.statusLabel}`;
-    if (animeDetails.seasonLabel != null
-        || animeDetails.startDate != null) {
+    if (animeDetails.seasonLabel != null) {
         html += " | ";
-        let elements = 0;
-        if (animeDetails.seasonLabel != null) {
-            html += animeDetails.seasonLabel;
-            elements++;
-        }
-        if (animeDetails.startDate != null) {
-            if (elements > 0) html += " | ";
-            html += new Date(animeDetails.startDate).toLocaleDateString(undefined);
-            if (animeDetails.endDate != null) {
-                html += " - ";
-                html += new Date(animeDetails.endDate).toLocaleDateString(undefined);
-            }
+        html += animeDetails.seasonLabel;
+    }
+    if (animeDetails.startDate != null) {
+        html += " | ";
+        html += new Date(animeDetails.startDate).toLocaleDateString(undefined);
+        if (animeDetails.endDate != null) {
+            html += " - ";
+            html += new Date(animeDetails.endDate).toLocaleDateString(undefined);
         }
     }
     html += "</p><p>";
+    let elements = 0;
     if (animeDetails.animeScore != null) {
         html += '<i class="bi bi-globe"></i> ' + animeDetails.animeScore;
+        elements++;
     }
     if (animeDetails.userScore != null) {
-        html += ' | <i class="bi bi-person-fill"></i> ' + animeDetails.userScore;
+        if (elements > 0) {
+            html += ' | ';
+        }
+        html += '<i class="bi bi-person-fill"></i> ' + animeDetails.userScore;
+        elements++;
     }
-    html += ' | <a href="https://myanimelist.net/anime/'+animeDetails.id+'">MAL page</a>'
-    html += ' | <i>last update : ' + (animeDetails.lastUpdate != null ? new Date(animeDetails.lastUpdate)
-    .toLocaleDateString(undefined) : "") + '</i>';
+    if (elements > 0) {
+        html += ' | ';
+    }
+    html += '<a href="https://myanimelist.net/anime/'+animeDetails.id+'">MAL page</a>';
+    if (animeDetails.lastUpdate != null) {
+        html += ' | <i>last update : ' + new Date(animeDetails.lastUpdate).toLocaleDateString(undefined) + '</i>';
+    }
     html += "</p>";
     if (animeDetails.synopsis != null) {
         html += "<p>" + animeDetails.synopsis + "</p>";

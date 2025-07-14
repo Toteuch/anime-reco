@@ -16,12 +16,25 @@ function displaySearchFilter(searchFilter) {
     html += `
             </div>
             <div class="p-2">
-                <button class="btn btn-primary" type="button" onclick="openFilterNameModal();">
+    `;
+    if ($('#isAuthenticated').val() == "true") {
+        html += `<button class="btn btn-primary" type="button" onclick="openFilterNameModal();">`;
+    } else {
+        html += `<button class="btn btn-primary" type="button" disabled>`;
+    }
+    html += `
                     <i class="bi bi-floppy"></i>
                 </button>
             </div>
             <div class="p-2">
-                <button class="btn btn-primary" type="button" onclick="openSearchFilters()">
+    `;
+    if ($('#isAuthenticated').val() == "true") {
+        html += `<button class="btn btn-primary" type="button" onclick="openSearchFilters()">`;
+    } else {
+        html += `<button class="btn btn-primary" type="button" disabled>`;
+    }
+
+    html += `
                     <i class="bi bi-folder2-open"></i>
                 </button>
             </div>
