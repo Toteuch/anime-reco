@@ -11,6 +11,7 @@ public class ProfileDetailsResponse extends ExceptionResponse {
     private String username;
     private Boolean excludeWatchlistFromRecommendations;
     private List<AnimePojo> excludedRecommendations;
+    private Boolean userListRestricted;
 
     public ProfileDetailsResponse(String error) {
         super(error);
@@ -59,5 +60,13 @@ public class ProfileDetailsResponse extends ExceptionResponse {
 
     public void setExcludedRecommendations(List<AnimePojo> excludedRecommendations) {
         this.excludedRecommendations = excludedRecommendations;
+    }
+
+    public Boolean getUserListRestricted() {
+        return userListRestricted;
+    }
+
+    public void setUserListRestricted(Boolean userListRestricted) {
+        this.userListRestricted = userListRestricted;
     }
 }

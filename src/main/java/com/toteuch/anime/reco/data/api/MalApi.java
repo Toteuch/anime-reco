@@ -94,7 +94,6 @@ public class MalApi {
                     if (e.getStatusCode() == HttpStatus.GATEWAY_TIMEOUT && retryCount < 3) {
                         retryCount++;
                     } else {
-                        log.error(e.getResponseBodyAsString());
                         throw e;
                     }
                 }

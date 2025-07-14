@@ -81,6 +81,7 @@ public class ProfileController {
         response.setEmail(profile.getEmail());
         response.setUsername(profile.getUser() != null ? profile.getUser().getUsername() : "");
         response.setExcludeWatchlistFromRecommendations(profile.getExcludeWatchListFromRecommendation());
+        response.setUserListRestricted(profile.getUser() != null && !profile.getUser().isListVisible());
         List<AnimePojo> animePojos = new ArrayList<>();
         if (excludedRecommendations != null && !excludedRecommendations.isEmpty()) {
             for (Recommendation reco : excludedRecommendations) {

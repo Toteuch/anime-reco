@@ -2,6 +2,7 @@ package com.toteuch.anime.reco.domain.profile;
 
 import com.toteuch.anime.reco.data.repository.ProfileRepository;
 import com.toteuch.anime.reco.domain.AnimeRecoException;
+import com.toteuch.anime.reco.domain.maluser.MalUserScoreService;
 import com.toteuch.anime.reco.domain.maluser.MalUserService;
 import com.toteuch.anime.reco.domain.maluser.entity.MalUser;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
@@ -21,6 +22,8 @@ public class ProfileService {
     private ProfileRepository repo;
     @Autowired
     private MalUserService userService;
+    @Autowired
+    private MalUserScoreService malUserScoreService;
 
 
     public List<Profile> getAll() {
@@ -29,6 +32,17 @@ public class ProfileService {
 
     public Profile save(Profile profile) {
         return repo.save(profile);
+    }
+
+    public void refreshLinkedUserLists() {
+        log.debug("refreshLinkedUserLists starting...");
+        List<Profile> profilesWithUser = repo.findByUserIsNotNull();
+        log.trace("{} profiles to refresh", profilesWithUser.size());
+        for (Profile profile : profilesWithUser) {
+            MalUser user = profile.getUser();
+            malUserScoreService.refreshUserScores(user.getUsername());
+        }
+        log.debug("refreshLinkedUserLists completed");
     }
 
     public Profile create(String sub, String email, String avatarUrl) throws AnimeRecoException {

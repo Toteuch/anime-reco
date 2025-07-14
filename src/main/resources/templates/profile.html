@@ -202,8 +202,15 @@
                     <i class="bi bi-arrow-repeat"></i>
                 </a>
             </div>
-            <h2>Excluded recommendations</h2>
         `;
+        if (data.userListRestricted == true) {
+            htmlContent += `
+                <div class="alert alert-info" role="alert">
+                    Your anime list is private on myanimelist.net, please set it to public.
+                </div>
+            `;
+        }
+        htmlContent += `<h2>Excluded recommendations</h2>`;
         let excludedRecommendations = data.excludedRecommendations;
         if (excludedRecommendations.length == 0) {
             htmlContent += "<i>No results</i>";

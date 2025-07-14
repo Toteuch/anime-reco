@@ -166,7 +166,7 @@ public class MalUserScoreService {
             user.setAnimeRatedCount(0);
             user.setLastUpdate(new Date());
             user.setListVisible(false);
-            user.setScores(null);
+            user.getScores().clear();
             userService.save(user);
             log.trace("User scores refresh for user {} is complete", username);
             return;

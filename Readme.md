@@ -6,6 +6,8 @@
 * Put notitifications on top of Home page
 * Handle recommendations exclusion
 * Display cached statistics information in navbar
+* Refresh linked user lists each scheduled job
+* Handle user list visibility's log and info for profile
 
 #### 0.10.0
 
