@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,11 @@ public class AnimeService {
 
     @Autowired
     private MalApi malApi;
+
+    @Cacheable(value = "dailyStats", key = "'animeCount'")
+    public Long countAnime() {
+        return repo.count();
+    }
 
     public Anime getById(Long id) {
         Anime anime = repo.findById(id).orElse(null);

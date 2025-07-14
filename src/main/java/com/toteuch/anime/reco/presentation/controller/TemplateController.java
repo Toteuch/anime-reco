@@ -1,5 +1,7 @@
 package com.toteuch.anime.reco.presentation.controller;
 
+import com.toteuch.anime.reco.domain.anime.AnimeService;
+import com.toteuch.anime.reco.domain.maluser.MalUserService;
 import com.toteuch.anime.reco.domain.profile.ProfileService;
 import com.toteuch.anime.reco.domain.profile.SearchFilterService;
 import com.toteuch.anime.reco.domain.profile.entities.Profile;
@@ -17,6 +19,10 @@ public class TemplateController {
     private ProfileService profileService;
     @Autowired
     private SearchFilterService searchFilterService;
+    @Autowired
+    private AnimeService animeService;
+    @Autowired
+    private MalUserService malUserService;
 
     @GetMapping({"/", "/index.html"})
     public String showHome(Model model) {
@@ -29,6 +35,7 @@ public class TemplateController {
             model.addAttribute("isAuthenticated", "false");
         }
         model.addAttribute("currentPage", TemplateName.HOME.getCode());
+        addStatistics(model);
         return "home";
     }
 
@@ -40,6 +47,7 @@ public class TemplateController {
             model.addAttribute("isAuthenticated", "false");
         }
         model.addAttribute("currentPage", TemplateName.PROFILE.getCode());
+        addStatistics(model);
         return "profile";
     }
 
@@ -51,6 +59,7 @@ public class TemplateController {
             model.addAttribute("isAuthenticated", "false");
         }
         model.addAttribute("currentPage", TemplateName.SEARCH.getCode());
+        addStatistics(model);
         return "search";
     }
 
@@ -62,6 +71,7 @@ public class TemplateController {
             model.addAttribute("isAuthenticated", "false");
         }
         model.addAttribute("currentPage", TemplateName.RECOMMENDATIONS.getCode());
+        addStatistics(model);
         return "recommendations";
     }
 
@@ -73,6 +83,12 @@ public class TemplateController {
             model.addAttribute("isAuthenticated", "false");
         }
         model.addAttribute("currentPage", TemplateName.WATCHLIST.getCode());
+        addStatistics(model);
         return "watchlist";
+    }
+
+    private void addStatistics(Model model) {
+        model.addAttribute("animeCount", animeService.countAnime());
+        model.addAttribute("userCount", malUserService.countUser());
     }
 }

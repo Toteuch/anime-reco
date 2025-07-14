@@ -5,6 +5,7 @@
 * Set the pageSize in ajax call (and put page param in path params)
 * Put notitifications on top of Home page
 * Handle recommendations exclusion
+* Calculate each nights stats to display on home page
 
 #### 0.10.0
 

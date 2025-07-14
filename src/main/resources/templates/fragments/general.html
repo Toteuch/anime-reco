@@ -10,7 +10,7 @@
                 data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarNav">
             <ul class="nav nav-underline">
                 <li class="nav-item">
                     <a class="nav-link link-secondary" href="/" th:if="${currentPage != 'home'}">Home</a>
@@ -42,6 +42,11 @@
                     </a>
                 </li>
             </ul>
+            <span class="navbar-text">
+                <i>Over [[${#numbers.formatInteger(animeCount, 1, 'DEFAULT')}]] anime and
+                    [[${#numbers.formatInteger(userCount, 1, 'DEFAULT')}]] user lists to compare against</i>
+            </span>
+            <span>&nbsp;</span>
         </div>
         <a class="nav-link"
            href="/oauth2/authorization/google"
