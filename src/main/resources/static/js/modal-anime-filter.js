@@ -101,6 +101,13 @@ function saveSearchFilter(id) {
                 $("#filterNameModal").modal('hide');
                 $("#filterModal").modal('show');
             }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            if (xhr.status == 403) {
+                showErrorModal("Your session has expired. Please refresh the page");
+            } else {
+                showErrorModal("Internal error");
+            }
         }
     });
 }
@@ -178,6 +185,13 @@ function activate2States() {
              html += '</div>';
              $('#genresFormInput').html(html);
              activate3States();
+         },
+         error: function(xhr, ajaxOptions, thrownError) {
+             if (xhr.status == 403) {
+                 showErrorModal("Your session has expired. Please refresh the page");
+             } else {
+                 showErrorModal("Internal error");
+             }
          }
      });
  }
@@ -212,6 +226,13 @@ function activate2States() {
              html += buttonGroup;
              html += '</div>';
              $('#statusFormInput').html(html);
+         },
+         error: function(xhr, ajaxOptions, thrownError) {
+             if (xhr.status == 403) {
+                 showErrorModal("Your session has expired. Please refresh the page");
+             } else {
+                 showErrorModal("Internal error");
+             }
          }
      });
      return response;
@@ -248,6 +269,13 @@ function activate2States() {
              html += buttonGroup;
              html += '</div>';
              $('#mediaTypesFormInput').html(html);
+         },
+         error: function(xhr, ajaxOptions, thrownError) {
+             if (xhr.status == 403) {
+                 showErrorModal("Your session has expired. Please refresh the page");
+             } else {
+                 showErrorModal("Internal error");
+             }
          }
      });
      return response;
@@ -312,6 +340,13 @@ function activate2States() {
                  displaySearchFilter(data.searchFilter);
                  $('#searchFilterListModal').modal('hide');
              }
+         },
+         error: function(xhr, ajaxOptions, thrownError) {
+             if (xhr.status == 403) {
+                 showErrorModal("Your session has expired. Please refresh the page");
+             } else {
+                 showErrorModal("Internal error");
+             }
          }
      });
  }
@@ -330,6 +365,13 @@ function activate2States() {
                  } else {
                      displaySearchFilters(data.searchFilters);
                  }
+             }
+         },
+         error: function(xhr, ajaxOptions, thrownError) {
+             if (xhr.status == 403) {
+                 showErrorModal("Your session has expired. Please refresh the page");
+             } else {
+                 showErrorModal("Internal error");
              }
          }
      });

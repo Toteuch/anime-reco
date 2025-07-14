@@ -62,6 +62,13 @@
                 } else {
                     setProfileConfig(data);
                 }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
+                }
             }
         });
 
@@ -77,6 +84,13 @@
                     showErrorModal(data.error);
                 } else {
                     setFilterList(data);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
                 }
             }
         });
@@ -126,6 +140,13 @@
                 } else {
                     setFilterList(data);
                 }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
+                }
             }
         });
     }
@@ -143,6 +164,13 @@
                     showErrorModal(data.error);
                 } else {
                     setFilterList(data);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
                 }
             }
         });
@@ -179,6 +207,13 @@
                     if (data.error != null) {
                         showErrorModal(data.error);
                     }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    if (xhr.status == 403) {
+                        showErrorModal("Your session has expired. Please refresh the page");
+                    } else {
+                        showErrorModal("Internal error");
+                    }
                 }
             });
         });
@@ -197,6 +232,13 @@
                     showErrorModal(data.error);
                 } else {
                     displayRecommendations(data);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
                 }
             }
         });

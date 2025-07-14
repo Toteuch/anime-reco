@@ -49,6 +49,13 @@
                 } else {
                     displayJobSummaries(data.jobSummaryMap);
                 }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
+                }
             }
         });
     }
@@ -127,6 +134,13 @@
                 } else {
                     showModal('Success', 'Job successfully requested. Please refresh the page to get an update.');
                 }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
+                }
             }
         });
     }
@@ -140,6 +154,13 @@
                     showErrorModal(data.error);
                 } else {
                     showModal('Success', 'Job successfully abandoned. Please refresh the page to get an update.');
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
                 }
             }
         });
@@ -163,6 +184,13 @@
                 } else {
                     displayProfileDetails(data);
                 }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
+                }
             }
         });
     }
@@ -176,6 +204,13 @@
                     showErrorModal(data.error);
                 } else {
                     displayProfileDetails(data);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
                 }
             }
         });

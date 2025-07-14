@@ -13,6 +13,13 @@ function openAnimeDetails(animeId) {
                 $('#animeDetailsModal').html(html);
                 $('#animeDetailsModal').modal('show');
             }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            if (xhr.status == 403) {
+                showErrorModal("Your session has expired. Please refresh the page");
+            } else {
+                showErrorModal("Internal error");
+            }
         }
     });
 }
@@ -32,6 +39,13 @@ function setNotifications(animeId, enable) {
                 let html = getAnimeDetailsContent(data.animeDetails);
                 $('#animeDetailsModal').html(html);
                 $('#animeDetailsModal').modal('show');
+            }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            if (xhr.status == 403) {
+                showErrorModal("Your session has expired. Please refresh the page");
+            } else {
+                showErrorModal("Internal error");
             }
         }
     });
@@ -54,6 +68,13 @@ function editWatchList(animeId, add) {
                 let html = getAnimeDetailsContent(data.animeDetails);
                 $('#animeDetailsModal').html(html);
                 $('#animeDetailsModal').modal('show');
+            }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            if (xhr.status == 403) {
+                showErrorModal("Your session has expired. Please refresh the page");
+            } else {
+                showErrorModal("Internal error");
             }
         }
     })
@@ -214,6 +235,13 @@ function excludeRecommendation(animeId, exclude) {
                 let html = getAnimeDetailsContent(data.animeDetails);
                 $('#animeDetailsModal').html(html);
                 $('#animeDetailsModal').modal('show');
+            }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            if (xhr.status == 403) {
+                showErrorModal("Your session has expired. Please refresh the page");
+            } else {
+                showErrorModal("Internal error");
             }
         }
     });

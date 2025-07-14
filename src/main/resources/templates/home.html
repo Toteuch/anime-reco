@@ -60,6 +60,13 @@
                 } else {
                     displayWatchlist(data);
                 }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
+                }
             }
         });
     }
@@ -76,6 +83,13 @@
                     showErrorModal(data.error);
                 } else {
                     displayCurrentSeasonAnimeList(data);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
                 }
             }
         });
@@ -111,6 +125,13 @@
                 } else {
                     displayNotifications(data);
                 }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
+                }
             }
         });
     }
@@ -126,6 +147,13 @@
                 } else {
                     getNotifications(0);
                     openAnimeDetails(animeId);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 403) {
+                    showErrorModal("Your session has expired. Please refresh the page");
+                } else {
+                    showErrorModal("Internal error");
                 }
             }
         });
