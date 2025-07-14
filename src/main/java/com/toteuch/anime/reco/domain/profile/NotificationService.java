@@ -70,7 +70,7 @@ public class NotificationService {
     }
 
     /**
-     * Sorted by creation date descending
+     * Sorted by creation date descending, not read first
      *
      * @return
      */

@@ -15,10 +15,18 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findByProfileSubAndReadAtNull(String sub, Sort sort);
 
+    /*
     @Query("SELECT notif FROM Notification notif " +
             "INNER JOIN Profile profile ON notif.profile = profile " +
             "WHERE profile.sub = :sub " +
             "ORDER BY notif.readAt DESC NULLS FIRST, notif.createdAt DESC")
+    Page<Notification> findByProfileSub(String sub, Pageable pageable);
+     */
+
+    @Query("SELECT notif FROM Notification notif " +
+            "INNER JOIN Profile profile ON notif.profile = profile " +
+            "WHERE profile.sub = :sub " +
+            "ORDER BY CASE WHEN notif.readAt IS NULL THEN 0 ELSE 1 END, notif.createdAt DESC")
     Page<Notification> findByProfileSub(String sub, Pageable pageable);
 
     Notification findByProfileAndId(Profile profile, Long id);

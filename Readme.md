@@ -8,6 +8,7 @@
 * Display cached statistics information in navbar
 * Refresh linked user lists each scheduled job
 * Handle user list visibility's log and info for profile
+* Change the displayed notification sorting
 
 #### 0.10.0
 
