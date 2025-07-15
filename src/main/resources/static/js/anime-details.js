@@ -11,6 +11,7 @@ function openAnimeDetails(animeId) {
             } else {
                 let html = getAnimeDetailsContent(data.animeDetails);
                 $('#animeDetailsModal').html(html);
+                enableTooltips();
                 $('#animeDetailsModal').modal('show');
             }
         },
@@ -38,6 +39,7 @@ function setNotifications(animeId, enable) {
             } else {
                 let html = getAnimeDetailsContent(data.animeDetails);
                 $('#animeDetailsModal').html(html);
+                enableTooltips();
                 $('#animeDetailsModal').modal('show');
             }
         },
@@ -67,6 +69,7 @@ function editWatchList(animeId, add) {
             } else {
                 let html = getAnimeDetailsContent(data.animeDetails);
                 $('#animeDetailsModal').html(html);
+                enableTooltips();
                 $('#animeDetailsModal').modal('show');
             }
         },
@@ -166,53 +169,94 @@ function getAnimeDetailsContent(animeDetails) {
     }
     html += `   <div>`;
     if (animeDetails.notificationsEnabled) {
-        html += `<button class="btn btn-primary" type="button" onclick="setNotifications(${animeDetails.id}, false)">
+        html += `
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top"
+                title="Disable notifications for this anime">
+                <button class="btn btn-primary" type="button" onclick="setNotifications(${animeDetails.id}, false)">
                      <i class="bi bi-bell"></i>
-                 </button>`;
+                 </button>
+            </span>
+        `;
     } else if ($('#isAuthenticated').val() == "true") {
-        html += `<button class="btn btn-outline-primary" type="button" onclick="setNotifications(${animeDetails.id}, true)">
+        html += `
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top"
+                title="Enable notifications for this anime">
+                <button class="btn btn-outline-primary" type="button" onclick="setNotifications(${animeDetails.id}, true)">
                      <i class="bi bi-bell-slash"></i>
-                 </button>`;
+                 </button>
+            </span>
+        `;
     } else {
-        html += `<button class="btn btn-outline-primary" type="button" disabled>
+        html += `
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top" title="You must be logged in to access this feature">
+                <button class="btn btn-outline-primary" type="button" disabled>
                     <i class="bi bi-bell-slash"></i>
-                </button>`;
+                </button>
+            </span>
+        `;
     }
     if (animeDetails.inWatchlist == true) {
-        html += `<button class="btn btn-primary mx-2" type="button" onclick="editWatchList(${animeDetails.id}, false);">
+        html += `
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top"
+                title="Remove this anime from your watchlist">
+                <button class="btn btn-primary mx-2" type="button" onclick="editWatchList(${animeDetails.id}, false);">
                     <i class="bi bi-bookmark-check"></i>
-                 </button>`;
+                 </button>
+            </span>
+        `;
     } else if (animeDetails.addableToWatchlist == true) {
         html += `
-            <button class="btn btn-outline-primary mx-2" type="button"
-                onclick="editWatchList(${animeDetails.id}, true);">
-                <i class="bi bi-bookmark"></i>
-            </button>`;
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top" title="Add this anime to your watchlist">
+                <button class="btn btn-outline-primary mx-2" type="button"
+                    onclick="editWatchList(${animeDetails.id}, true);">
+                    <i class="bi bi-bookmark"></i>
+                </button>
+            </span>
+        `;
+    } else if ($('#isAuthenticated').val() == "true") {
+        html += `
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top" title="Anime already watched">
+                <button class="btn btn-outline-primary mx-2" type="button" disabled>
+                    <i class="bi bi-bookmark"></i>
+                </button>
+            </span>
+        `;
     } else {
         html += `
-            <button class="btn btn-outline-primary mx-2" type="button" disabled>
-                <i class="bi bi-bookmark"></i>
-            </button>`;
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top" title="You must be logged in to access this feature">
+                <button class="btn btn-outline-primary mx-2" type="button" disabled>
+                    <i class="bi bi-bookmark"></i>
+                </button>
+            </span>
+        `;
     }
     if (animeDetails.excluded == true) {
         html += `
-            <button class="btn btn-primary me-2" type="button"
-                onclick="excludeRecommendation(${animeDetails.id}, false)">
-                <i class="bi bi-ban"></i>
-            </button>
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top"
+                title="Allow this anime in recommendations result">
+                <button class="btn btn-primary me-2" type="button"
+                    onclick="excludeRecommendation(${animeDetails.id}, false)">
+                    <i class="bi bi-ban"></i>
+                </button>
+            </span>
         `;
     } else if (animeDetails.excludable == true) {
         html += `
-            <button class="btn btn-outline-primary me-2" type="button"
-                onclick="excludeRecommendation(${animeDetails.id}, true)">
-                <i class="bi bi-ban"></i>
-            </button>
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top"
+                title="Exclude this anime from recommendations result">
+                <button class="btn btn-outline-primary me-2" type="button"
+                    onclick="excludeRecommendation(${animeDetails.id}, true)">
+                    <i class="bi bi-ban"></i>
+                </button>
+            </span>
         `;
     } else {
         html += `
-            <button class="btn btn-outline-primary me-2" type="button" disabled>
-                <i class="bi bi-ban"></i>
-            </button>
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top" title="You must be logged in to access this feature">
+                <button class="btn btn-outline-primary me-2" type="button" disabled>
+                    <i class="bi bi-ban"></i>
+                </button>
+            </span>
         `;
     }
     html += `<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
@@ -243,6 +287,7 @@ function excludeRecommendation(animeId, exclude) {
             } else {
                 let html = getAnimeDetailsContent(data.animeDetails);
                 $('#animeDetailsModal').html(html);
+                enableTooltips();
                 $('#animeDetailsModal').modal('show');
             }
         },

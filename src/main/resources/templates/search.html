@@ -11,6 +11,10 @@
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${!isAuthenticated}">
+        <i class="bi bi-info-circle-fill pe-2"></i>You need to be logged in to manage your filters
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
     <div class="d-flex py-2">
         <h2 class="px-2">Search</h2>
         <button class="btn btn-primary" data-bs-target="#filterModal" data-bs-toggle="modal" type="button">
@@ -75,7 +79,7 @@
         });
         let html = getAnimeCards(data.animeList);
         $('#animeListResult').html(html);
-        $('[data-toggle="tooltip"]').tooltip();
+        enableTooltips();
     }
 </script>
 </body>

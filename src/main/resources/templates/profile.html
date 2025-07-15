@@ -11,6 +11,13 @@
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
+    <span id="alertRefreshState"></span>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert"
+         th:if="${isUserLinked == 'false'}">
+        <i class="bi bi-info-circle-fill pe-2"></i>You need to link your profile to a MAL user for the
+        recommendations to be automatically computed at night
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
     <div class="container">
         <div class="row g-2">
             <div class="col" id="profileDetailsCol">
@@ -55,6 +62,24 @@
                     showErrorModal("Your session has expired. Please refresh the page");
                 } else {
                     showErrorModal("Internal error");
+                }
+            },
+            complete: function(data) {
+                let mapJobSummary = new Map(Object.entries(data.responseJSON.jobSummaryMap));
+                let autoRefresh = mapJobSummary.get('PROCESS_USER_SIMILARITY').status == 'QUEUED'
+                    || mapJobSummary.get('PROCESS_USER_SIMILARITY').status == 'STARTED'
+                    || mapJobSummary.get('PROCESS_ANIME_RECOMMENDATION').status == 'QUEUED'
+                    || mapJobSummary.get('PROCESS_ANIME_RECOMMENDATION').status == 'STARTED';
+                if (autoRefresh) {
+                    alertHtml = `
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle-fill pe-2"></i> Job progression is being refreshed every 5s
+                        </div>
+                    `;
+                    $("#alertRefreshState").html(alertHtml);
+                    setTimeout(getJobsSummary, 5000);
+                } else {
+                    $("#alertRefreshState").html("");
                 }
             }
         });
@@ -113,9 +138,24 @@
                     <div class="p-2 fw-light">Execution time: `+jobSummary.formattedExecutionTime+`</div>
         `;
         if (jobSummary.status == 'STARTED' || jobSummary.status == 'QUEUED') {
-            content += `<div class="p-2 fw-light">Estimated end date: `+jobSummary.estimatedEndDate+`</div>`;
+            if (jobSummary.estimatedEndDate == null) {
+                content += `<div class="p-2 fw-light">Estimated end date: N/A</div>`;
+            } else {
+                content += `
+                    <div class="p-2 fw-light">Estimated end date:
+                    `+new Date(jobSummary.estimatedEndDate).toLocaleDateString(undefined)+` `
+                    +new Date(jobSummary.estimatedEndDate).toLocaleTimeString(undefined) +
+                    `</div>`;
+            }
         } else {
-            content += `<div class="p-2 fw-light">End date: `+jobSummary.endDate+`</div>`;
+            if (jobSummary.endDate == null) {
+                content += `<div class="p-2 fw-light">End date: N/A</div>`;
+            } else {
+                content += `<div class="p-2 fw-light">End date: `
+                +new Date(jobSummary.endDate).toLocaleDateString(undefined)+` `
+                +new Date(jobSummary.endDate).toLocaleTimeString(undefined)+
+                `</div>`;
+            }
         }
         content += `
                 </div>
@@ -132,7 +172,7 @@
                 if (data.error != null) {
                     showErrorModal(data.error);
                 } else {
-                    showModal('Success', 'Job successfully requested. Please refresh the page to get an update.');
+                    getJobsSummary();
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -153,7 +193,7 @@
                 if (data.error != null) {
                     showErrorModal(data.error);
                 } else {
-                    showModal('Success', 'Job successfully abandoned. Please refresh the page to get an update.');
+                    getJobsSummary();
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {

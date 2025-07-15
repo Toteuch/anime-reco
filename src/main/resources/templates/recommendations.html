@@ -12,12 +12,26 @@
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${!isAuthenticated}">
+        <i class="bi bi-info-circle-fill pe-2"></i>You need to be logged in to manage your recommendations
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert"
+         th:if="${lastJobCompleted == 'false'}">
+        <i class="bi bi-info-circle-fill pe-2"></i>Your recommendations computation didn't finish, results might be
+        inconsistent (See <a href="/profile">Profile</a> page)
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
     <button class="btn btn-primary mb-2" onclick="openRecoConfig()" th:if="${isAuthenticated == 'true'}" type="button">
         Configure&nbsp;<i class="bi bi-gear"></i>
     </button>
     <button class="btn btn-primary mb-2" disabled th:if="${isAuthenticated != 'true'}" type="button">
         Configure&nbsp;<i class="bi bi-gear"></i>
     </button>
+    <span class="tool-tip" data-placement="top" data-toggle="tooltip"
+          title="Add your own filters by saving them (from the Search page)">
+        <i class="bi bi-info-circle-fill"></i>
+    </span>
     <span id="recommendationsSpan"></span>
     <div class="modal" id="animeDetailsModal" tabindex="-1">
 
@@ -48,6 +62,7 @@
 <script>
     $(function() {
         getRecommendations();
+        enableTooltips();
     });
 
     function openRecoConfig() {

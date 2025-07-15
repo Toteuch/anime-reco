@@ -151,7 +151,7 @@ function getAnimeCard(mainMediumUrl, textContent, tooltip, onclickMethod, tag) {
                 <div class="card-footer limit-text-card" data-toggle="tooltip"
                     data-bs-title="`+tooltip+`"
                     data-bs-html="true"
-                    data-bs-custom-class="alt-titles-tooltip">
+                    data-bs-custom-class="align-left-tooltip">
                     <p class="card-text">` + textContent + `</p>
                 </div>
             </div>
@@ -178,4 +178,11 @@ function getNotificationCardBody(notification) {
     }
     html += "<br/>" + createdAt;
     return html;
+}
+
+function enableTooltips() {
+    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').on('click', function () {
+        $(this).tooltip('hide')
+    });
 }

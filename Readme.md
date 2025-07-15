@@ -10,6 +10,8 @@
 * Handle user list visibility's log and info for profile
 * Change the displayed notification sorting
 * Harmonize buttons' behavior
+* Add useful information on how to use the app
+* Refresh job status when running
 
 #### 0.10.0
 

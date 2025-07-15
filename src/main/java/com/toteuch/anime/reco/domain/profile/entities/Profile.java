@@ -42,6 +42,7 @@ public class Profile {
         this.email = email;
         this.avatarUrl = avatarUrl;
         this.createdAt = new Date();
+        this.excludeWatchListFromRecommendation = false;
     }
 
     public Profile() {

@@ -417,7 +417,9 @@ public class AnimeService {
 
         if (profile != null) {
             specs = specs.and(AnimeSpecification.notWatchedAnime(profile));
-            specs = specs.and(AnimeSpecification.notExcluded(profile));
+            if (profile.getUser() != null) {
+                specs = specs.and(AnimeSpecification.notExcluded(profile));
+            }
             if (profile.getExcludeWatchListFromRecommendation()) {
                 specs = specs.and(AnimeSpecification.notWatchlistedAnime(profile));
             }

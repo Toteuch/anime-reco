@@ -18,25 +18,41 @@ function displaySearchFilter(searchFilter) {
             <div class="p-2">
     `;
     if ($('#isAuthenticated').val() == "true") {
-        html += `<button class="btn btn-primary" type="button" onclick="openFilterNameModal();">`;
+        html += `
+            <button class="btn btn-primary" type="button" onclick="openFilterNameModal();">
+                <i class="bi bi-floppy"></i>
+            </button>
+        `;
     } else {
-        html += `<button class="btn btn-primary" type="button" disabled>`;
-    }
-    html += `
+        html += `
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top" title="You must be logged in to access this feature">
+                <button class="btn btn-primary" type="button" disabled>
                     <i class="bi bi-floppy"></i>
                 </button>
+            </span>
+        `;
+    }
+    html += `
             </div>
             <div class="p-2">
     `;
     if ($('#isAuthenticated').val() == "true") {
-        html += `<button class="btn btn-primary" type="button" onclick="openSearchFilters()">`;
+        html += `
+            <button class="btn btn-primary" type="button" onclick="openSearchFilters()">
+                <i class="bi bi-folder2-open"></i>
+            </button>
+        `;
     } else {
-        html += `<button class="btn btn-primary" type="button" disabled>`;
+        html += `
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top" title="You must be logged in to access this feature">
+                <button class="btn btn-primary" type="button" disabled>
+                    <i class="bi bi-folder2-open"></i>
+                </button>
+            </span>
+        `;
     }
 
     html += `
-                    <i class="bi bi-folder2-open"></i>
-                </button>
             </div>
         </div>
         <div class="p-2" id="mediaTypesFormInput"></div>
@@ -69,6 +85,7 @@ function displaySearchFilter(searchFilter) {
     `;
 
     $('#modalBodyFilter').html(html);
+    enableTooltips();
     var responseMediaTypes = displayMediaTypesFilter(searchFilter);
     var responseStatus = displayStatusFilter(searchFilter);
     displayGenresFilter(searchFilter);
@@ -192,7 +209,13 @@ function activate2States() {
                 }
              }
              let html = hiddenInputs;
-             html += '<label for="genresBtnGroup">Genres</label>';
+             html += `
+                <label for="genresBtnGroup">Genres</label>
+                <span class="tool-tip" data-placement="top" data-toggle="tooltip"
+                      title="Include/Exclude genres from criteria. Result will match all the genre set.">
+                    <i class="bi bi-info-circle-fill"></i>
+                </span>
+             `;
              html += '<div class="btn-group d-flex flex-wrap" id="genresBtnGroup" role="group">';
              html += buttonGroup;
              html += '</div>';

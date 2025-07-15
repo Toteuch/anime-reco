@@ -1,6 +1,10 @@
 package com.toteuch.anime.reco.presentation.controller;
 
 import com.toteuch.anime.reco.domain.anime.AnimeService;
+import com.toteuch.anime.reco.domain.job.JobName;
+import com.toteuch.anime.reco.domain.job.JobStatus;
+import com.toteuch.anime.reco.domain.job.JobTaskService;
+import com.toteuch.anime.reco.domain.job.entities.JobTask;
 import com.toteuch.anime.reco.domain.maluser.MalUserService;
 import com.toteuch.anime.reco.domain.profile.ProfileService;
 import com.toteuch.anime.reco.domain.profile.SearchFilterService;
@@ -23,6 +27,8 @@ public class TemplateController {
     private AnimeService animeService;
     @Autowired
     private MalUserService malUserService;
+    @Autowired
+    private JobTaskService jobTaskService;
 
     @GetMapping({"/", "/index.html"})
     public String showHome(Model model) {
@@ -43,6 +49,13 @@ public class TemplateController {
     public String showProfile(Model model) {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             model.addAttribute("isAuthenticated", "true");
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            if (profile.getUser() != null) {
+                model.addAttribute("isUserLinked", "true");
+            } else {
+                model.addAttribute("isUserLinked", "false");
+            }
+
         } else {
             model.addAttribute("isAuthenticated", "false");
         }
@@ -65,8 +78,14 @@ public class TemplateController {
 
     @GetMapping("recommendations")
     public String showRecommendations(Model model) {
+        model.addAttribute("lastJobCompleted", "true");
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             model.addAttribute("isAuthenticated", "true");
+            JobTask jobTask = jobTaskService.getLastOccurrence(oidcUser.getSubject(),
+                    JobName.PROCESS_ANIME_RECOMMENDATION, null);
+            if (jobTask == null || jobTask.getStatus() != JobStatus.COMPLETED) {
+                model.addAttribute("lastJobCompleted", "false");
+            }
         } else {
             model.addAttribute("isAuthenticated", "false");
         }
@@ -77,8 +96,13 @@ public class TemplateController {
 
     @GetMapping("watchlist")
     public String showWatchlist(Model model) {
+        model.addAttribute("isUserLinked", "false");
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             model.addAttribute("isAuthenticated", "true");
+            Profile profile = profileService.findBySub(oidcUser.getSubject());
+            if (profile.getUser() != null) {
+                model.addAttribute("isUserLinked", "true");
+            }
         } else {
             model.addAttribute("isAuthenticated", "false");
         }

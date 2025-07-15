@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -26,8 +25,8 @@ public class JobSummaryService {
         if (pojo == null) {
             pojo = new JobSummaryPojo();
             pojo.setStatus("N/A");
-            pojo.setEndDate("N/A");
-            pojo.setEstimatedEndDate("N/A");
+            pojo.setEndDate(null);
+            pojo.setEstimatedEndDate(null);
             pojo.setFormattedExecutionTime("N/A");
             pojo.setReadItemCount(0L);
             pojo.setProcessedItemCount(0L);
@@ -59,15 +58,14 @@ public class JobSummaryService {
         }
         pojo.setReadItemCount(jobTask.getReadItemCount() != null ? jobTask.getReadItemCount() : 0L);
         pojo.setProcessedItemCount(jobTask.getProcessItemCount() != null ? jobTask.getProcessItemCount() : 0L);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
         switch (jobTask.getStatus()) {
             case ABANDONED:
-                pojo.setEndDate(sdf.format(jobTask.getUpdatedAt()));
+                pojo.setEndDate(jobTask.getUpdatedAt());
             case COMPLETED, FAILED:
                 pojo.setCanBeAbandoned(false);
                 pojo.setCanBeStarted(true);
                 if (pojo.getEndDate() == null)
-                    pojo.setEndDate(sdf.format(jobTask.getEndedAt()));
+                    pojo.setEndDate(jobTask.getEndedAt());
                 if (executionTime == null || executionTime == 0L) {
                     pojo.setFormattedExecutionTime("N/A");
                 }
@@ -77,7 +75,7 @@ public class JobSummaryService {
                 pojo.setCanBeStarted(false);
                 if (executionTime == null || executionTime == 0L) {
                     pojo.setFormattedExecutionTime("Starting up...");
-                    pojo.setEstimatedEndDate("Calculating...");
+                    pojo.setEstimatedEndDate(null);
                 }
                 if (executionTime != null && executionTime != 0L
                         && jobTask.getReadItemCount() != null && jobTask.getProcessItemCount() != null) {
@@ -85,13 +83,13 @@ public class JobSummaryService {
                     int estimatedDurationSeconds = (int) (jobTask.getReadItemCount() * secondsPerItem);
                     Date estimatedEndDate =
                             new Date(jobTask.getStartedAt().getTime() + estimatedDurationSeconds * 1000L);
-                    pojo.setEstimatedEndDate(sdf.format(estimatedEndDate));
+                    pojo.setEstimatedEndDate(estimatedEndDate);
                 }
                 break;
             case QUEUED:
                 pojo.setCanBeAbandoned(true);
                 pojo.setCanBeStarted(false);
-                pojo.setEstimatedEndDate("Not started yet...");
+                pojo.setEstimatedEndDate(null);
                 pojo.setFormattedExecutionTime("Not started yet...");
                 break;
         }

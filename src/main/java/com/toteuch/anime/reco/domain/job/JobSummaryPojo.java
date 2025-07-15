@@ -1,5 +1,7 @@
 package com.toteuch.anime.reco.domain.job;
 
+import java.util.Date;
+
 public class JobSummaryPojo {
     private String jobName;
     private String jobLabel;
@@ -8,8 +10,8 @@ public class JobSummaryPojo {
     private Long readItemCount;
     private String status;
     private String formattedExecutionTime;
-    private String estimatedEndDate;
-    private String endDate;
+    private Date estimatedEndDate;
+    private Date endDate;
     private boolean canBeStarted;
     private boolean canBeAbandoned;
 
@@ -56,14 +58,6 @@ public class JobSummaryPojo {
         this.formattedExecutionTime = formattedExecutionTime;
     }
 
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
     public boolean isCanBeStarted() {
         return canBeStarted;
     }
@@ -80,14 +74,6 @@ public class JobSummaryPojo {
         this.canBeAbandoned = canBeAbandoned;
     }
 
-    public String getEstimatedEndDate() {
-        return estimatedEndDate;
-    }
-
-    public void setEstimatedEndDate(String estimatedEndDate) {
-        this.estimatedEndDate = estimatedEndDate;
-    }
-
     public String getJobLabel() {
         return jobLabel;
     }
@@ -102,5 +88,21 @@ public class JobSummaryPojo {
 
     public void setJobId(Long jobId) {
         this.jobId = jobId;
+    }
+
+    public Date getEstimatedEndDate() {
+        return estimatedEndDate;
+    }
+
+    public void setEstimatedEndDate(Date estimatedEndDate) {
+        this.estimatedEndDate = estimatedEndDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

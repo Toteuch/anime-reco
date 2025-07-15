@@ -11,17 +11,39 @@
 <body>
 <main class="container" role="main">
     <nav th:replace="~{fragments/general.html :: navbar}"></nav>
-    <h2><i class="bi bi-bell"></i>&nbsp;Notifications</h2>
-    <div id="notificationContainer">
-        <div class="alert alert-info" role="alert">
-            You must be logged in to view your notifications.
-        </div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${!isAuthenticated}">
+        <i class="bi bi-info-circle-fill pe-2"></i>You need to be logged in to see your notifications and
+        watchlist
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
     </div>
-    <h2><i class="bi bi-bookmark"></i>&nbsp;Watchlist</h2>
+    <div class="d-flex">
+        <h2>
+            <i class="bi bi-bell"></i>&nbsp;Notifications
+        </h2>
+        <span class="tool-tip" data-bs-custom-class="align-left-tooltip" data-bs-html="true"
+              data-placement="top" data-toggle="tooltip"
+              title="Enable notifications for an anime in the anime details view.</br>
+                Available notification types are:</br>
+                &nbsp; - new sequel anime</br>
+                &nbsp; - new status</br>
+                &nbsp; - new start date for non-completed anime">
+            <i class="bi bi-info-circle-fill"></i>
+        </span>
+    </div>
+    <div id="notificationContainer">
+        <p><i>No results</i></p>
+    </div>
+    <div class="d-flex">
+        <h2>
+            <i class="bi bi-bookmark"></i>&nbsp;Watchlist
+        </h2>
+        <span class="tool-tip" data-placement="top" data-toggle="tooltip"
+              title="Displays completed animes in your watchlist">
+            <i class="bi bi-info-circle-fill"></i>
+        </span>
+    </div>
     <div id="watchlistContainer">
-        <div class="alert alert-info" role="alert">
-            You must be logged in to view your watchlist.
-        </div>
+        <p><i>No results</i></p>
     </div>
     <h2 id="seasonTitle">Current season</h2>
     <div id="currentSeasonContainer"></div>
@@ -110,7 +132,7 @@
             html += `</div>`;
         }
         $("#currentSeasonContainer").html(html);
-        $('[data-toggle="tooltip"]').tooltip();
+        enableTooltips();
         $("#seasonTitle").html(data.seasonLabel);
     }
 
@@ -163,9 +185,10 @@
         let html = "";
         html += `<div class="d-inline-flex">`;
         let notifications = data.notifications;
-        html += getAnimeCards(notifications);
         if (notifications.length == 0) {
-            html += "<i>No new notifications. There's 3 types of notifications: New sequel, New status, New date.</i>";
+            html += "<i>No results</i>";
+        } else {
+            html += getAnimeCards(notifications);
         }
         html += `</div>`;
         if (notifications.length > 0) {
@@ -191,7 +214,7 @@
             html += `</div>`;
         }
         $("#watchlistContainer").html(html);
-        $('[data-toggle="tooltip"]').tooltip();
+        enableTooltips();
     }
 </script>
 </body>
