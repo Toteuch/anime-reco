@@ -24,13 +24,13 @@ public class RefreshDataFromMalJob {
 
     public void startSteps() {
         log.debug("Starting RefreshDataFromMalJob...");
-        userService.scrapLastSeenUsers();
+        //userService.scrapLastSeenUsers();
         userScoreService.collectUserScores();
-        userScoreService.refreshUpdatedUserScores();
-        userScoreService.refreshOldUserScores();
-        animeService.collectAnimeDetails();
-        animeService.refreshOldAnimeDetails();
-        profileService.refreshLinkedUserLists();
+        //userScoreService.refreshUpdatedUserScores();
+        //userScoreService.refreshOldUserScores();
+        //animeService.collectAnimeDetails();
+        //animeService.refreshOldAnimeDetails();
+        //profileService.refreshLinkedUserLists();
         log.debug("RefreshDataFromMalJob completed");
     }
 
