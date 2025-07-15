@@ -12,6 +12,7 @@
 * Harmonize buttons' behavior
 * Add useful information on how to use the app
 * Refresh job status when running
+* Add footer to the app
 
 #### 0.10.0
 
