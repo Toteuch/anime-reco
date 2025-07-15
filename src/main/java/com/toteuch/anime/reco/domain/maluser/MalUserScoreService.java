@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +43,8 @@ public class MalUserScoreService {
     private AnimeService animeService;
     @Autowired
     private WatchlistService watchlistService;
+    @Autowired
+    private MalUserScoreService malUserScoreService;
 
     public List<MalUserScore> getByUser(MalUser user) {
         return repo.findByUser(user);
@@ -162,11 +165,12 @@ public class MalUserScoreService {
         }
         MalUser user = userService.findByUsername(username);
         if (!isListVisible) {
+            malUserScoreService.clearScores(user.getId());
+            user = userService.findByUsername(username);
             user.setAnimeListSize(0);
             user.setAnimeRatedCount(0);
             user.setLastUpdate(new Date());
             user.setListVisible(false);
-            user.getScores().clear();
             userService.save(user);
             log.trace("User scores refresh for user {} is complete", username);
             return;
@@ -237,5 +241,10 @@ public class MalUserScoreService {
             log.error("Couldn't parse date {}", sDate);
             return null;
         }
+    }
+
+    @Transactional
+    public void clearScores(Long userId) {
+        repo.deleteByUserId(userId);
     }
 }
