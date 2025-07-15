@@ -25,7 +25,7 @@ public class MalUser {
     private int animeRatedCount;
     @Column(columnDefinition = "tinyint(1)")
     private boolean isListVisible = true;
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private List<MalUserScore> scores;
     @OneToOne(cascade = CascadeType.PERSIST)
