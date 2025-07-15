@@ -250,6 +250,15 @@ function getAnimeDetailsContent(animeDetails) {
                 </button>
             </span>
         `;
+    } else if ($('#isAuthenticated').val() == "true") {
+        html += `
+            <span class="tool-tip" data-toggle="tooltip" data-placement="top"
+                title="You must compute your recommendations at least once to access this feature">
+                <button class="btn btn-outline-primary me-2" type="button" disabled>
+                    <i class="bi bi-ban"></i>
+                </button>
+            </span>
+        `;
     } else {
         html += `
             <span class="tool-tip" data-toggle="tooltip" data-placement="top" title="You must be logged in to access this feature">
