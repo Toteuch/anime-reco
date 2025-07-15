@@ -169,10 +169,14 @@ function getAnimeDetailsContent(animeDetails) {
         html += `<button class="btn btn-primary" type="button" onclick="setNotifications(${animeDetails.id}, false)">
                      <i class="bi bi-bell"></i>
                  </button>`;
-    } else {
+    } else if ($('#isAuthenticated').val() == "true") {
         html += `<button class="btn btn-outline-primary" type="button" onclick="setNotifications(${animeDetails.id}, true)">
                      <i class="bi bi-bell-slash"></i>
                  </button>`;
+    } else {
+        html += `<button class="btn btn-outline-primary" type="button" disabled>
+                    <i class="bi bi-bell-slash"></i>
+                </button>`;
     }
     if (animeDetails.inWatchlist == true) {
         html += `<button class="btn btn-primary mx-2" type="button" onclick="editWatchList(${animeDetails.id}, false);">
