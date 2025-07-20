@@ -77,9 +77,10 @@ public class AnimeController {
     }
 
     @GetMapping("/anime/watched")
-    public AnimeListResultResponse getWatched(@PathParam("pageSize") Integer pageSize, @PathParam("page") int page) {
+    public AnimeListResultResponse getWatched(@PathParam("pageSize") Integer pageSize,
+                                              @PathParam("page") Integer page) {
         if (pageSize == null) pageSize = WATCHLIST_PAGE_SIZE;
-        if (page == 0 || page < 0) page = 0;
+        if (page == null || page < 0) page = 0;
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             Profile profile = profileService.findBySub(oidcUser.getSubject());
             Page<Anime> animePage = animeService.getWatched(profile, pageSize, page);
@@ -91,9 +92,11 @@ public class AnimeController {
     }
 
     @GetMapping("/anime/watchlist")
-    public AnimeListResultResponse getWatchlist(@PathParam("full") boolean full, @PathParam("pageSize") Integer pageSize, @PathParam("page") int page) {
+    public AnimeListResultResponse getWatchlist(@PathParam("full") boolean full,
+                                                @PathParam("pageSize") Integer pageSize,
+                                                @PathParam("page") Integer page) {
         if (pageSize == null) pageSize = WATCHLIST_PAGE_SIZE;
-        if (page == 0 || page < 0) page = 0;
+        if (page == null || page < 0) page = 0;
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             Profile profile = profileService.findBySub(oidcUser.getSubject());
             Page<Anime> animePage = animeService.getWatchlist(profile, full, pageSize, page);
@@ -126,9 +129,10 @@ public class AnimeController {
     }
 
     @GetMapping("/anime/current-season")
-    public CurrentSeasonResponse getCurrentSeasonAnimeList(@PathParam("pageSize") Integer pageSize, @PathParam("page") int page) {
+    public CurrentSeasonResponse getCurrentSeasonAnimeList(@PathParam("pageSize") Integer pageSize,
+                                                           @PathParam("page") Integer page) {
         if (pageSize == null) pageSize = HOME_PAGE_SIZE;
-        if (page == 0 || page < 0) page = 0;
+        if (page == null || page < 0) page = 0;
         Profile profile = null;
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof DefaultOidcUser oidcUser) {
             profile = profileService.findBySub(oidcUser.getSubject());
