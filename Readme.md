@@ -1,5 +1,9 @@
 # Anime-Reco
 
+#### NEXT
+
+* Remove NEW_DATE notification type (too frequent changes on the source)
+
 #### 1.0.0
 
 * Set the pageSize in ajax call (and put page param in path params)

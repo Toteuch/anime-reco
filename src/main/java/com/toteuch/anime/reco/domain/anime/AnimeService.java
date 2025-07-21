@@ -30,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.toteuch.anime.reco.domain.anime.SeasonLabel.*;
-import static com.toteuch.anime.reco.domain.anime.Status.FINISHED;
 
 @Service
 public class AnimeService {
@@ -291,17 +290,6 @@ public class AnimeService {
                 try {
                     notificationService.create(notificationSetting.getProfile().getSub(), animeId,
                             NotificationType.STATUS_CHANGED);
-                } catch (AnimeRecoException e) {
-                    log.error(e.getMessage());
-                }
-            }
-        } else if (!StringUtils.equals(previousStatus, FINISHED.getMalCode())
-                && previousStartDate != anime.getStartDate() && anime.getNotificationSettings() != null) {
-            // NOTIFICATION - Start date changed
-            for (NotificationSetting notificationSetting : anime.getNotificationSettings()) {
-                try {
-                    notificationService.create(notificationSetting.getProfile().getSub(), animeId,
-                            NotificationType.START_DATE_CHANGED);
                 } catch (AnimeRecoException e) {
                     log.error(e.getMessage());
                 }
