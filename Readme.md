@@ -1,6 +1,6 @@
 # Anime-Reco
 
-#### NEXT
+#### 1.0.6
 
 * Remove NEW_DATE notification type (too frequent changes on the source)
 

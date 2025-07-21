@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.toteuch</groupId>
     <artifactId>anime-reco</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <name>anime-reco</name>
     <description>Animes recommendations based on users with similar taste</description>
     <properties>
